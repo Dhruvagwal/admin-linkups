@@ -8,17 +8,19 @@ import LoadingScreen from 'screen/Loading'
 
 import {navigationRef} from './RootNavigation';
 
+import color from 'colors'
+
 const Index = () => {
     const Stack = createStackNavigator()
     
     const [Loading, setLoading] = useState(false)
 
     const BlackTheme = {
-        ...DefaultTheme,
-        colors:{
-            ...DefaultTheme,    
+        dark: true,
+        colors: {
+          background: color.dark,
         },
-    }
+      };
 
     return (<NavigationContainer 
                     ref={navigationRef} 

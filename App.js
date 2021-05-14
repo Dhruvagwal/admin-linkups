@@ -5,6 +5,8 @@ import Navigation from './src/navigation/index'
 
 import { useFonts } from '@use-expo/font';
 
+import {AuthProvider} from 'context/auth'
+
 
 const App = () => {
   
@@ -22,11 +24,11 @@ const App = () => {
   return (
     <>
       <StatusBar translucent={true} backgroundColor={'transparent'}/>
-      {/* <AuthProvider> */}
+      <AuthProvider>
       {/* <DataProvider> */}
           <Navigation/>
       {/* </DataProvider> */}
-      {/* </AuthProvider> */}
+      </AuthProvider>
     </>
   )
 }

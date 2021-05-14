@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Text as RNText, View as RNView} from 'react-native'
+import {Text as RNText, View as RNView, Image} from 'react-native'
 import color from 'colors'
 
 const Text = ({children, style, bold=false,regular=false, size=15, adjustsFontSizeToFit=false, numberOfLines=10000, dark=false})=>{
@@ -14,4 +14,6 @@ const Text = ({children, style, bold=false,regular=false, size=15, adjustsFontSi
 
 const RowView = ({children, style})=><RNView style={{flexDirection:'row',alignItems:'center',...style}}>{children}</RNView>
 
-export {Text, RowView}
+const Loading = ({width, height}) =><Image source={require('../../assets/Loading.gif')} style={{width, height}}/>
+
+export {Text, RowView, Loading}
