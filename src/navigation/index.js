@@ -12,7 +12,6 @@ import color from 'colors'
 
 const Index = () => {
     const Stack = createStackNavigator()
-    
     const [Loading, setLoading] = useState(false)
 
     const BlackTheme = {
