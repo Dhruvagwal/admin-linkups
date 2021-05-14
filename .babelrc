@@ -12,7 +12,8 @@
                     "navigation":"./src/navigation",
                     "context":"./src/context",
                     "components": "./src/components",
-                    "hooks":"./src/hooks"
+                    "hooks":"./src/hooks",
+                    "middlewares":"./src/middlewares"
                 }
             }
         ]
