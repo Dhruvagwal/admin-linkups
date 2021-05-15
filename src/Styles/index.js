@@ -14,6 +14,4 @@ const Text = ({children, style, bold=false,regular=false, size=15, adjustsFontSi
 
 const RowView = ({children, style})=><RNView style={{flexDirection:'row',alignItems:'center',...style}}>{children}</RNView>
 
-const Loading = ({width, height}) =><Image source={require('../../assets/Loading.gif')} style={{width, height}}/>
-
-export {Text, RowView, Loading}
+export {Text, RowView}

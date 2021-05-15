@@ -6,6 +6,7 @@ import Navigation from './src/navigation/index'
 import { useFonts } from '@use-expo/font';
 
 import {AuthProvider} from 'context/auth'
+import Loading from './src/screen/Loading';
 
 
 const App = () => {
@@ -17,9 +18,7 @@ const App = () => {
   });
 
   if(!fontsLoaded){
-    return <View>
-      <Text>Loading..</Text>
-    </View>
+    return <Loading/>
   }
   return (
     <>
