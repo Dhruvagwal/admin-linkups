@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, View, Image, Pressable } from 'react-native'
-import { AntDesign, Ionicons } from '@expo/vector-icons'; 
+import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons'; 
 
 import {Text, RowView} from 'styles'
 import color from 'colors'
@@ -17,8 +17,11 @@ const ServiceProviderListView = () => {
             <RowView style={styles.container}>
                 <Image source={{uri:URI}} style={{height:IMAGE_SIZE, width:IMAGE_SIZE, borderRadius:10}}/>
                 <View style={{paddingHorizontal:10, height:'95%', justifyContent: 'space-between',width:'75%'}}>
-                    <RowView>
-                        <Text regular size={18} style={{width:'75%'}} numberOfLines={1}>Dhruv Aggarwal</Text>
+                    <RowView style={{alignItems:'flex-start'}}>
+                        <RowView>
+                            <MaterialIcons name="verified" size={24} color={color.blue} />
+                            <Text regular size={18} style={{width:'65%'}} numberOfLines={1}> Dhruv Aggarwal</Text>
+                        </RowView>
                         <RowView>
                             <AntDesign name="star" size={24} color={color.active} />  
                             <Text> 4.5</Text>
@@ -40,10 +43,9 @@ export default ServiceProviderListView
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor: color.elevatedDark,
+        backgroundColor: 'rgba(34, 42, 56,0.8)',
         padding:10,
         borderRadius:20,
-        opacity: 0.8,
         height:110,
         marginBottom:10
     },

@@ -80,8 +80,7 @@ const styles = StyleSheet.create({
     },
     container:{
         padding:10, 
-        backgroundColor: color.elevatedDark,
-        opacity:0.8,
+        backgroundColor: 'rgba(34, 42, 56,0.8)',
         borderRadius:20
     },
     Points:{

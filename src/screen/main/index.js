@@ -60,8 +60,6 @@ const Index = () => {
         },2000)
         return ()=>clearInterval(intervalId)
     }, [active])
-
-    console.log(menu)
     return (
         <Pressable style={{flex:1}}>
             <Background/>
