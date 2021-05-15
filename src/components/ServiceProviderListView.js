@@ -13,7 +13,7 @@ const ServiceProviderListView = () => {
     const URI = 'https://wallpaperaccess.com/full/2213424.jpg'
     const IMAGE_SIZE = 90
     return (
-        <Pressable onPress={()=>console.log('trigger')}>
+        <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.ServiceProfile)}>
             <RowView style={styles.container}>
                 <Image source={{uri:URI}} style={{height:IMAGE_SIZE, width:IMAGE_SIZE, borderRadius:10}}/>
                 <View style={{paddingHorizontal:10, height:'95%', justifyContent: 'space-between',width:'75%'}}>

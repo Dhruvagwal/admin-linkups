@@ -8,6 +8,7 @@ import LoadingScreen from 'screen/Loading'
 import LanguageScreen from 'screen/setting/language'
 import AddOrderScreen from 'screen/order/AddOrder'
 import OrderDescriptionScreen from 'screen/order/OrderDescription'
+import ServiceProfileScreen from 'screen/profile/ServiceProfile'
 
 import {navigationRef} from './RootNavigation';
 
@@ -34,6 +35,7 @@ const Index = () => {
                     <Stack.Screen name={CONSTANT.Language} component={LanguageScreen}/>
                     <Stack.Screen name={CONSTANT.OrderDescription} component={OrderDescriptionScreen}/>
                     <Stack.Screen name={CONSTANT.AddOrder} component={AddOrderScreen}/>
+                    <Stack.Screen name={CONSTANT.ServiceProfile} component={ServiceProfileScreen}/>
                 </Stack.Navigator>
             </NavigationContainer>
     )
