@@ -2,6 +2,7 @@
     "Home":"Main",
     "Loading":"Loading",
     "Language":"Language",
-    "AddOrder":"AddOrder"
+    "AddOrder":"AddOrder",
+    "OrderDescription":"OrderDescription"
     
 }

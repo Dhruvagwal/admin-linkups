@@ -5,7 +5,8 @@ const colors = {
     'lightDark':'#283140',
     'active': '#FF6E50',
     'inActive':'#aaacaf',
-    'elevatedDark':'#222a38'
+    'elevatedDark':'#222a38',
+    'red':'#ff4f4f'
 }
 
 export default colors

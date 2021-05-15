@@ -20,29 +20,32 @@ const Background = ()=>{
     </View>
 }
 
-const MenuModal = ()=>{
-    const [dark, setDark] = useState(false)   
+const MenuModal = ({setMenu, visible})=>{
     return (
-        <View style={styles.menu}>
-            <RowView style={styles.menuItems}>
-                <MaterialIcons name="edit" size={24} color={color.inActive} />
-                <Text>{'  '}Edit Profile</Text>
-            </RowView>
-            <RowView style={styles.menuItems}>
-                <Entypo name="address" size={24} color={color.inActive} />
-                <Text>{'  '}Change Address</Text>
-            </RowView>
-            <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.Language)}>
-                <RowView style={styles.menuItems}>
-                    <Entypo name="language" size={24} color={color.inActive} />
-                    <Text>{'  '}Language</Text>
-                </RowView>
+        <Modal transparent visible={visible}>
+            <Pressable onPress={()=>setMenu(false)} style={{flex:1}} >
+                <View style={styles.menu}>
+                    <RowView style={styles.menuItems}>
+                        <MaterialIcons name="edit" size={24} color={color.inActive} />
+                        <Text>{'  '}Edit Profile</Text>
+                    </RowView>
+                    <RowView style={styles.menuItems}>
+                        <Entypo name="address" size={24} color={color.inActive} />
+                        <Text>{'  '}Change Address</Text>
+                    </RowView>
+                    <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.Language)}>
+                        <RowView style={styles.menuItems}>
+                            <Entypo name="language" size={24} color={color.inActive} />
+                            <Text>{'  '}Language</Text>
+                        </RowView>
+                    </Pressable>
+                    <RowView style={styles.menuItems}>
+                        <AntDesign name="setting" size={24} color={color.inActive}/>
+                        <Text>{'  '}Setting</Text>
+                    </RowView>
+                </View>
             </Pressable>
-            <RowView style={styles.menuItems}>
-                <AntDesign name="setting" size={24} color={color.inActive}/>
-                <Text>{'  '}Setting</Text>
-            </RowView>
-        </View>
+        </Modal>
 )}
 
 const Index = () => {
@@ -58,9 +61,9 @@ const Index = () => {
         return ()=>clearInterval(intervalId)
     }, [active])
 
-
+    console.log(menu)
     return (
-        <View style={{flex:1}}>
+        <Pressable style={{flex:1}}>
             <Background/>
             {/* ======================= */}
             <View style={{height:HEIGHT*.05}}/>
@@ -75,7 +78,7 @@ const Index = () => {
                         <MaterialCommunityIcons name="dots-vertical" size={40} color={menu ?color.active :color.white}/>
                     </Pressable>
                 </RowView>
-                {menu && <MenuModal/>}
+                <MenuModal visible={menu} setMenu={setMenu}/>
                 {/* ====================== */}
                 <FlatList
                     horizontal
@@ -90,7 +93,7 @@ const Index = () => {
                     </Pressable>}
                 />
                 {/* =============================== */}
-                <ScrollView showsVerticalScrollIndicator={false} style={{flex:1}} onTouchStart={()=>setMenu(false)}>
+                <ScrollView showsVerticalScrollIndicator={false} style={{flex:1}}>
                     {loading ?<View style={{height:HEIGHT*.5, alignItems:'center', justifyContent:'center'}}>
                             <Loading/>
                     </View>
@@ -104,7 +107,7 @@ const Index = () => {
                         <Text regular>Post Order</Text>
                 </Pressable>
             {/* ======================= */}
-        </View>
+        </Pressable>
     )
 }
 
@@ -133,12 +136,11 @@ const styles = StyleSheet.create({
     menu:{
         position:'absolute', 
         right:25, 
-        top:HEIGHT*.05+30, 
+        top:HEIGHT*.05, 
         backgroundColor: color.elevatedDark,
         padding:10,
         borderRadius:5,
         width:WIDTH/1.8,
-        marginTop:5,
         elevation:5,
         zIndex:5
     },
