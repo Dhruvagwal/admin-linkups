@@ -14,7 +14,7 @@ const ServiceListView = () => {
     return (
         <View style={[styles.container, {paddingBottom:10}]}>
             <RowView style={{justifyContent: 'space-between',marginBottom:5}}>
-                <Text size={18} style={{width:WIDTH*.7}} bold numberOfLines={2} adjustsFontSizeToFit>Washing Machine Dryer not Working</Text>
+                <Text style={{width:WIDTH*.7}} bold numberOfLines={2} adjustsFontSizeToFit>Washing Machine Dryer not Working</Text>
                 <Text size={12}>{diff}</Text>
             </RowView>
             <Text>Burning Smell</Text>

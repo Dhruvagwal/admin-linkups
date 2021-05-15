@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {Text as RNText, View as RNView, Image} from 'react-native'
 import color from 'colors'
 

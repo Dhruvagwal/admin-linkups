@@ -5,6 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack'
 import CONSTANT from './navigationConstant.json'
 import HomeScreen from 'screen/main'
 import LoadingScreen from 'screen/Loading'
+import LanguageScreen from 'screen/setting/language'
 
 import {navigationRef} from './RootNavigation';
 
@@ -29,6 +30,7 @@ const Index = () => {
                 <Stack.Navigator headerMode={false}>
                     {Loading && <Stack.Screen name={CONSTANT.Loading} component={LoadingScreen}/>}
                     <Stack.Screen name={CONSTANT.Home} component={HomeScreen}/>
+                    <Stack.Screen name={CONSTANT.Language} component={LanguageScreen}/>
                 </Stack.Navigator>
             </NavigationContainer>
     )
