@@ -9,10 +9,6 @@ import ServiceListView from 'components/ServiceListView'
 import * as RootNavigation from 'navigation/RootNavigation'
 import CONSTANT from 'navigation/navigationConstant'
 
-import translate from 'translate-google-api';
-
-
-
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
 const PADDING = 20
@@ -62,10 +58,6 @@ const Index = () => {
         return ()=>clearInterval(intervalId)
     }, [active])
 
-    
-    translate(`I'm fine.`, {
-        to: "hi"
-    }).then(response=>console.log(response));
 
     return (
         <View style={{flex:1}}>
@@ -103,12 +95,12 @@ const Index = () => {
                             <Loading/>
                     </View>
                     :
-                        [1,2,3,4,5,6,7,8].map(item=><ServiceListView status={active} key={item}/>)
+                        [1,2,3].map(item=><ServiceListView status={active} key={item}/>)
                     }
                 </ScrollView>
                 </View>
             {/* ======================= */}
-                <Pressable style={styles.PostButton}>
+                <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.AddOrder)} style={styles.PostButton}>
                         <Text regular>Post Order</Text>
                 </Pressable>
             {/* ======================= */}
