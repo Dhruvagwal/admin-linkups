@@ -1,161 +1,64 @@
-import React, {useState, useEffect, useRef} from 'react'
-import { StyleSheet, Image, View ,Dimensions, Pressable, ScrollView, FlatList, Animated, Modal, Switch } from 'react-native'
-import { MaterialCommunityIcons, MaterialIcons, Entypo, AntDesign } from '@expo/vector-icons'; 
+import React, {useState} from 'react'
+import { StyleSheet, View, Dimensions, ScrollView, Pressable } from 'react-native'
+import { MaterialIcons } from '@expo/vector-icons'; 
 
-import {Text, RowView} from 'styles'
+import LottieView from 'lottie-react-native'
+
+import {Text} from 'styles'
 import color from 'colors'
-import Loading from 'components/Loading' 
-import Login from './Login'
-import ServiceListView from 'components/ServiceListView' 
-import * as RootNavigation from 'navigation/RootNavigation'
-import CONSTANT from 'navigation/navigationConstant'
+import Header from 'components/Header'
+import NewFeedListView from 'components/NewFeedListView'
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
-const PADDING = 20
 
-const Background = ()=>{
-    return <View style={[{flex:1},StyleSheet.absoluteFillObject]}>
-        <View style={[{flex:1, alignItems:'stretch',flexDirection:'row', backgroundColor:color.dark, height:HEIGHT},StyleSheet.absoluteFillObject]}/>
-        <View style={{backgroundColor:color.secondaryDark,height:1550, width:'100%',transform:[{rotate:'36deg'}]}}/>
-    </View>
+const Jobs = () => {
+    return (
+        <View style={{flex:1, backgroundColor:color.lightDark}}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <NewFeedListView/>
+                <NewFeedListView/>
+                <Text>{'\n'}</Text>
+                {/* <LottieView
+                    source={require('../../../assets/lottieFiles/loadData.json')}
+                    style={styles.loading}
+                    autoPlay
+                /> */}
+            </ScrollView>
+            <View style={styles.filter}>
+                <MaterialIcons name="filter-alt" size={40} color={color.white} />
+            </View>
+        </View>
+    )
 }
 
-const MenuModal = ({setMenu, visible})=>{
-    return (
-        <Modal transparent visible={visible}>
-            <Pressable onPress={()=>setMenu(false)} style={{flex:1}} >
-                <View style={styles.menu}>
-                    <RowView style={styles.menuItems}>
-                        <MaterialIcons name="edit" size={24} color={color.inActive} />
-                        <Text>{'  '}Edit Profile</Text>
-                    </RowView>
-                    <RowView style={styles.menuItems}>
-                        <Entypo name="address" size={24} color={color.inActive} />
-                        <Text>{'  '}Change Address</Text>
-                    </RowView>
-                    <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.Language)}>
-                        <RowView style={styles.menuItems}>
-                            <Entypo name="language" size={24} color={color.inActive} />
-                            <Text>{'  '}Language</Text>
-                        </RowView>
-                    </Pressable>
-                    <RowView style={styles.menuItems}>
-                        <AntDesign name="setting" size={24} color={color.inActive}/>
-                        <Text>{'  '}Setting</Text>
-                    </RowView>
-                </View>
-            </Pressable>
-        </Modal>
-)}
-
-const Index = () => {
-    const ServiceStatus = ['Posted', 'Processing', 'Completed'] 
-    const [active, setActive] = useState(ServiceStatus[0])
-    const [loading, setLoading] = useState(false)
-    const [auth, setAuth] = useState(true)
-    const [menu, setMenu] = useState(false)
-    useEffect(() => {
-        setLoading(true)
-        const intervalId  = setInterval(()=>{
-            setLoading(false)
-        },2000)
-        return ()=>clearInterval(intervalId)
-    }, [active])
-
-    const order = ()=>{
-        setAuth(auth)
-        RootNavigation.navigate(CONSTANT.AddOrder)
-    }
-    return (
-        <Pressable style={{flex:1}}>
-            <Background/>
-            {/* ======================= */}
-            <View style={{height:HEIGHT*.05}}/>
-            {/* ======================== */}
-            <View style={{padding:PADDING, flex:1}}>
-                <RowView style={{marginBottom:30, justifyContent:'space-between'}}>
-                    <View>
-                        <Text size={30} bold>Linkups</Text>
-                        <Text>Home</Text>
-                    </View>
-                    <Pressable style={{position:'absolute', right:-30, padding: 20,}} onPress={()=>setMenu(!menu)}>
-                        <MaterialCommunityIcons name="dots-vertical" size={40} color={menu ?color.active :color.white}/>
-                    </Pressable>
-                </RowView>
-                <MenuModal visible={menu} setMenu={setMenu}/>
-                {/* ====================== */}
-                <FlatList
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    data={ServiceStatus}
-                    style={{alignSelf:'center', flexGrow:0, marginBottom:20}}
-                    keyExtractor={(item)=>item}
-                    renderItem={({item})=>
-                    <Pressable onPress={()=>setActive(item)} key={item}>
-                        <Text style={{...styles.contain,backgroundColor:item===active?color.lightDark:'#0000', width:ServiceStatus.length<=2 ? WIDTH/ServiceStatus.length-20:150}}>{item}</Text>
-                        {item===active && <View style={styles.active}/>}
-                    </Pressable>}
-                />
-                {/* =============================== */}
-                <ScrollView showsVerticalScrollIndicator={false} style={{flex:1}}>
-                    {loading ?<View style={{height:HEIGHT*.5, alignItems:'center', justifyContent:'center'}}>
-                            <Loading/>
-                    </View>
-                    :
-                        [1,2,3].map(item=><ServiceListView status={active} key={item}/>)
-                    }
-                </ScrollView>
-                {!auth && <Login/>}
-                </View>
-            {/* ======================= */}
-            {
-                auth &&
-                <Pressable onPress={order} style={styles.PostButton}>
-                    <Text regular>Place Order</Text>
-                </Pressable>
-
-            }
-            {/* ======================= */}
-        </Pressable>
-    )
+const Index = ()=>{
+    const List = ['flame', 'library', 'md-pie-chart-outline']
+    const [active, setActive] = useState(List[0])
+    return <View style={{flex:1}}>
+        <Header setActive={setActive} active={active} List={List}/>
+        <View style={{flex:1, backgroundColor:color.lightDark}}>
+            {active===List[0] && <Jobs/>}
+        </View>
+    </View>
 }
 
 export default Index
 
 const styles = StyleSheet.create({
-    PostButton:{
-        backgroundColor:color.active,
-        position:'absolute',
-        bottom:0,
-        right:0,
-        padding:PADDING,
-        width:WIDTH,
-        alignItems:'center',
-        height:70
-    },
-    contain:{
-        padding:PADDING*.5,
-        borderTopRightRadius:PADDING*.25,
-        borderTopLeftRadius:PADDING*.25,
-        textAlign:'center'
-    },
-    active:{
-        backgroundColor:color.active,
-        padding:2.5
-    },
-    menu:{
-        position:'absolute', 
-        right:25, 
-        top:HEIGHT*.05, 
-        backgroundColor: color.elevatedDark,
+    filter:{
+        position: 'absolute',
+        bottom:20,
+        right:20,
         padding:10,
-        borderRadius:5,
-        width:WIDTH/1.8,
-        elevation:5,
-        zIndex:5
+        backgroundColor:color.blue,
+        borderRadius:100,
+        opacity: 0.95,
     },
-    menuItems:{
-        paddingVertical:10
+    loading:{
+        position: 'absolute',
+        width:200,
+        bottom:-22,
+        alignSelf:'center'
     }
 })

@@ -5,6 +5,8 @@
     "AddOrder":"AddOrder",
     "OrderDescription":"OrderDescription",
     "ServiceProfile":"ServiceProfile",
-    "Invitation":"Invitation"
+    "Invitation":"Invitation",
+    "MainDrawer":"MainDrawer",
+    "OrderProfile":"OrderProfile"
     
 }
