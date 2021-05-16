@@ -5,6 +5,7 @@ import { MaterialCommunityIcons, MaterialIcons, Entypo, AntDesign } from '@expo/
 import {Text, RowView} from 'styles'
 import color from 'colors'
 import Loading from 'components/Loading' 
+import Login from './Login'
 import ServiceListView from 'components/ServiceListView' 
 import * as RootNavigation from 'navigation/RootNavigation'
 import CONSTANT from 'navigation/navigationConstant'
@@ -52,6 +53,7 @@ const Index = () => {
     const ServiceStatus = ['Posted', 'Processing', 'Completed'] 
     const [active, setActive] = useState(ServiceStatus[0])
     const [loading, setLoading] = useState(false)
+    const [auth, setAuth] = useState(true)
     const [menu, setMenu] = useState(false)
     useEffect(() => {
         setLoading(true)
@@ -60,6 +62,11 @@ const Index = () => {
         },2000)
         return ()=>clearInterval(intervalId)
     }, [active])
+
+    const order = ()=>{
+        setAuth(auth)
+        RootNavigation.navigate(CONSTANT.AddOrder)
+    }
     return (
         <Pressable style={{flex:1}}>
             <Background/>
@@ -99,11 +106,16 @@ const Index = () => {
                         [1,2,3].map(item=><ServiceListView status={active} key={item}/>)
                     }
                 </ScrollView>
+                {!auth && <Login/>}
                 </View>
             {/* ======================= */}
-                <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.AddOrder)} style={styles.PostButton}>
-                        <Text regular>Post Order</Text>
+            {
+                auth &&
+                <Pressable onPress={order} style={styles.PostButton}>
+                    <Text regular>Place Order</Text>
                 </Pressable>
+
+            }
             {/* ======================= */}
         </Pressable>
     )
@@ -119,7 +131,8 @@ const styles = StyleSheet.create({
         right:0,
         padding:PADDING,
         width:WIDTH,
-        alignItems:'center'
+        alignItems:'center',
+        height:70
     },
     contain:{
         padding:PADDING*.5,
