@@ -4,6 +4,7 @@
     "Language":"Language",
     "AddOrder":"AddOrder",
     "OrderDescription":"OrderDescription",
-    "ServiceProfile":"ServiceProfile"
+    "ServiceProfile":"ServiceProfile",
+    "Invitation":"Invitation"
     
 }

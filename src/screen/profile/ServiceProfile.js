@@ -39,7 +39,7 @@ const Point = ({children, last=false, text})=><RowView style={{...styles.Points,
 
 const ServiceProfile = () => {
     return (
-        <View>
+        <View style={{flex:1}}>
             <Background/>
             <View style={{height:HEIGHT*.05}}/>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -87,8 +87,12 @@ const ServiceProfile = () => {
                         <Review/>
                     </View>
                     <Text>{'\n'}</Text>
+                    <Text>{'\n'}</Text>
                 </View>
             </ScrollView>
+            <View style={{position:'absolute',bottom:0, backgroundColor:color.active, width:'100%', alignItems:'center', padding:15}}>
+                <Text size={20} bold>Accept</Text>
+            </View>
         </View>
     )
 }

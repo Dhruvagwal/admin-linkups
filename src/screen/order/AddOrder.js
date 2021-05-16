@@ -70,25 +70,11 @@ const Problem = ({visible, setProblem})=>{
     </ScreenModal>
 }
 
-const LaunchScreen = ({setLaunch})=>{
-    return <ScreenModal style={{flex: 0.2}}>
-        <Text size={18} style={{marginBottom:10}}>👏 Hurray!</Text>
-        <Text regular>You Posted your job Succesfully</Text>
-        <Pressable onPress={()=>{RootNavigation.navigate(CONSTANT.Home) ; setLaunch(false)}} style={styles.OkayButton}>
-            <Text>Ok</Text>
-        </Pressable>
-    </ScreenModal>
-}
-
 const AddOrder = () => {
     const [category, setCategory] = useState()
     const [Subcategory, setSubCategory] = useState()
     const [timing, setTiming] = useState()
     const [problem, setProblem] = useState()
-    const [launch, setLaunch] = useState(false)
-    const checkOut = ()=>{
-        setLaunch(true)
-    }
     return (
         <View style={{flex:1}}>
             <Background/>
@@ -96,7 +82,6 @@ const AddOrder = () => {
             { problem === undefined && <Problem visible={problem} setProblem={setProblem}/>}
             { Subcategory === undefined && <ScreenAddCategoryModal call='Washing Machine' setCategory={setSubCategory} text={'Choose Services'} visible={Subcategory}/>}
             { category === undefined && <ScreenAddCategoryModal call='Electrician' setCategory={setCategory} text={'Choose Service Category'} visible={category}/>}
-            {launch && <LaunchScreen setLaunch={setLaunch}/>}
             <View style={{height:HEIGHT*.05}}/>
             <View style={{margin:20}}>
                 <Text size={30} bold>Linkups</Text>
@@ -122,8 +107,8 @@ const AddOrder = () => {
                     </RowView>
                 </ImagePicker>
             </View>
-            <Pressable style={styles.Button} onPress={checkOut}>
-                <Text regular>Launch</Text>
+            <Pressable style={styles.Button} onPress={()=>RootNavigation.navigate(CONSTANT.Invitation)}>
+                <Text regular>Save</Text>
             </Pressable>
         </View>
     )

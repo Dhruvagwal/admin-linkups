@@ -26,7 +26,6 @@ export default ScreenModal
 const styles = StyleSheet.create({
     container:{
         backgroundColor: color.elevatedDark,
-        flex: 1,
         borderRadius:20,
         padding:20,
         elevation:5,
