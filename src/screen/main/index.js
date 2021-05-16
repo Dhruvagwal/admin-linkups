@@ -32,6 +32,14 @@ const Jobs = () => {
     )
 }
 
+const Library = ()=>{
+    const List = ['Proposals', 'Active', 'Pending', 'Completed']
+    const [active, setActive] = useState(List[0])
+    return <View style={{flex:1}}>
+        <Text>Dhruv</Text>
+    </View>
+}
+
 const Index = ()=>{
     const List = ['flame', 'library', 'md-pie-chart-outline']
     const [active, setActive] = useState(List[0])
@@ -39,6 +47,7 @@ const Index = ()=>{
         <Header setActive={setActive} active={active} List={List}/>
         <View style={{flex:1, backgroundColor:color.lightDark}}>
             {active===List[0] && <Jobs/>}
+            {active===List[1] && <Library/>}
         </View>
     </View>
 }
@@ -60,5 +69,5 @@ const styles = StyleSheet.create({
         width:200,
         bottom:-22,
         alignSelf:'center'
-    }
+    },
 })
