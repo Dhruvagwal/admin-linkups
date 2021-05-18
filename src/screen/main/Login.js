@@ -44,6 +44,7 @@ const Login = () => {
     const [name, setName] = useState('')
     const [Resend, setResend] = useState(false)
     const [AddressScreen, setAddressScreen] = useState(false)
+    const [category, setCategory] = useState('')
     const [Address, setAddress] = useState('')
     const [OTP, setOTP] = useState(false)
     const {setAuth} = AuthConsumer()

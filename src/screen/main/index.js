@@ -1,13 +1,18 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { StyleSheet, View, Dimensions, ScrollView, Pressable } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'; 
-
-import LottieView from 'lottie-react-native'
 
 import {Text} from 'styles'
 import color from 'colors'
 import Header from 'components/Header'
 import NewFeedListView from 'components/NewFeedListView'
+import CategoryList from 'components/CategoryList'
+import Loading from 'components/Loading'
+import {AuthConsumer} from 'context/auth'
+import {DataConsumer} from 'context/data'
+import Login from './Login'
+import { Logout } from 'hooks/useAuth';
+import { getCategory } from 'hooks/useData';
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
@@ -41,14 +46,41 @@ const Library = ()=>{
 }
 
 const Index = ()=>{
+    const {state:{auth}, setAuth} = AuthConsumer()
+    const {state, Update} = DataConsumer()
     const List = ['flame', 'library', 'md-pie-chart-outline']
     const [active, setActive] = useState(List[0])
+    const [category, setCategory] = useState([])
+    const [loading, setLoading] = useState(true)
+
+    const LOGOUT = async ()=>{
+        await setAuth(false)
+        Logout()
+    }
+
+    useEffect(()=>{
+        getCategory().then(({data})=>{setCategory(data); setLoading(false)})
+    },[])
+
     return <View style={{flex:1}}>
-        <Header setActive={setActive} active={active} List={List}/>
-        <View style={{flex:1, backgroundColor:color.lightDark}}>
-            {active===List[0] && <Jobs/>}
-            {active===List[1] && <Library/>}
-        </View>
+        {
+            loading ? <Loading/> :
+            <>        
+                {state.profile.category===undefined && <CategoryList category={category} Update={Update}/>}
+                <Header setActive={setActive} active={active} List={List}/>
+                <View style={{flex:1, backgroundColor:color.lightDark}}>
+                    {auth?<>
+                        {active===List[0] && <Jobs/>}
+                        {active===List[1] && <Library/>}
+                        <Pressable onPress={LOGOUT}>
+                            <Text>Logout</Text>
+                        </Pressable>
+                    </>
+                    :
+                    <Login/>}
+                </View>
+            </>
+        }
     </View>
 }
 

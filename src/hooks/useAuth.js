@@ -88,7 +88,7 @@ const createUser = async (phone, name, Address)=>{
   const CODE = await countryCode()
   const TRIM_CODE = CODE.replace('+','')
 
-  return await instances.post('/DBcreate/api/users/create',{
+  return await instances.post('/DBcreate/api/serviceProvider/create',{
     id:TRIM_CODE+phone,
     name,
     Address,
