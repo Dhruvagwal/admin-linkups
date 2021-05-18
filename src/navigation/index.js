@@ -8,12 +8,23 @@ import LoadingScreen from 'screen/Loading'
 import OrderProfileScreen from 'screen/OrderProfile'
 
 import {navigationRef} from './RootNavigation';
+import {AuthConsumer} from '../context/auth'
+import { verifyToken } from '../hooks/useAuth'
 
 import color from 'colors'
 
 const Index = () => {
-    const Stack = createStackNavigator()
-    const [Loading, setLoading] = useState(false)
+  const Stack = createStackNavigator()
+  const [Loading, setLoading] = useState(true)
+  const {state:{auth}, setAuth} = AuthConsumer()
+
+  useEffect(()=>{
+    verifyToken()
+      .then(response=>{setAuth(response); setLoading(false)})
+      .catch(err=>setAuth(false))
+
+    return ()=>{}
+  },[])
 
     const BlackTheme = {
         dark: true,
@@ -29,7 +40,12 @@ const Index = () => {
                 <Stack.Navigator headerMode={false} screenOptions={{ animationEnabled: false }} >
                     {Loading && <Stack.Screen name={CONSTANT.Loading} component={LoadingScreen}/>}
                     <Stack.Screen name={CONSTANT.Home} component={HomeScreen}/>
-                    <Stack.Screen name={CONSTANT.OrderProfile} component={OrderProfileScreen}/>
+                    {
+                      auth && 
+                      <>
+                        <Stack.Screen name={CONSTANT.OrderProfile} component={OrderProfileScreen}/>
+                      </>
+                    }
                 </Stack.Navigator>
             </NavigationContainer>
     )

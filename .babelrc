@@ -13,7 +13,8 @@
                     "context":"./src/context",
                     "components": "./src/components",
                     "hooks":"./src/hooks",
-                    "middlewares":"./src/middlewares"
+                    "middlewares":"./src/middlewares",
+                    "data":"./src/data"
                 }
             }
         ]

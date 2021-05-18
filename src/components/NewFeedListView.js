@@ -55,7 +55,7 @@ export default NewFeedListView
 const styles = StyleSheet.create({
     container:{
         borderBottomColor:color.lightDark,
-        borderBottomWidth:5,
+        borderBottomWidth:1,
         height:150,
         backgroundColor:color.elevatedDark,
     },
