@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Dimensions, View, ScrollView, Image } from 'react-native'
+import { StyleSheet, Dimensions, View, ScrollView, Image, Pressable } from 'react-native'
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'; 
 
 import {Text, RowView} from 'styles'
@@ -8,10 +8,11 @@ import color from 'colors'
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
 
-const TopContainer = ()=><RowView style={styles.TopContainer}>
-    <Image source={require('../../../assets/washing-machine.png')} style={{height:'100%', width:'30%', resizeMode:'center'}}/>
+const TopContainer = ({SubCat={}, data={}, result={}})=><RowView style={styles.TopContainer}>
+    <Image source={{uri:SubCat.url}} style={{height:'100%', width:'30%', resizeMode:'center'}}/>
     <View style={{alignItems:'flex-start', justifyContent:'space-between', height: '85%',marginLeft:10}}>
-        <Text style={{width:'70%'}} size={18} regular>Washing Machine Repair</Text>
+        <Text style={{width:WIDTH/1.7}} size={18} regular>{SubCat.name}</Text>
+        <Text size={13}>{result.name}</Text>
         <Text size={13}>Posted 12 min ago</Text>
     </View>
 </RowView> 
@@ -22,10 +23,10 @@ const Point = ({children, text, top=false})=><RowView style={{...styles.Point, b
 </RowView>
 
 const ICON_SIZE = 25
-const MiddleContainer = ()=><View style={{marginTop:20}}>
+const MiddleContainer = ({SubCat={}, data={}, result={}})=><View style={{marginTop:20}}>
     <Text style={{marginLeft:10, marginBottom:5}}>Details</Text>
     <View style={styles.contentContainer}>
-        <Point top text='Timing: 3:00 Pm To 6:00 Am'>
+        <Point top text={`Timing: ${data.info.timing}`}>
             <MaterialCommunityIcons name="clock-time-five" size={ICON_SIZE} color={color.active} />
         </Point>
         <Point text='5 Offers'>
@@ -45,33 +46,33 @@ const Tag = ({text})=><View style={styles.tag}>
     <Text regular>{text}</Text>
 </View> 
 
-const Category = ()=><View style={{marginTop:20}}>
+const Category = ({SubCat={}, data={}, result={}})=><View style={{marginTop:20}}>
     <Text style={{marginLeft:10, marginBottom:5}}>Tags</Text>
     <View style={styles.contentContainer}>
         <RowView >
-            <Tag text='Electrician' />
-            <Tag text='Washing Machine' />
+            <Tag text={result.name} />
+            <Tag text={SubCat.name} />
         </RowView>
         <RowView style={{marginTop:10}}>
-            <Tag text='Smoking' />
-            <Tag text='Short Crcuit' />
+            <Tag text={data.info.problem} />
         </RowView>
     </View>
 </View>
 
-const Index = () => {
+const Index = ({route}) => {
+    const {data, SubCat, result} = route.params
     return (
         <View style={{flex:1, paddingTop:HEIGHT*.1, padding: 10,}}>
             <ScrollView>
-                <TopContainer/>
-                <MiddleContainer/>
-                <Category/>
+                <TopContainer SubCat={SubCat} data={data} result={result}/>
+                <MiddleContainer SubCat={SubCat} data={data} result={result}/>
+                <Category data={data} SubCat={SubCat} result={result}/>
                 <Text>{'\n'}</Text>
                 <Text>{'\n'}</Text>
             </ScrollView>
-            <View style={styles.bottomButton}>
+            <Pressable style={styles.bottomButton}>
                 <Text regular>Accept</Text>
-            </View>
+            </Pressable>
         </View>
     )
 }

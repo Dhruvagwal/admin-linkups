@@ -13,21 +13,7 @@ const getUsersDetails =async ()=>{
 const getCategory = async (CancelToken)=>{
     return instances.get('ReadAll/api/Category/read',{CancelToken})
 }
-const getServiceProvider = async ()=>{
-    return instances.get('ReadAll/api/serviceProvider/read')
-}
 
-const saveOrder = (data)=>{
-    return instances.post('DBcreate/api/order/create', data)
-}
-
-const getPost = async (type, CancelToken)=>{
-    const LINKUPS_ADMIN_PHONE_NUMBER = await AsyncStorage.getItem(STORAGE_KEY_3)
-    return instances.post(`QuerySearch/api/order/search`,{
-        user:LINKUPS_ADMIN_PHONE_NUMBER,
-        type
-    },{CancelToken})
-}
 
 const deleteData = (database, id)=>{
     return instances.delete(`Delete/api/${database}/delete/${id}`)
@@ -41,4 +27,12 @@ const updateProfile = async (data)=>{
     return instances.put(`Update/api/serviceProvider/${LINKUPS_ADMIN_PHONE_NUMBER}`,data)
 }
 
-export {getUsersDetails, getCategory, getServiceProvider, saveOrder, getPost, deleteData, getDataById, updateProfile}
+const ReadAll = (database)=>{
+    return instances.get(`ReadAll/api/${database}/read`)
+}
+
+const newPost = ()=>{
+    return instances.post(`QuerySearch/api/order/search`,{status:"posted"})
+}
+
+export {getUsersDetails, getCategory, deleteData, getDataById, updateProfile, ReadAll, newPost}

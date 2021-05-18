@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { StyleSheet, View, Dimensions, ScrollView, Pressable } from 'react-native'
+import { StyleSheet, View, Dimensions, ScrollView, Pressable, RefreshControl } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'; 
 
 import {Text} from 'styles'
@@ -12,34 +12,47 @@ import {AuthConsumer} from 'context/auth'
 import {DataConsumer} from 'context/data'
 import Login from './Login'
 import { Logout } from 'hooks/useAuth';
-import { getCategory } from 'hooks/useData';
+import { getCategory, newPost } from 'hooks/useData';
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
 
-const Jobs = () => {
+const Jobs = ({newOrder, category, loadData}) => {
+    const [refreshing, setRefreshing] = React.useState(false);
+    const refresh = async ()=>{
+        setRefreshing(true)
+        await loadData()
+        setRefreshing(false)
+    }
+
     return (
-        <View style={{flex:1, backgroundColor:color.lightDark}}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <NewFeedListView/>
-                <NewFeedListView/>
-                <Text>{'\n'}</Text>
-                {/* <LottieView
-                    source={require('../../../assets/lottieFiles/loadData.json')}
-                    style={styles.loading}
-                    autoPlay
-                /> */}
+        <>        
+            <ScrollView
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={refresh}
+                        color={[color.active]}
+                    />
+                }
+            >
+                <View style={{flex:1, backgroundColor:color.lightDark}}>
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                        {
+                            newOrder.map(item=><NewFeedListView key={item.id} data={item} category={category}/>)
+                        }
+                        <Text>{'\n'}</Text>
+                    </ScrollView>
+                </View>
             </ScrollView>
             <View style={styles.filter}>
                 <MaterialIcons name="filter-alt" size={40} color={color.white} />
             </View>
-        </View>
+        </>
     )
 }
 
 const Library = ()=>{
-    const List = ['Proposals', 'Active', 'Pending', 'Completed']
-    const [active, setActive] = useState(List[0])
     return <View style={{flex:1}}>
         <Text>Dhruv</Text>
     </View>
@@ -52,16 +65,25 @@ const Index = ()=>{
     const [active, setActive] = useState(List[0])
     const [category, setCategory] = useState([])
     const [loading, setLoading] = useState(true)
+    const [newOrder, setNewOrder] = useState([])
 
     const LOGOUT = async ()=>{
         await setAuth(false)
         Logout()
     }
+    const loadData =async () =>{
+        const {data} = await  getCategory()
+        setCategory(data)
+        const response = await newPost()
+        const result = response.data.filter(item=>item.info.category === state.profile.category )
+        setNewOrder(result)
+        setLoading(false)
+    }
 
     useEffect(()=>{
-        getCategory().then(({data})=>{setCategory(data); setLoading(false)})
+        loadData()
     },[])
-
+    
     return <View style={{flex:1}}>
         {
             loading ? <Loading/> :
@@ -70,7 +92,7 @@ const Index = ()=>{
                 <Header setActive={setActive} active={active} List={List}/>
                 <View style={{flex:1, backgroundColor:color.lightDark}}>
                     {auth?<>
-                        {active===List[0] && <Jobs/>}
+                        {active===List[0] && <Jobs newOrder={newOrder} category={category} loadData={loadData}/>}
                         {active===List[1] && <Library/>}
                         <Pressable onPress={LOGOUT}>
                             <Text>Logout</Text>
