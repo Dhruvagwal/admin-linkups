@@ -75,8 +75,9 @@ const Index = ()=>{
         const {data} = await  getCategory()
         setCategory(data)
         const response = await newPost()
-        const result = response.data.filter(item=>item.info.category === state.profile.category )
-        setNewOrder(result)
+        const result = response.data.filter(item=>item.info.category === state.profile.category)
+        const sorted = result.filter(item=>!(item.proposal && item.proposal.find(item=>item===state.profile.id)))
+        setNewOrder(sorted)
         setLoading(false)
     }
 

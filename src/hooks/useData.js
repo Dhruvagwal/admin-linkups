@@ -26,6 +26,10 @@ const updateProfile = async (data)=>{
     const LINKUPS_ADMIN_PHONE_NUMBER = await AsyncStorage.getItem(STORAGE_KEY_3)
     return instances.put(`Update/api/serviceProvider/${LINKUPS_ADMIN_PHONE_NUMBER}`,data)
 }
+const updateOrder = async (data, id)=>{
+    const LINKUPS_ADMIN_PHONE_NUMBER = await AsyncStorage.getItem(STORAGE_KEY_3)
+    return instances.put(`Update/api/order/${id}`,data)
+}
 
 const ReadAll = (database)=>{
     return instances.get(`ReadAll/api/${database}/read`)
@@ -35,4 +39,4 @@ const newPost = ()=>{
     return instances.post(`QuerySearch/api/order/search`,{status:"posted"})
 }
 
-export {getUsersDetails, getCategory, deleteData, getDataById, updateProfile, ReadAll, newPost}
+export {getUsersDetails, getCategory, deleteData, getDataById, updateProfile, ReadAll, newPost, updateOrder}

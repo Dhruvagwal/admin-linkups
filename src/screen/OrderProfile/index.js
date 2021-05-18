@@ -1,9 +1,12 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { StyleSheet, Dimensions, View, ScrollView, Image, Pressable } from 'react-native'
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'; 
 
 import {Text, RowView} from 'styles'
 import color from 'colors'
+import {DataConsumer} from 'context/data'
+import Loading from 'components/Loading'
+import {updateOrder, updateProfile} from 'hooks/useData'
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
@@ -58,9 +61,19 @@ const Category = ({SubCat={}, data={}, result={}})=><View style={{marginTop:20}}
         </RowView>
     </View>
 </View>
-
 const Index = ({route}) => {
     const {data, SubCat, result} = route.params
+    const [loading, setLoading] = useState(false)
+    const {state:{profile}, Update} = DataConsumer()
+    const Accept = async ()=>{
+        setLoading(true)
+        const invitation = profile.invitation === undefined ? [data.id]:[...profile.invitation, data.id]
+        const proposal = data.proposal === undefined ? [profile.id]:[...data.proposal, profile.id]
+        await updateProfile({invitation})
+        await updateOrder({proposal}, data.id)
+        await Update()
+        setLoading(false)
+    }
     return (
         <View style={{flex:1, paddingTop:HEIGHT*.1, padding: 10,}}>
             <ScrollView>
@@ -70,9 +83,16 @@ const Index = ({route}) => {
                 <Text>{'\n'}</Text>
                 <Text>{'\n'}</Text>
             </ScrollView>
-            <Pressable style={styles.bottomButton}>
-                <Text regular>Accept</Text>
-            </Pressable>
+            {
+                !loading ?
+                <Pressable onPress={Accept} style={styles.bottomButton}>
+                    <Text regular>Accept</Text>
+                </Pressable>
+                :
+                <View style={[styles.bottomButton, {backgroundColor:color.lightDark, padding:15}]}>
+                    <Loading/>
+                </View>
+            }
         </View>
     )
 }
