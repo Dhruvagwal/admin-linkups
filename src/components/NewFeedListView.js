@@ -14,19 +14,19 @@ const Tag = ({text})=><View style={styles.tag}>
     <Text size={12} regular>{text}</Text>
 </View> 
 
-const NewFeedListView = ({data={}, category=[]}) => {
+const NewFeedListView = ({data={}, category=[], invited=false}) => {
     const ICON_SIZE = 25
     const result = category.find(item=>item.id===data.info.category)
     const SubCat = result.subCategory.find(item=>item.id===data.info.subCategory)
     return (
         <View style={styles.container}>
-            <Pressable onPress={()=>RootNavgation.navigate(CONSTANT.OrderProfile,{result, SubCat, data})} style={{padding:10}}>
+            <Pressable onPress={()=>RootNavgation.navigate(CONSTANT.OrderProfile,{result, SubCat, data, invited})} style={{padding:10}}>
                 <RowView>
                     <Image source={{uri:SubCat.url}} style={{width:80, height:80}} />
                     <View style={{marginLeft:10}}>
                         <RowView>
                             <Text style={{width:WIDTH/2.2, marginRight:10}} numberOfLines={1} regular>{SubCat.name}</Text>
-                            <Text size={13}>12 min ago</Text>
+                            <Text size={13}>{data.id}</Text>
                         </RowView>
                         <RowView style={{justifyContent: 'space-between',marginTop:10}}>
                             <MaterialCommunityIcons name="truck-delivery" size={ICON_SIZE} color={color.active} />

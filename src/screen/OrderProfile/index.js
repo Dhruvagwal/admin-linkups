@@ -62,16 +62,18 @@ const Category = ({SubCat={}, data={}, result={}})=><View style={{marginTop:20}}
     </View>
 </View>
 const Index = ({route}) => {
-    const {data, SubCat, result} = route.params
+    const {data, SubCat, result, invited} = route.params
     const [loading, setLoading] = useState(false)
     const {state:{profile}, Update} = DataConsumer()
     const Accept = async ()=>{
         setLoading(true)
-        const invitation = profile.invitation === undefined ? [data.id]:[...profile.invitation, data.id]
+        const proposed = profile.proposed === undefined ? [data.id]:[...profile.proposed, data.id]
         const proposal = data.proposal === undefined ? [profile.id]:[...data.proposal, profile.id]
-        await updateProfile({invitation})
-        await updateOrder({proposal}, data.id)
+        const invitation = data.invited.filter(item=>item!==profile.id)
+        await updateProfile({proposed})
+        await updateOrder({proposal, invited:invitation}, data.id)
         await Update()
+        console.log(invitation)
         setLoading(false)
     }
     return (
@@ -83,6 +85,7 @@ const Index = ({route}) => {
                 <Text>{'\n'}</Text>
                 <Text>{'\n'}</Text>
             </ScrollView>
+            {!invited && <>
             {
                 !loading ?
                 <Pressable onPress={Accept} style={styles.bottomButton}>
@@ -92,7 +95,7 @@ const Index = ({route}) => {
                 <View style={[styles.bottomButton, {backgroundColor:color.lightDark, padding:15}]}>
                     <Loading/>
                 </View>
-            }
+            }</>}
         </View>
     )
 }

@@ -27,7 +27,6 @@ const updateProfile = async (data)=>{
     return instances.put(`Update/api/serviceProvider/${LINKUPS_ADMIN_PHONE_NUMBER}`,data)
 }
 const updateOrder = async (data, id)=>{
-    const LINKUPS_ADMIN_PHONE_NUMBER = await AsyncStorage.getItem(STORAGE_KEY_3)
     return instances.put(`Update/api/order/${id}`,data)
 }
 
