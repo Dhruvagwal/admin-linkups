@@ -1,12 +1,16 @@
 import React, {useState} from 'react'
 import { StyleSheet, Dimensions, View, ScrollView, Image, Pressable } from 'react-native'
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons, MaterialIcons, Ionicons } from '@expo/vector-icons'; 
 
 import {Text, RowView} from 'styles'
 import color from 'colors'
 import {DataConsumer} from 'context/data'
 import Loading from 'components/Loading'
+import Calendar from 'components/calendar'
+import ScreenModal from 'components/ScreenModal'
+
 import {updateOrder, updateProfile} from 'hooks/useData'
+import { TextInput } from 'react-native-gesture-handler';
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
@@ -61,21 +65,53 @@ const Category = ({SubCat={}, data={}, result={}})=><View style={{marginTop:20}}
         </RowView>
     </View>
 </View>
-const Index = ({route}) => {
-    const {data, SubCat, result, invited} = route.params
-    const [loading, setLoading] = useState(false)
-    const {state:{profile}, Update} = DataConsumer()
+
+const AcceptScreen = ({setAccept, profile, data, Update})=>{
+    const [date, setDate] =useState(new Date())
+    const [price, setPrice] =useState()
+
     const Accept = async ()=>{
-        setLoading(true)
+        const proposalData = {
+            id:profile.id,
+            date,
+            price
+        }
         const proposed = profile.proposed === undefined ? [data.id]:[...profile.proposed, data.id]
-        const proposal = data.proposal === undefined ? [profile.id]:[...data.proposal, profile.id]
+        const proposal = data.proposal === undefined ? [proposalData]:[...data.proposal,proposalData ]
         const invitation = data.invited.filter(item=>item!==profile.id)
         await updateProfile({proposed})
         await updateOrder({proposal, invited:invitation}, data.id)
         await Update()
-        console.log(invitation)
-        setLoading(false)
+        setAccept(false)
     }
+
+    return <ScreenModal>
+        <View>
+            <Text style={{alignSelf:'center', marginBottom:20}} size={20} regular>Details</Text>
+            <TextInput 
+                placeholder='Price' 
+                style={styles.TextInput} 
+                placeholderTextColor={color.inActive}
+                keyboardType='number-pad'
+                onChangeText={setPrice}
+            />
+            <Text style={{marginBottom:10, marginTop:20}} size={12}>Delieverd on</Text>
+            <Calendar date={date} setDate={setDate}/>
+            <Pressable onPress={Accept} style={styles.button}>
+                <RowView>
+                    <Text regular>Send </Text>
+                    <Ionicons name="send" size={24} color={color.white} />
+                </RowView>
+            </Pressable>
+        </View>
+    </ScreenModal>
+}
+
+const Index = ({route}) => {
+    const {data, SubCat, result, invited} = route.params
+    const [loading, setLoading] = useState(false)
+    const [accept, setAccept] = useState(false)
+    const {state:{profile}, Update} = DataConsumer()
     return (
         <View style={{flex:1, paddingTop:HEIGHT*.1, padding: 10,}}>
             <ScrollView>
@@ -85,10 +121,11 @@ const Index = ({route}) => {
                 <Text>{'\n'}</Text>
                 <Text>{'\n'}</Text>
             </ScrollView>
+            {accept && <AcceptScreen setAccept={setAccept} data={data} profile={profile} Update={Update}/>}
             {!invited && <>
             {
                 !loading ?
-                <Pressable onPress={Accept} style={styles.bottomButton}>
+                <Pressable onPress={()=>setAccept(true)} style={styles.bottomButton}>
                     <Text regular>Accept</Text>
                 </Pressable>
                 :
@@ -136,5 +173,21 @@ const styles = StyleSheet.create({
         borderRadius:10,
         flexGrow:1,
         alignItems:'center'
+    },
+    TextInput:{
+        fontFamily:'Montserrat-Regular',
+        fontSize:18,
+        backgroundColor:color.lightDark,
+        padding:10, 
+        borderRadius:10,
+        color:color.white,
+        textAlign:'center'
+    },
+    button:{
+        backgroundColor:color.blue,
+        padding:10,
+        alignSelf: 'center',
+        borderRadius:10,
+        marginTop:20
     }
 })

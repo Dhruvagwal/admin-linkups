@@ -33,6 +33,8 @@
     "react-dom": "16.13.1",
     "react-i18next": "^11.8.15",
     "react-native": "https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz",
+    "react-native-calendar": "^0.13.1",
+    "react-native-datepicker": "^1.7.2",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-google-places-autocomplete": "^2.2.0",
     "react-native-locale-detector": "^1.0.1",

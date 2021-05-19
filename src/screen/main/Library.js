@@ -17,6 +17,7 @@ const Library = ({state, proposed, category, loadData, invited})=>{
     const refresh = async ()=>{
         setRefreshing(true)
         active === list[0] && await loadData()
+        active === list[1] && await loadData()
         setRefreshing(false)
     }
 
