@@ -153,7 +153,7 @@ const Index = ({route}) => {
                         </Pressable> 
                     }
                 </ScrollView>
-                {accept && <AcceptScreen setAccept={setAccept} data={data} profile={profile} Update={Update}/>}
+                {accept && <AcceptScreen setAccept={setAccept} data={data} Update={Update}/>}
                 {(feed || invited)&& <>
                     <Pressable 
                         onPress={()=>setAccept(true)} 

@@ -1,6 +1,8 @@
 import React, {useState} from 'react'
 import { View, Pressable } from 'react-native'
 import {  Ionicons, AntDesign } from '@expo/vector-icons'; 
+import {DataConsumer} from 'context/data'
+import Loading from 'components/Loading'
 
 import {Text, RowView} from 'styles'
 import color from 'colors'
@@ -11,12 +13,15 @@ import styles from './stylesSheet'
 import {updateOrder, updateProfile} from 'hooks/useData'
 import { TextInput } from 'react-native-gesture-handler';
 
-const AcceptScreen = ({setAccept, profile, data, Update})=>{
+const AcceptScreen = ({setAccept, data, Update})=>{
+    const {state:{profile}} = DataConsumer()
     const [date, setDate] =useState(new Date())
     const [time, setTime] =useState()
     const [price, setPrice] =useState()
-
+    const [loading, setLoading] = useState(false)
+    console.log(profile)
     const Accept = async ()=>{
+        setLoading(true)
         const proposalData = {
             id:profile.id,
             date,
@@ -26,17 +31,19 @@ const AcceptScreen = ({setAccept, profile, data, Update})=>{
         const proposal = data.proposal === undefined ? [proposalData]:[...data.proposal,proposalData ]
         const invitation = data.invited.filter(item=>item!==profile.id)
         await updateOrder({proposal, invited:invitation}, data.id)
+        await updateProfile({connects: profile.connects - 5})
         await Update()
         setAccept(false)
+        setLoading(false)
     }
 
     return <ScreenModal style={{paddingHorizontal:0, paddingVertical:10}}>
         <View>
             <View>
-                <Pressable style={{position:'absolute', right:10}} onPress={()=>setAccept(false)}>
+                <Pressable style={{position:'absolute', right:20, top:10}} onPress={()=>setAccept(false)}>
                         <AntDesign name="close" size={24} color={color.white} />
                 </Pressable>
-                <Text style={{alignSelf:'center', marginBottom:20}} size={20} regular>Details</Text>
+                <Text style={{margin:10, alignSelf: 'center',}} size={18} bold>Proposal</Text>
                 <RowView style={styles.TextInput} >
                     <Text size={18} regular>₹</Text>
                     <TextInput 
@@ -56,12 +63,16 @@ const AcceptScreen = ({setAccept, profile, data, Update})=>{
             </View>
             <Text style={{marginLeft:10, marginTop:20}} size={12}>Delieverd on</Text>
             <Calendar date={date} setDate={setDate} time={time} setTime={setTime}/>
-            <Pressable onPress={Accept} style={styles.button}>
+            {!loading ? <Pressable onPress={Accept} style={styles.button}>
                 <RowView>
                     <Text regular>Send </Text>
                     <Ionicons name="send" size={24} color={color.white} />
                 </RowView>
-            </Pressable>
+            </Pressable>:
+            <View>
+                <Loading whole={false}/>
+            </View>
+            }
         </View>
     </ScreenModal>
 }

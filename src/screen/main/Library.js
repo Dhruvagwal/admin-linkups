@@ -32,7 +32,6 @@ const Library = ({state, proposed, category, loadData, invited})=>{
         active === list[4] && await getPost('paid').then(({data})=>setData(data))
         setRefreshing(false)
     }
-
     return <View style={{flex:1}}>
         <ScrollView
             refreshControl={
@@ -52,6 +51,7 @@ const Library = ({state, proposed, category, loadData, invited})=>{
                     invited={active===list[1]} 
                     progress={active===list[2]}
                     completed={active===list[3]}
+                    paid={active===list[4]}
                 />)
             }
         </ScrollView>

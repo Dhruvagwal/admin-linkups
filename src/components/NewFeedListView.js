@@ -30,7 +30,7 @@ const Posted = ({data={}, SubCat, id=''})=>{
                 <Ionicons name="pricetag" size={24} color={color.active} />
                 <Text bold style={{color:color.active}}> ₹{detail.price}</Text>
             </RowView>
-            <Text>Deliver on {detail.date}</Text>
+            <Text regular size={13}>Deliver on {detail.date}</Text>
         </View>
     </RowView>}
 
@@ -99,7 +99,9 @@ const NewFeedListView = ({
     progress=false, 
     posted=false, 
     completed=false, 
-    feed=false}) => {
+    feed=false,
+    paid=false
+    }) => {
         
     const {state:{profile}} = DataConsumer()
     const result = category.find(item=>item.id===data.info.category)
@@ -107,7 +109,7 @@ const NewFeedListView = ({
     return (
         <View style={styles.container}>
             <Pressable 
-                onPress={()=>RootNavgation.navigate(CONSTANT.OrderProfile,{result, SubCat, data, invited, posted, progress, completed, feed})} 
+                onPress={()=>RootNavgation.navigate(CONSTANT.OrderProfile,{result, SubCat, data, invited, posted, progress, completed, feed, paid})} 
                 style={{padding:10}}
             >
 
@@ -116,6 +118,7 @@ const NewFeedListView = ({
                 {progress && <Progress id={profile.id} data={data} SubCat={SubCat}/>}
                 {completed && <Completed id={profile.id} data={data} SubCat={SubCat}/>}
                 {feed && <Feeds data={data} SubCat={SubCat}/>}
+                {paid && <Completed id={profile.id} data={data} SubCat={SubCat}/>}
 
             </Pressable>
             <ScrollView 

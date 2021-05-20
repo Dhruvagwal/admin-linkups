@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import { StyleSheet, View, Dimensions, Pressable } from 'react-native'
 import { Ionicons, AntDesign, Entypo } from '@expo/vector-icons';
+import {DataConsumer} from 'context/data'
 
 import {Text, RowView} from 'styles'
 import color from 'colors'
@@ -9,6 +10,7 @@ const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
 
 const Header = ({setActive, active, List}) => {
+    const {state:{profile}} =DataConsumer()
     const ICON_SIZE = 25
     return (
         <View style={styles.container}>
@@ -19,9 +21,14 @@ const Header = ({setActive, active, List}) => {
                     {active===List[1] && <Text size={12}>Library</Text>}
                     {active===List[2] && <Text size={12}>Statics</Text>}
                 </View>
-                <Pressable style={styles.headerButton}>
-                    <Entypo name="dots-three-vertical" size={24} color={color.white} />
-                </Pressable>
+                <RowView style={styles.headerButton}>
+                    <View style={styles.connects}>
+                        <Text size={13} bold>{profile.connects} Connects</Text>
+                    </View>
+                    <Pressable style={{paddingLeft:10}}>
+                        <Entypo name="dots-three-vertical" size={24} color={color.white} />
+                    </Pressable>
+                </RowView>
             </RowView>
             <RowView style={{width:WIDTH, justifyContent: 'space-evenly'}}>
                 {
@@ -58,5 +65,10 @@ const styles = StyleSheet.create({
     },
     headerButton:{
         padding: 20
+    },
+    connects:{
+        backgroundColor:color.blue,
+        padding:10,
+        borderRadius:10
     }
 })
