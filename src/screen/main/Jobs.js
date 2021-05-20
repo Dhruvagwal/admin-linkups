@@ -30,7 +30,7 @@ const Jobs = ({newOrder, category, loadData}) => {
                 <View style={{flex:1, backgroundColor:color.lightDark}}>
                     <ScrollView showsVerticalScrollIndicator={false}>
                         {
-                            newOrder.map(item=><NewFeedListView key={item.id} data={item} category={category}/>)
+                            newOrder.map(item=><NewFeedListView key={item.id} data={item} category={category} feed/>)
                         }
                         <Text>{'\n'}</Text>
                     </ScrollView>

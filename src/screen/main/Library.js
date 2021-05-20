@@ -3,11 +3,12 @@ import { StyleSheet, View, ScrollView, Pressable, RefreshControl,Dimensions} fro
 import {Text, RowView} from 'styles'
 import NewFeedListView from 'components/NewFeedListView'
 import color from 'colors'
+import { getPost } from '../../hooks/useData'
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
 
-const list = ['Posted', 'Invited', 'Inprogress', 'Completed']
+const list = ['Posted', 'Invited', 'Inprogress', 'Completed', 'Paid']
 
 const Library = ({state, proposed, category, loadData, invited})=>{
     const [active, setActive] = useState(list[0])
@@ -26,7 +27,9 @@ const Library = ({state, proposed, category, loadData, invited})=>{
         setActive(active)
         active === list[0] && setData(proposed)
         active === list[1] && setData(invited)
-        active === list[2] && setData([])
+        active === list[2] && await getPost('inprogress', state.id).then(({data})=>setData(data))
+        active === list[3] && await getPost('completed').then(({data})=>setData(data))
+        active === list[4] && await getPost('paid').then(({data})=>setData(data))
         setRefreshing(false)
     }
 
@@ -41,12 +44,24 @@ const Library = ({state, proposed, category, loadData, invited})=>{
             }
         >
             {
-                data.map(item=><NewFeedListView key={item.id} data={item} category={category} invited={active!==list[1]}/>)
+                data.map(item=><NewFeedListView 
+                    key={item.id} 
+                    data={item} 
+                    category={category} 
+                    posted={active===list[0]} 
+                    invited={active===list[1]} 
+                    progress={active===list[2]}
+                    completed={active===list[3]}
+                />)
             }
         </ScrollView>
         <ScrollView horizontal style={styles.bottomBar}>
                 {
-                    list.map((item)=><Pressable onPress={()=>getData(item)} key={item} style={[styles.text, active===item && styles.textActive]}>
+                    list.map((item)=><Pressable 
+                            onPress={()=>getData(item)} 
+                            key={item} 
+                            style={[styles.text, active===item && styles.textActive]}
+                        >
                             <Text size={15}>{item}</Text>
                         </Pressable>)
                 }

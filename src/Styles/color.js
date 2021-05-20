@@ -7,7 +7,8 @@ const colors = {
     'inActive':'#aaacaf',
     'elevatedDark':'#222a38',
     'red':'#ff4f4f',
-    'blue':'#7eaefc'
+    'blue':'#7eaefc',
+    'green':'#9df9a9'
 }
 
 export default colors

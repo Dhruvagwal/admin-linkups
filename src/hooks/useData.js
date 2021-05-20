@@ -37,5 +37,23 @@ const ReadAll = (database)=>{
 const newPost = ()=>{
     return instances.post(`QuerySearch/api/order/search`,{status:"posted"})
 }
+const getPost = (status, provider)=>{
+    return instances.post(`QuerySearch/api/order/search`,{status, provider})
+}
 
-export {getUsersDetails, getCategory, deleteData, getDataById, updateProfile, ReadAll, newPost, updateOrder}
+const getUsersDetailsById = (id)=>{
+    return instances.get(`/ReadId/api/users/${id}`)
+}
+
+export {
+    getUsersDetails, 
+    getCategory, 
+    deleteData, 
+    getDataById, 
+    updateProfile, 
+    ReadAll, 
+    newPost, 
+    updateOrder, 
+    getPost,
+    getUsersDetailsById
+}
