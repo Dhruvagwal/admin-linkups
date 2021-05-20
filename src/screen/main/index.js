@@ -12,6 +12,7 @@ import Jobs from './Jobs'
 import Library from './Library'
 import { Logout } from 'hooks/useAuth';
 import { getCategory, newPost } from 'hooks/useData';
+import Statistic from './stats'
 
 
 const Index = ()=>{
@@ -58,6 +59,7 @@ const Index = ()=>{
                     {auth?<>
                         {active===List[0] && <Jobs newOrder={newOrder} category={category} loadData={loadData}/>}
                         {active===List[1] && <Library proposed={proposed} invited={invited} state={state.profile} category={category} loadData={loadData}/>}
+                        {active===List[2] && <Statistic/>}
                         {/* <Pressable onPress={LOGOUT}>
                             <Text>Logout</Text>
                         </Pressable> */}

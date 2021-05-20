@@ -7,7 +7,7 @@ import { useFonts } from '@use-expo/font';
 
 import {AuthProvider} from 'context/auth'
 import {DataProvider} from 'context/data'
-import Loading from './src/screen/Loading';
+import Loading from 'components/Loading';
 
 
 const App = () => {

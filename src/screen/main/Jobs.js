@@ -23,7 +23,9 @@ const Jobs = ({newOrder, category, loadData}) => {
                     <RefreshControl
                         refreshing={refreshing}
                         onRefresh={refresh}
-                        color={[color.active]}
+                        colors={[color.blue]}
+                        progressBackgroundColor={color.lightDark}
+                        
                     />
                 }
             >

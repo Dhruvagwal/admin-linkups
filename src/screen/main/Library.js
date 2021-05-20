@@ -38,7 +38,8 @@ const Library = ({state, proposed, category, loadData, invited})=>{
                 <RefreshControl
                     refreshing={refreshing}
                     onRefresh={refresh}
-                    color={[color.active]}
+                    colors={[color.blue]}
+                    progressBackgroundColor={color.lightDark}
                 />
             }
         >
