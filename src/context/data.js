@@ -27,11 +27,6 @@ const DataProvider = ({children})=>{
         dispatch({type:CONTEXT.UPDATE, profile:data})
     }
 
-    useEffect(()=>{
-        Update()
-    },[])
-
-
     return <Context.Provider value={{state, Update}}>
         {children}
     </Context.Provider>

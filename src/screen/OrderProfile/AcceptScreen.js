@@ -9,17 +9,17 @@ import color from 'colors'
 import Calendar from 'components/calendar'
 import ScreenModal from 'components/ScreenModal'
 import styles from './stylesSheet'
+import { sendPushNotification } from 'middlewares/notification'
 
 import {updateOrder, updateProfile} from 'hooks/useData'
 import { TextInput } from 'react-native-gesture-handler';
 
-const AcceptScreen = ({setAccept, data, Update})=>{
+const AcceptScreen = ({setAccept, data, Update, userToken=''})=>{
     const {state:{profile}} = DataConsumer()
     const [date, setDate] =useState(new Date())
     const [time, setTime] =useState()
     const [price, setPrice] =useState()
     const [loading, setLoading] = useState(false)
-    console.log(profile)
     const Accept = async ()=>{
         setLoading(true)
         const proposalData = {
@@ -28,10 +28,18 @@ const AcceptScreen = ({setAccept, data, Update})=>{
             time,
             price
         }
+        
+        const notifyData = {
+            title:`Got New Proposal`,
+            body:`${profile.name} has sent you an Proposal`,
+            data:{car:'car'}
+        }
+
         const proposal = data.proposal === undefined ? [proposalData]:[...data.proposal,proposalData ]
         const invitation = data.invited.filter(item=>item!==profile.id)
         await updateOrder({proposal, invited:invitation}, data.id)
         await updateProfile({connects: profile.connects - 5})
+        await sendPushNotification(userToken, notifyData)
         await Update()
         setAccept(false)
         setLoading(false)

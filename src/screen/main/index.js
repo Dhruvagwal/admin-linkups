@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { StyleSheet, View, Dimensions, ScrollView, Pressable, RefreshControl, FlatList, AsyncStorage } from 'react-native'
+import { StyleSheet, View, Pressable, Text, Button } from 'react-native'
 
 import color from 'colors'
 import Header from 'components/Header'
@@ -11,8 +11,9 @@ import Login from './Login'
 import Jobs from './Jobs'
 import Library from './Library'
 import { Logout } from 'hooks/useAuth';
-import { getCategory, newPost } from 'hooks/useData';
+import { getCategory, newPost, updateProfile } from 'hooks/useData';
 import Statistic from './stats'
+import{ registerForPushNotificationsAsync } from 'middlewares/notification'
 
 
 const Index = ()=>{
@@ -30,6 +31,7 @@ const Index = ()=>{
         await setAuth(false)
         Logout()
     }
+    // console.log(state.profile)
     const loadData =async () =>{
         const {data} = await  getCategory()
         setCategory(data)
@@ -39,21 +41,24 @@ const Index = ()=>{
         sorted = sorted.filter(item=>!(item.invited && item.invited.find(item=>item===state.profile.id)))
         const sortedProposed = result.filter(item=>(item.proposal && item.proposal.find(item=>item.id===state.profile.id)))
         const sortedInvites = result.filter(item=>(item.invited && item.invited.find(item=>item===state.profile.id)))
+        const tokenNot = await registerForPushNotificationsAsync()
+        await updateProfile({token:tokenNot})
         setNewOrder(sorted)
         setProposed(sortedProposed)
         setInvited(sortedInvites)
         setLoading(false)
+        await Update()
     }
-
     useEffect(()=>{
-        loadData()
+        auth &&loadData()
+        !auth && setLoading(false)
     },[])
     
     return <View style={{flex:1}}>
         {
             loading ? <Loading/> :
-            <>        
-                {state.profile.category===undefined && !auth && <CategoryList category={category} Update={Update}/>}
+            <>     
+                {(state.profile.category===undefined && !auth) && <CategoryList category={category} Update={Update}/>}
                 <Header setActive={setActive} active={active} List={List}/>
                 <View style={{flex:1, backgroundColor:color.lightDark}}>
                     {auth?<>
@@ -63,6 +68,7 @@ const Index = ()=>{
                         {/* <Pressable onPress={LOGOUT}>
                             <Text>Logout</Text>
                         </Pressable> */}
+                        {/* <Button onPress={send} title='send' style={{position: 'absolute',}}/> */}
                     </>
                     :
                     <Login/>}

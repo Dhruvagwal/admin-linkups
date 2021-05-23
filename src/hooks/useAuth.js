@@ -1,5 +1,6 @@
 import instances from '../data/axios'
 import countryCode from '../data/countryCode'
+import {registerForPushNotificationsAsync} from 'middlewares/notification'
 
 import { AsyncStorage } from 'react-native'
 
@@ -87,12 +88,15 @@ const Logout =async()=>{
 const createUser = async (phone, name, Address)=>{
   const CODE = await countryCode()
   const TRIM_CODE = CODE.replace('+','')
+  const token = await registerForPushNotificationsAsync()
 
   return await instances.post('/DBcreate/api/serviceProvider/create',{
     id:TRIM_CODE+phone,
     name,
     Address,
-    createdOn: new Date()
+    createdOn: new Date(),
+    token,
+    connects:100
   }).then(()=>true).catch(()=>false)
 }
 

@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { StyleSheet, Dimensions, View, ScrollView, Image, Pressable } from 'react-native'
 import { MaterialCommunityIcons, MaterialIcons, Ionicons, AntDesign } from '@expo/vector-icons'; 
+import moment from 'moment';
 
 import {Text, RowView} from 'styles'
 import color from 'colors'
@@ -10,7 +11,7 @@ import {getUsersDetailsById} from 'hooks/useData'
 import styles from './stylesSheet'
 import AcceptScreen from './AcceptScreen'
 import {updateOrder, updateProfile} from 'hooks/useData'
-import moment from 'moment';
+import { sendPushNotification } from 'middlewares/notification'
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
@@ -121,13 +122,17 @@ const Index = ({route}) => {
         }
         await Update()
     }
-
     const Complete = async ()=>{
         const completeData = {
             endsOn: moment().format('LLL'),
             status:'completed'
         }
+        const notifyData = {
+            title:'Order Completed',
+            body:`${SubCat.name} is now completed`
+        }
         await updateOrder(completeData, data.id)
+        await sendPushNotification(user.token, notifyData)
     }
     return (
         !loading ? <>
@@ -153,7 +158,7 @@ const Index = ({route}) => {
                         </Pressable> 
                     }
                 </ScrollView>
-                {accept && <AcceptScreen setAccept={setAccept} data={data} Update={Update}/>}
+                {accept && <AcceptScreen setAccept={setAccept} data={data} userToken={user.token} Update={Update}/>}
                 {(feed || invited)&& <>
                     <Pressable 
                         onPress={()=>setAccept(true)} 
