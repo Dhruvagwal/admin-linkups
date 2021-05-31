@@ -6,6 +6,8 @@ import CONSTANT from './navigationConstant.json'
 import HomeScreen from 'screen/main'
 import LoadingScreen from 'screen/Loading'
 import OrderProfileScreen from 'screen/OrderProfile'
+import LoginScreen from 'screen/Auth/Login'
+import SignUpScreen from 'screen/Auth/SignUp'
 
 import {navigationRef} from './RootNavigation';
 import {AuthConsumer} from '../context/auth'
@@ -39,12 +41,17 @@ const Index = () => {
                 >
                 <Stack.Navigator headerMode={false} screenOptions={{ animationEnabled: false }} >
                     {Loading && <Stack.Screen name={CONSTANT.Loading} component={LoadingScreen}/>}
-                    <Stack.Screen name={CONSTANT.Home} component={HomeScreen}/>
                     {
-                      auth && 
+                      auth ?
                       <>
+                        <Stack.Screen name={CONSTANT.Home} component={HomeScreen}/>
                         <Stack.Screen name={CONSTANT.OrderProfile} component={OrderProfileScreen}/>
                       </>
+                      :
+                      <>
+                      <Stack.Screen name={CONSTANT.Login} component={LoginScreen}/>
+                      <Stack.Screen name={CONSTANT.SignUp} component={SignUpScreen}/>
+                    </>
                     }
                 </Stack.Navigator>
             </NavigationContainer>

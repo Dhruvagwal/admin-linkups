@@ -31,6 +31,7 @@ const Posted = ({data={}, SubCat, id=''})=>{
                 <Text bold style={{color:color.active}}> ₹{detail.price}</Text>
             </RowView>
             <Text regular size={13}>Deliver on {detail.date}</Text>
+            <Text regular size={13}>{detail.time}</Text>
         </View>
     </RowView>}
 
@@ -45,7 +46,7 @@ const Feeds = ({data={}, SubCat})=><RowView>
             <MaterialCommunityIcons name="truck-delivery" size={ICON_SIZE} color={color.active} />
             <MaterialCommunityIcons name="clock-time-five" size={ICON_SIZE} color={color.active} />
             <RowView>
-                <Text regular>5 </Text>
+                <Text regular>{data.proposal!==undefined ? data.proposal.length : 0} </Text>
                 <MaterialIcons name="local-offer" size={ICON_SIZE} color={color.active} />
             </RowView>
             <RowView>
@@ -58,6 +59,7 @@ const Feeds = ({data={}, SubCat})=><RowView>
 
 const Progress = ({data={}, SubCat, id})=>{
     const detail = data.proposal ? data.proposal.find(item=>item.id===id) : {}
+
     return <RowView>
     <Image source={{uri:SubCat.url}} style={{width:80, height:80}} />
     <View style={{marginLeft:10}}>
@@ -67,9 +69,9 @@ const Progress = ({data={}, SubCat, id})=>{
         </RowView>
         <RowView>
                 <Ionicons name="pricetag" size={24} color={color.active} />
-                <Text bold style={{color:color.active}}> ₹{detail.price}</Text>
+                <Text bold style={{color:color.active}}> ₹{detail!==undefined &&  detail.price}</Text>
         </RowView>
-        <Text regular size={13}>Deliver on {detail.date}</Text>
+        <Text regular size={13}>Deliver on { detail!==undefined &&  detail.date}</Text>
     </View>
 </RowView>
 }
@@ -106,6 +108,7 @@ const NewFeedListView = ({
     const {state:{profile}} = DataConsumer()
     const result = category.find(item=>item.id===data.info.category)
     const SubCat = result.subCategory.find(item=>item.id===data.info.subCategory)
+
     return (
         <View style={styles.container}>
             <Pressable 
@@ -139,7 +142,7 @@ const styles = StyleSheet.create({
     container:{
         borderBottomColor:color.lightDark,
         borderBottomWidth:1,
-        height:150,
+        height:160,
         backgroundColor:color.elevatedDark,
     },
     tag:{

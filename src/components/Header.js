@@ -14,12 +14,12 @@ const Header = ({setActive, active, List}) => {
     const ICON_SIZE = 25
     return (
         <View style={styles.container}>
-            <RowView style={{justifyContent:'space-between', marginTop:HEIGHT*.03}}>
-                <View style={{padding:20, paddingBottom:0, height:70}}>
+            <RowView style={{justifyContent:'space-between', marginTop:HEIGHT*.02}}>
+                <View style={{padding:20, paddingBottom:10, height:70}}>
                     <Text size={20} bold>Linkups</Text>
-                    {active===List[0] && <Text size={12}>New Jobs</Text>}
-                    {active===List[1] && <Text size={12}>Library</Text>}
-                    {active===List[2] && <Text size={12}>Statics</Text>}
+                    {active===List[0] && <Text size={13}>New Jobs</Text>}
+                    {active===List[1] && <Text size={13}>Library</Text>}
+                    {active===List[2] && <Text size={13}>Statics</Text>}
                 </View>
                 <RowView style={styles.headerButton}>
                     <View style={styles.connects}>
@@ -52,8 +52,7 @@ const styles = StyleSheet.create({
     button:{
         width:WIDTH/3,
         alignItems:'center',
-        paddingVertical:20,
-        height:70
+        paddingBottom:10
     },
     container:{
         elevation: 5,

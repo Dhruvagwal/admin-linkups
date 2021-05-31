@@ -7,6 +7,8 @@
     "ServiceProfile":"ServiceProfile",
     "Invitation":"Invitation",
     "MainDrawer":"MainDrawer",
-    "OrderProfile":"OrderProfile"
+    "OrderProfile":"OrderProfile",
+    "Login":"Login",
+    "SignUp":"SignUp"
     
 }

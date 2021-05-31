@@ -3,11 +3,9 @@ import { StyleSheet, View, Pressable, Text, Button } from 'react-native'
 
 import color from 'colors'
 import Header from 'components/Header'
-import CategoryList from 'components/CategoryList'
 import Loading from 'components/Loading'
 import {AuthConsumer} from 'context/auth'
 import {DataConsumer} from 'context/data'
-import Login from './Login'
 import Jobs from './Jobs'
 import Library from './Library'
 import { Logout } from 'hooks/useAuth';
@@ -31,7 +29,7 @@ const Index = ()=>{
         await setAuth(false)
         Logout()
     }
-    // console.log(state.profile)
+
     const loadData =async () =>{
         const {data} = await  getCategory()
         setCategory(data)
@@ -58,10 +56,9 @@ const Index = ()=>{
         {
             loading ? <Loading/> :
             <>     
-                {(state.profile.category===undefined && !auth) && <CategoryList category={category} Update={Update}/>}
                 <Header setActive={setActive} active={active} List={List}/>
                 <View style={{flex:1, backgroundColor:color.lightDark}}>
-                    {auth?<>
+                    {auth && <>
                         {active===List[0] && <Jobs newOrder={newOrder} category={category} loadData={loadData}/>}
                         {active===List[1] && <Library proposed={proposed} invited={invited} state={state.profile} category={category} loadData={loadData}/>}
                         {active===List[2] && <Statistic/>}
@@ -70,8 +67,7 @@ const Index = ()=>{
                         </Pressable> */}
                         {/* <Button onPress={send} title='send' style={{position: 'absolute',}}/> */}
                     </>
-                    :
-                    <Login/>}
+                    }
                 </View>
             </>
         }
