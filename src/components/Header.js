@@ -15,7 +15,7 @@ const Header = ({setActive, active, List}) => {
     return (
         <View style={styles.container}>
             <RowView style={{justifyContent:'space-between', marginTop:HEIGHT*.02}}>
-                <View style={{padding:20, paddingBottom:10, height:70}}>
+                <View style={{padding:20, paddingBottom:10, height:70, marginBottom:10}}>
                     <Text size={20} bold>Linkups</Text>
                     {active===List[0] && <Text size={13}>New Jobs</Text>}
                     {active===List[1] && <Text size={13}>Library</Text>}

@@ -52,8 +52,8 @@ export default  styles = StyleSheet.create({
         margin:10
     },
     button:{
-        backgroundColor:color.blue,
-        padding:10,
+        backgroundColor:color.active,
+        padding:15,
         alignSelf: 'center',
         borderRadius:10,
         marginTop:20

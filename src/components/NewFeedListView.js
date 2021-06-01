@@ -4,6 +4,7 @@ import { StyleSheet, View, Dimensions, ScrollView, Pressable, Image } from 'reac
 import { MaterialCommunityIcons, MaterialIcons, Ionicons } from '@expo/vector-icons'; 
 
 import {Text, RowView} from 'styles'
+import DateFormat from 'hooks/DateFormat'
 import color from 'colors'
 import * as RootNavgation from 'navigation/RootNavigation'
 import CONSTANT from 'navigation/navigationConstant'
@@ -18,7 +19,8 @@ const Tag = ({text})=><View style={styles.tag}>
 const ICON_SIZE = 25
 
 const Posted = ({data={}, SubCat, id=''})=>{
-    const detail = data.proposal.find(item=>item.id===id)
+    const detail = data.proposal ? data.proposal.find(item=>item.id===id) :{}
+
     return <RowView>
     <Image source={{uri:SubCat.url}} style={{width:80, height:80}} />
         <View style={{marginLeft:10}}>
@@ -30,8 +32,7 @@ const Posted = ({data={}, SubCat, id=''})=>{
                 <Ionicons name="pricetag" size={24} color={color.active} />
                 <Text bold style={{color:color.active}}> ₹{detail.price}</Text>
             </RowView>
-            <Text regular size={13}>Deliver on {detail.date}</Text>
-            <Text regular size={13}>{detail.time}</Text>
+            <Text regular size={13}>Deliver on {DateFormat(detail.date)}</Text>
         </View>
     </RowView>}
 

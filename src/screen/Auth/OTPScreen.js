@@ -17,7 +17,6 @@ const OTPScreen = ({setPhoneNumber=()=>{}, setOTPScreen=()=>{}, type='LOGIN',Pho
     const [otp,setOTP] = useState('')
     const [loading, setLoading] = useState(false)
     setTimeout(()=>{time>0 && setTime(time-1)},1000)
-    console.log(type)
     useEffect(() => {
         const backAction = () => {
             setPhoneNumber('')

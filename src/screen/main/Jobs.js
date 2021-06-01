@@ -1,20 +1,22 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import { StyleSheet, View, Dimensions, ScrollView, Pressable, RefreshControl } from 'react-native'
 import NewFeedListView from 'components/NewFeedListView'
 import { MaterialIcons } from '@expo/vector-icons'; 
+import {DataConsumer} from 'context/data'
 import {Text, RowView} from 'styles'
 import color from 'colors'
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
 
-const Jobs = ({newOrder, category, loadData}) => {
-    const [refreshing, setRefreshing] = React.useState(false);
-    const refresh = async ()=>{
-        setRefreshing(true)
-        await loadData()
-        setRefreshing(false)
-    }
+const Jobs = ({newOrder, category, loadData, refreshing, setRefreshing}) => {
+
+    const refresh = async ()=> await loadData()
+    const {state:{profile}} = DataConsumer()
+
+    useEffect(() => {
+        refresh()
+    }, [profile])
 
     return (
         <>        
@@ -30,12 +32,12 @@ const Jobs = ({newOrder, category, loadData}) => {
                 }
             >
                 <View style={{flex:1, backgroundColor:color.lightDark}}>
-                    <ScrollView showsVerticalScrollIndicator={false}>
+                    {!refreshing && <ScrollView showsVerticalScrollIndicator={false}>
                         {
                             newOrder.map(item=><NewFeedListView key={item.id} data={item} category={category} feed/>)
                         }
                         <Text>{'\n'}</Text>
-                    </ScrollView>
+                    </ScrollView>}
                 </View>
             </ScrollView>
             <View style={styles.filter}>

@@ -9,8 +9,10 @@ import color from 'colors'
 import Calendar from 'components/calendar'
 import ScreenModal from 'components/ScreenModal'
 import styles from './stylesSheet'
+import * as RootNavigation from 'navigation/RootNavigation'
+import CONSTANT from 'navigation/navigationConstant.json'
 import { sendPushNotification } from 'middlewares/notification'
-
+import List from 'data/HomeNavigation'
 import {updateOrder, updateProfile} from 'hooks/useData'
 import { TextInput } from 'react-native-gesture-handler';
 
@@ -32,7 +34,6 @@ const AcceptScreen = ({setAccept, data, Update, userToken=''})=>{
         const notifyData = {
             title:`Got New Proposal`,
             body:`${profile.name} has sent you an Proposal`,
-            data:{car:'car'}
         }
 
         const proposal = data.proposal === undefined ? [proposalData]:[...data.proposal,proposalData ]
@@ -41,6 +42,7 @@ const AcceptScreen = ({setAccept, data, Update, userToken=''})=>{
         await updateProfile({connects: profile.connects - 5})
         await sendPushNotification(userToken, notifyData)
         await Update()
+        RootNavigation.navigate(CONSTANT.Home,{navigate:List[1]})
         setAccept(false)
         setLoading(false)
     }
@@ -49,7 +51,7 @@ const AcceptScreen = ({setAccept, data, Update, userToken=''})=>{
         <View>
             <View>
                 <Pressable style={{position:'absolute', right:20, top:10}} onPress={()=>setAccept(false)}>
-                        <AntDesign name="close" size={24} color={color.white} />
+                        <AntDesign name="close" size={24} color={color.inActive} />
                 </Pressable>
                 <Text style={{margin:10, alignSelf: 'center',}} size={18} bold>Proposal</Text>
                 <RowView style={styles.TextInput} >

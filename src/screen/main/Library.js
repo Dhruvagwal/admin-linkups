@@ -1,50 +1,45 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { StyleSheet, View, ScrollView, Pressable, RefreshControl,Dimensions} from 'react-native'
 import {Text, RowView} from 'styles'
 import NewFeedListView from 'components/NewFeedListView'
 import color from 'colors'
-import { getPost } from '../../hooks/useData'
+import { getPost } from '/hooks/useData'
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
 
 const list = ['Posted', 'Invited', 'Inprogress', 'Completed', 'Paid']
 
-const Library = ({state, proposed, category, loadData, invited})=>{
+const Library = ({state, category, loadData, setRefreshing, refreshing})=>{
     const [active, setActive] = useState(list[0])
-    const [data, setData] = useState(proposed)
-    const [refreshing, setRefreshing] = useState(false);
-
-    const refresh = async ()=>{
-        setRefreshing(true)
-        active === list[0] && await loadData()
-        active === list[1] && await loadData()
-        setRefreshing(false)
-    }
+    const [data, setData] = useState([])
 
     const getData = async (active)=>{
         setRefreshing(true)
-        setActive(active)
-        active === list[0] && setData(proposed)
-        active === list[1] && setData(invited)
+        active === list[0] && await loadData().then(({sortedProposed})=>setData(sortedProposed))
+        active === list[1] && await loadData().then(({sortedInvites})=>setData(sortedInvites))
         active === list[2] && await getPost('inprogress', state.id).then(({data})=>setData(data))
         active === list[3] && await getPost('completed').then(({data})=>setData(data))
         active === list[4] && await getPost('paid').then(({data})=>setData(data))
         setRefreshing(false)
     }
+    useEffect(()=>{
+        getData(active)
+    },[active])
+
     return <View style={{flex:1}}>
         <ScrollView
             refreshControl={
                 <RefreshControl
                     refreshing={refreshing}
-                    onRefresh={refresh}
+                    onRefresh={()=>getData(active)}
                     colors={[color.blue]}
                     progressBackgroundColor={color.lightDark}
                 />
             }
         >
             {
-                data.map(item=><NewFeedListView 
+                (!refreshing && data!==undefined)&&  data.map(item=><NewFeedListView 
                     key={item.id} 
                     data={item} 
                     category={category} 
@@ -59,7 +54,7 @@ const Library = ({state, proposed, category, loadData, invited})=>{
         <ScrollView horizontal style={styles.bottomBar}>
                 {
                     list.map((item)=><Pressable 
-                            onPress={()=>getData(item)} 
+                            onPress={()=>{setActive(item);getData(item)}} 
                             key={item} 
                             style={[styles.text, active===item && styles.textActive]}
                         >
