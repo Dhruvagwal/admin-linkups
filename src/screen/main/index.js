@@ -62,9 +62,9 @@ const Index = ()=>{
                         {active===List[0] && <Jobs newOrder={newOrder} category={category} loadData={loadData}/>}
                         {active===List[1] && <Library proposed={proposed} invited={invited} state={state.profile} category={category} loadData={loadData}/>}
                         {active===List[2] && <Statistic/>}
-                        {/* <Pressable onPress={LOGOUT}>
+                        <Pressable onPress={LOGOUT}>
                             <Text>Logout</Text>
-                        </Pressable> */}
+                        </Pressable>
                         {/* <Button onPress={send} title='send' style={{position: 'absolute',}}/> */}
                     </>
                     }

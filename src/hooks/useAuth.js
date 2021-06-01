@@ -85,7 +85,7 @@ const Logout =async()=>{
   await AsyncStorage.clear()
 }
 
-const createUser = async (phone, name, Address)=>{
+const createUser = async ({phone, name, Address,category, subCategory})=>{
   const CODE = await countryCode()
   const TRIM_CODE = CODE.replace('+','')
   const token = await registerForPushNotificationsAsync()
@@ -96,6 +96,8 @@ const createUser = async (phone, name, Address)=>{
     Address,
     createdOn: new Date(),
     token,
+    category,
+    subCategory,
     connects:100
   }).then(()=>true).catch(()=>false)
 }
