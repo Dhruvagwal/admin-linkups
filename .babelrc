@@ -1,0 +1,22 @@
+{
+    "plugins": [
+        [
+            "module-resolver",
+            {
+                "root": [
+                    "./src"
+                ],
+                "alias": {
+                    "styles": "./src/Styles",
+                    "colors":"./src/Styles/color.js",
+                    "navigation":"./src/navigation",
+                    "context":"./src/context",
+                    "components": "./src/components",
+                    "hooks":"./src/hooks",
+                    "middlewares":"./src/middlewares",
+                    "data":"./src/data"
+                }
+            }
+        ]
+    ]
+}
