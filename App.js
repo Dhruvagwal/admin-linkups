@@ -21,6 +21,7 @@ const App = () => {
   if(!fontsLoaded){
     return <Loading/>
   }
+  console.log('trigger')
   return (
     <>
       <StatusBar translucent={true} backgroundColor={'transparent'}/>

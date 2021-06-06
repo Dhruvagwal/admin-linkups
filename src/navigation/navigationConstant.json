@@ -11,6 +11,8 @@
     "Login":"Login",
     "SignUp":"SignUp",
     "Connects":"Connects",
-    "Setting":"Setting"
+    "Setting":"Setting",
+    "Help":"Help",
+    "Address":"Address"
     
 }
