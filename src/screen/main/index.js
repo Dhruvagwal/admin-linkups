@@ -28,7 +28,7 @@ const Index = ({route:{params}})=>{
             await updateProfile({token:tokenNot})
             await Update()
         }
-
+        
         if(state.profile.id!==undefined){
             const {data} = await  getCategory()
             const response = await newPost()

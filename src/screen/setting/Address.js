@@ -6,7 +6,7 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import {Text, RowView} from 'styles'
 import { Ionicons } from '@expo/vector-icons'; 
 import Loading from 'components/Loading'
-import {updateUserProfile} from 'hooks/useData'
+import {updateProfile} from 'hooks/useData'
 import useCurrentLocation from 'hooks/useCurrentLocation'
 import Geocoder from 'react-native-geocoding';
 
@@ -72,7 +72,7 @@ const Address = () => {
         Geocoder.from(data.description)
 		.then(async json => {
             var {lat, lng} = json.results[0].geometry.location;
-            await updateUserProfile({Address:data.description, coord:{latitude:lat, longitude:lng}})
+            await updateProfile({Address:data.description, coord:{latitude:lat, longitude:lng}})
             await Update()
             setLoading(false)
             setChange(false)
@@ -85,7 +85,7 @@ const Address = () => {
         const location = await Geocoder.from({latitude,longitude});
         const Address = location.results[0].formatted_address
         if (location.status === "OK" && Address!==profile.Address){
-            await updateUserProfile({Address, coord:{latitude, longitude}})
+            await updateProfile({Address, coord:{latitude, longitude}})
             await Update()
         }
         setLoading(false)

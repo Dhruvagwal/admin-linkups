@@ -34,19 +34,11 @@ const Options=({children})=>{
 const Index = ({navigation}) => {
     const {setAuth} = AuthConsumer()
     const {state:{profile}, Update} = DataConsumer()
-    const [isSeller, setIsSeller] = useState(false)
     const [showImage, setShowImage] = useState(false)
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [name, setName] = useState(profile.name)
     const [isEdit, setisEdit] = useState(false)
-    
-    useEffect(() => {
-        getDataById('users',profile.id).then(({data})=>{
-            data!==undefined && setIsSeller(false)
-            setLoading(false)  
-        })
-    }, [])
-    console.log('trigger')
+
     const LOGOUT = async ()=>{
         await setAuth(false)
         Logout()
@@ -107,7 +99,7 @@ const Index = ({navigation}) => {
                         <Pressable style={{padding:15}} onPress={SellerApp} android_ripple={{color:color.dark}}>
                             <Options>
                                 <AntDesign name="customerservice" size={24} color={color.white} />
-                                {!isSeller ? <Text>  Become a Seller</Text>: <Text>  Go To Seller App</Text>}
+                                <Text>  Open Linkups App</Text>
                             </Options>
                         </Pressable>
 

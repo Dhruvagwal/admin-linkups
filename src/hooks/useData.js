@@ -14,6 +14,9 @@ const getCategory = async (CancelToken)=>{
     return instances.get('ReadAll/api/Category/read',{CancelToken})
 }
 
+const saveData = (database,data)=>{
+    return instances.post(`DBcreate/api/${database}/create`, data)
+}
 
 const deleteData = (database, id)=>{
     return instances.delete(`Delete/api/${database}/delete/${id}`)
@@ -55,5 +58,6 @@ export {
     newPost, 
     updateOrder, 
     getPost,
-    getUsersDetailsById
+    getUsersDetailsById,
+    saveData
 }

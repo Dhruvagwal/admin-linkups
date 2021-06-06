@@ -46,7 +46,7 @@ const Help = ({navigation}) => {
             id:Math.floor(Math.random()*10000000),
             problem,
             postedAt : new Date(),
-            isSeller:false,
+            isSeller:true,
             complainId: profile.id
 
         })
