@@ -16,31 +16,32 @@ import List from 'data/HomeNavigation'
 import {updateOrder, updateProfile} from 'hooks/useData'
 import { TextInput } from 'react-native-gesture-handler';
 
-const AcceptScreen = ({setAccept, data, Update, userToken=''})=>{
+const AcceptScreen = ({setAccept, data, Update, userToken='', SubCat})=>{
     const {state:{profile}} = DataConsumer()
     const [date, setDate] =useState(new Date())
     const [time, setTime] =useState()
     const [price, setPrice] =useState()
     const [loading, setLoading] = useState(false)
+
     const Accept = async ()=>{
         setLoading(true)
         const proposalData = {
             id:profile.id,
             date,
             time,
-            price
+            price,
+            postedDate : new Date()
         }
-        
         const notifyData = {
             title:`Got New Proposal`,
             body:`${profile.name} has sent you an Proposal`,
         }
-
+        const history = profile.history!==undefined ? [...profile.history, data.id] : [data.id]
         const proposal = data.proposal === undefined ? [proposalData]:[...data.proposal,proposalData ]
         const invitation = data.invited.filter(item=>item!==profile.id)
         await updateOrder({proposal, invited:invitation}, data.id)
-        await updateProfile({connects: profile.connects - 5})
-        await sendPushNotification(userToken, notifyData)
+        await updateProfile({connects: profile.connects - 5, history})
+        sendPushNotification(userToken, notifyData)
         await Update()
         RootNavigation.navigate(CONSTANT.Home,{navigate:List[1]})
         setAccept(false)
@@ -54,6 +55,8 @@ const AcceptScreen = ({setAccept, data, Update, userToken=''})=>{
                         <AntDesign name="close" size={24} color={color.inActive} />
                 </Pressable>
                 <Text style={{margin:10, alignSelf: 'center',}} size={18} bold>Proposal</Text>
+                <Text regular style={{alignSelf:'center', color:color.blue}}>Require {SubCat.connectsRequire} out of {profile.connects} Connects </Text>
+                <Text bold style={{alignSelf:'center'}}></Text>
                 <RowView style={styles.TextInput} >
                     <Text size={18} regular>₹</Text>
                     <TextInput 

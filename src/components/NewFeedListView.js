@@ -9,6 +9,7 @@ import color from 'colors'
 import * as RootNavgation from 'navigation/RootNavigation'
 import CONSTANT from 'navigation/navigationConstant'
 import {DataConsumer} from 'context/data'
+import getDistance from 'geolib/es/getDistance';
 
 const WIDTH = Dimensions.get('screen').width
 
@@ -19,8 +20,7 @@ const Tag = ({text})=><View style={styles.tag}>
 const ICON_SIZE = 25
 
 const Posted = ({data={}, SubCat, id=''})=>{
-    const detail = data.proposal ? data.proposal.find(item=>item.id===id) :{}
-
+    const detail = data.proposal ? data.proposal.find(item=>item.id === id) :{}
     return <RowView>
     <Image source={{uri:SubCat.url}} style={{width:80, height:80}} />
         <View style={{marginLeft:10}}>
@@ -28,10 +28,7 @@ const Posted = ({data={}, SubCat, id=''})=>{
                 <Text style={{width:WIDTH/2.2, marginRight:10}} numberOfLines={1} regular>{SubCat.name}</Text>
                 <Text size={13}>{data.id}</Text>
             </RowView>
-            <RowView>
-                <Ionicons name="pricetag" size={24} color={color.active} />
-                <Text bold style={{color:color.active}}> ₹{detail.price}</Text>
-            </RowView>
+            <Text bold style={{color:color.active}}> ₹{detail.price}</Text>
             <Text regular size={13}>Deliver on {DateFormat(detail.date)}</Text>
         </View>
     </RowView>}
@@ -51,7 +48,7 @@ const Feeds = ({data={}, SubCat})=><RowView>
                 <MaterialIcons name="local-offer" size={ICON_SIZE} color={color.active} />
             </RowView>
             <RowView>
-                <Text regular>2.5m </Text>
+                <Text regular>{data.distance>=1000 ? data.distance/1000+' km' : data.distance+' m'}</Text>
                 <MaterialCommunityIcons name="map-marker-distance" size={ICON_SIZE} color={color.active} />
             </RowView>
         </RowView>
@@ -109,7 +106,11 @@ const NewFeedListView = ({
     const {state:{profile}} = DataConsumer()
     const result = category.find(item=>item.id===data.info.category)
     const SubCat = result.subCategory.find(item=>item.id===data.info.subCategory)
-
+    var distance = getDistance(
+        { latitude: profile.coord.latitude, longitude: profile.coord.longitude },
+        { latitude: data.coord.latitude, longitude: data.coord.longitude }
+    )
+    data = {...data, distance}
     return (
         <View style={styles.container}>
             <Pressable 
@@ -128,7 +129,7 @@ const NewFeedListView = ({
             <ScrollView 
                 horizontal 
                 showsHorizontalScrollIndicator={false} 
-                style={{position: 'absolute', bottom:15}}
+                style={{marginBottom:15}}
             >
                 <Tag text={result.name}/>
                 <Tag text={data.info.problem}/>
@@ -143,7 +144,6 @@ const styles = StyleSheet.create({
     container:{
         borderBottomColor:color.lightDark,
         borderBottomWidth:1,
-        height:160,
         backgroundColor:color.elevatedDark,
     },
     tag:{

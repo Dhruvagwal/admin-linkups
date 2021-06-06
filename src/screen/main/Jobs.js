@@ -41,7 +41,7 @@ const Jobs = ({newOrder, category, loadData, refreshing, setRefreshing}) => {
                 </View>
             </ScrollView>
             <View style={styles.filter}>
-                <MaterialIcons name="filter-alt" size={40} color={color.white} />
+                <MaterialIcons name="filter-alt" size={30} color={color.white} />
             </View>
         </>
     )
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom:20,
         right:20,
-        padding:10,
+        padding:5,
         backgroundColor:color.blue,
         borderRadius:100,
         opacity: 0.95,

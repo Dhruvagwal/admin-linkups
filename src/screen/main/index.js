@@ -11,6 +11,7 @@ import { getCategory, newPost, updateProfile } from 'hooks/useData';
 import Statistic from './stats'
 import{ registerForPushNotificationsAsync } from 'middlewares/notification'
 import List from '/data/HomeNavigation'
+import getDistance from 'geolib/es/getDistance';
 
 const Index = ({route:{params}})=>{
     const {state:{auth}} = AuthConsumer()
@@ -27,16 +28,30 @@ const Index = ({route:{params}})=>{
             await updateProfile({token:tokenNot})
             await Update()
         }
-        
+
         if(state.profile.id!==undefined){
             const {data} = await  getCategory()
             const response = await newPost()
-            const result = response.data.filter(item=>item.info.category === state.profile.category && state.profile.subCategory.find(cat=>cat===item.info.subCategory))
-            var  sorted = result.filter(item=>!(item.proposal && item.proposal.find(item=>item.id===state.profile.id)))
+            const result = response.data.filter(
+                item=>
+                item.info.category === state.profile.category 
+                && 
+                state.profile.subCategory.find(cat=>cat===item.info.subCategory)
+                &&
+                getDistance(
+                    { latitude: state.profile.coord.latitude, longitude: state.profile.coord.longitude },
+                    { latitude: item.coord.latitude, longitude: item.coord.longitude }
+                ) <= data.find(res=>res.id === item.info.category).minDistance
+            )
+
+            var  sorted = result.filter(
+                item=>!(item.proposal && item.proposal.find(item=>item.id===state.profile.id))
+            )
             sorted = sorted.filter(item=>!(item.invited && item.invited.find(item=>item===state.profile.id)))
+
             const sortedProposed = result.filter(item=>(item.proposal && item.proposal.find(item=>item.id===state.profile.id)))
             const sortedInvites = result.filter(item=>(item.invited && item.invited.find(item=>item===state.profile.id)))
-    
+            
             setNewOrder(sorted)
             setCategory(data)
             setRefreshing(false)

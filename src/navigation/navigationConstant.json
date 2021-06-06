@@ -9,6 +9,8 @@
     "MainDrawer":"MainDrawer",
     "OrderProfile":"OrderProfile",
     "Login":"Login",
-    "SignUp":"SignUp"
+    "SignUp":"SignUp",
+    "Connects":"Connects",
+    "Setting":"Setting"
     
 }

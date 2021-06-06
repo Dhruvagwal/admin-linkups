@@ -1,19 +1,23 @@
 import React, {useState} from 'react'
-import { StyleSheet, View, Dimensions, Pressable } from 'react-native'
+import { StyleSheet, View, Dimensions, Pressable, Image, StatusBar } from 'react-native'
 import { Ionicons, AntDesign, Entypo } from '@expo/vector-icons';
 import {DataConsumer} from 'context/data'
+import * as RootNavigation from 'navigation/RootNavigation'
+import CONSTANT from 'navigation/navigationConstant'
 
 import {Text, RowView} from 'styles'
 import color from 'colors'
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
+const IMAGE_SIZE = 40
 
 const Header = ({setActive, active, List}) => {
     const {state:{profile}} =DataConsumer()
     const ICON_SIZE = 25
     return (
         <View style={styles.container}>
+            <StatusBar translucent backgroundColor='#0000'/>
             <RowView style={{justifyContent:'space-between', marginTop:HEIGHT*.02}}>
                 <View style={{padding:20, paddingBottom:10, height:70, marginBottom:10}}>
                     <Text size={20} bold>Linkups</Text>
@@ -22,11 +26,14 @@ const Header = ({setActive, active, List}) => {
                     {active===List[2] && <Text size={13}>Statics</Text>}
                 </View>
                 <RowView style={styles.headerButton}>
-                    <View style={styles.connects}>
+                    <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.Connects)} style={styles.connects}>
                         <Text size={13} bold>{profile.connects} Connects</Text>
-                    </View>
-                    <Pressable style={{paddingLeft:10}}>
-                        <Entypo name="dots-three-vertical" size={24} color={color.white} />
+                    </Pressable>
+                    <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.Setting)} style={{paddingLeft:10}}>
+                        <Image
+                            source={{uri:profile.url}}
+                            style={{height:IMAGE_SIZE, width:IMAGE_SIZE, borderRadius:IMAGE_SIZE}}
+                        />
                     </Pressable>
                 </RowView>
             </RowView>
@@ -66,8 +73,8 @@ const styles = StyleSheet.create({
         padding: 20
     },
     connects:{
-        backgroundColor:color.blue,
+        backgroundColor:color.lightDark,
         padding:10,
-        borderRadius:10
+        borderRadius:5
     }
 })

@@ -23,7 +23,6 @@ const Login = () => {
                         const code = await countryCode()
                         const id = code.replace('+','')+PhoneNumber
                         const response = await getDataById('serviceProvider',id)
-                        console.log(response)
                         response.data!=='' && setType(AUTH[0])
                     }
                 }
