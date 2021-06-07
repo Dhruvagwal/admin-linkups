@@ -37,7 +37,7 @@ const Index = () => {
         colors: {
           background: color.dark,
         },
-      };
+      }; 
 
     return (<NavigationContainer 
                     ref={navigationRef} 

@@ -36,11 +36,12 @@ const AcceptScreen = ({setAccept, data, Update, userToken='', SubCat})=>{
             title:`Got New Proposal`,
             body:`${profile.name} has sent you an Proposal`,
         }
-        const history = profile.history!==undefined ? [...profile.history, data.id] : [data.id]
+        const dataAdd = {id:data.id, time: new Date(), type:'sell', amount:SubCat.charge}
+        const history = profile.history!==undefined ? [...profile.history, dataAdd] : [dataAdd]
         const proposal = data.proposal === undefined ? [proposalData]:[...data.proposal,proposalData ]
         const invitation = data.invited.filter(item=>item!==profile.id)
         await updateOrder({proposal, invited:invitation}, data.id)
-        await updateProfile({connects: profile.connects - 5, history})
+        await updateProfile({wallet: profile.wallet - SubCat.charge, history})
         sendPushNotification(userToken, notifyData)
         await Update()
         RootNavigation.navigate(CONSTANT.Home,{navigate:List[1]})
@@ -55,12 +56,13 @@ const AcceptScreen = ({setAccept, data, Update, userToken='', SubCat})=>{
                         <AntDesign name="close" size={24} color={color.inActive} />
                 </Pressable>
                 <Text style={{margin:10, alignSelf: 'center',}} size={18} bold>Proposal</Text>
-                <Text regular style={{alignSelf:'center', color:color.blue}}>Require {SubCat.connectsRequire} out of {profile.connects} Connects </Text>
+                <Text regular style={{alignSelf:'center', color:color.blue}}>Available Balance ₹{profile.wallet}</Text>
+                <Text regular style={{alignSelf:'center', color:color.blue}}>Require ₹{SubCat.charge}</Text>
                 <Text bold style={{alignSelf:'center'}}></Text>
                 <RowView style={styles.TextInput} >
                     <Text size={18} regular>₹</Text>
                     <TextInput 
-                        placeholder='Price' 
+                        placeholder='0' 
                         style={{
                             marginLeft:5,
                             fontSize:18,
