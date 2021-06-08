@@ -28,7 +28,7 @@ const Header = ({setActive, active, List}) => {
                 <RowView style={styles.headerButton}>
                     <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.Connects)} style={styles.connects}>
                         <Entypo name="wallet" size={20} color={color.blue} />
-                        <Text size={13} bold> ₹{profile.wallet} </Text>
+                        <Text size={15} bold> ₹{profile.wallet} </Text>
                     </Pressable>
                     <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.Setting)} style={{paddingLeft:10}}>
                         <Image
@@ -74,9 +74,7 @@ const styles = StyleSheet.create({
         padding: 20
     },
     connects:{
-        backgroundColor:color.lightDark,
-        padding:10,
-        borderRadius:5,
+        paddingVertical:10,
         flexDirection:'row',
         alignItems:'center'
     }

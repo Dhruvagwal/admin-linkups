@@ -31,12 +31,12 @@ const Index = () => {
     const [history, setHistory] = useState([])
     const {state:{profile}, Update} = DataConsumer()
     const [category, setCategory] = useState([])
-    const [active, setActive] = useState(buyList[1])
+    const [active, setActive] = useState()
     const [refreshing, setRefreshing] = useState(false)
     useEffect(()=>{
         var list = []
         Update()
-        profile.history.map(async (item)=>{
+        profile.history && profile.history.map(async (item)=>{
             await getDataById('order', item.id).then(({data})=>{
                 list = [...list,{...data, amount:item.amount, time:item.time, type:item.type}]
             })
@@ -78,7 +78,7 @@ const Index = () => {
                         }
                     </ScrollView>
                     <View style={{paddingHorizontal:10, marginTop:20}}>
-                        <Text regular>History</Text>
+                        {profile.history && <Text regular>History</Text>}
                         {
                             history
                             .sort((a,b)=>TimeDiff(a.proposal.find(item=>item.id===profile.id).postedDate).minutes-TimeDiff(b.proposal.find(item=>item.id===profile.id).postedDate).minutes)

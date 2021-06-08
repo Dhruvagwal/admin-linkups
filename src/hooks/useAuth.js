@@ -22,7 +22,7 @@ const signInWithPhoneNumber = async (phone)=>{
 
 }
 
-const confirmOTP = async (phone, code)=>{
+const confirmOTP = async (phone, code, save=true, CancelToken)=>{
   const CODE = await countryCode()
   const TRIM_CODE = CODE.replace('+','')
 
@@ -30,12 +30,12 @@ const confirmOTP = async (phone, code)=>{
     phone: TRIM_CODE + phone,
     code
   }
-  const result = await instances.post('/verifyOneTimePassword', data).then(async (response)=>{
-
+  const result = await instances.post('/verifyOneTimePassword', data, {CancelToken}).then(async (response)=>{
     await AsyncStorage.setItem(STORAGE_KEY_2, response.data.REFRESH_TOKEN)
     await AsyncStorage.setItem(STORAGE_KEY_1, response.data.ACCESS_TOKEN)
-    await AsyncStorage.setItem(STORAGE_KEY_3, TRIM_CODE+phone)
-
+    if(save){
+      await AsyncStorage.setItem(STORAGE_KEY_3, TRIM_CODE+phone)
+    }
     return true
   }).catch((err)=>{
     return false

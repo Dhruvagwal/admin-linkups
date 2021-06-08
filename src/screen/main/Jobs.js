@@ -40,9 +40,6 @@ const Jobs = ({newOrder, category, loadData, refreshing, setRefreshing}) => {
                     </ScrollView>}
                 </View>
             </ScrollView>
-            <View style={styles.filter}>
-                <MaterialIcons name="filter-alt" size={30} color={color.white} />
-            </View>
         </>
     )
 }

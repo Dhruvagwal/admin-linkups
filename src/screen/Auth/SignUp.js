@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { StyleSheet, View, Image, BackHandler, Pressable } from 'react-native'
+import { StyleSheet, View, Image, BackHandler, Pressable, AsyncStorage } from 'react-native'
 
 import {Text, RowView} from 'styles'
 import color from 'colors'
@@ -12,6 +12,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import {createUser} from 'hooks/useAuth'
 
 const screens = ['category', 'subCategory', 'name', 'address']
+const STORAGE_KEY_3 = 'LINKUPS_ADMIN_PHONE_NUMBER' 
 
 const Category = ({setSelect, setData})=>{
     const [category, setCategory] = useState([])
@@ -56,10 +57,10 @@ const SubCategory = ({setSelect, setData, data})=>{
                 </Pressable>
             )
         }
-        <Pressable style={styles.next} onPress={()=>setSelect(screens[2])} android_ripple={{color:color.lightDark}}>
+        {data.subCategory.length>0 && <Pressable style={styles.next} onPress={()=>setSelect(screens[2])} android_ripple={{color:color.lightDark}}>
             <Text>Next</Text>
             <MaterialIcons name="navigate-next" size={30} color={color.white} />
-        </Pressable>
+        </Pressable>}
     </View>
 }
 
@@ -81,6 +82,7 @@ const SignUp = ({route, navigation}) => {
     const [data, setData] = useState({subCategory:[]})
     const {PhoneNumber} = route.params
     const index = screens.indexOf(select)
+    const [loading, setLoading] = useState(false)
     const {setAuth} = AuthConsumer()
 
     useEffect(() => {
@@ -94,24 +96,29 @@ const SignUp = ({route, navigation}) => {
     }, [index])
 
     const _onSubmit = async ()=>{
+        setLoading(true)
+        const number = await AsyncStorage.getItem(STORAGE_KEY_3)
         const updateData={
-            Address:data.address,
+            Address:'',
             category:data.Category.id,
             subCategory:data.subCategory,
             name:data.name,
-            phone: PhoneNumber 
+            phone: number
 
         }
         await createUser(updateData)
+        await AsyncStorage.setItem(STORAGE_KEY_3, TRIM_CODE+number)
         setAuth(true)
+        setLoading(false)
     }
     return (
-        <View style={{flex:1, marginTop:25, padding:20}}>
+        !loading ? <View style={{flex:1, marginTop:25, padding:20}}>
             {select === screens[0] && <Category setSelect={setSelect} setData={setData}/>}
             {select === screens[1] && <SubCategory setSelect={setSelect} setData={setData} data={data}/>}
-            {select === screens[2] && <TextInputField label='Enter Name' heading='Your Name' onPress={()=>setSelect(screens[3])} setValue={(name)=>setData({...data, name})}/>}
-            {select === screens[3] && <TextInputField label='Enter Address' onPress={_onSubmit} heading='Your Address' setValue={(address)=>setData({...data, address})} pressLabel='Submit'/>}
+            {select === screens[2] && <TextInputField label='Enter Name' heading='Your Name' onPress={_onSubmit} setValue={(name)=>setData({...data, name})} pressLabel={'Submit'}/>}
         </View>
+        :
+        <Loading/>
     )
 }
 
