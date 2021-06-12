@@ -1,0 +1,12 @@
+{
+  "name": "crnaUser",
+  "displayName": "crnaUser",
+  "expo": {
+    "name": "crnaUser",
+    "slug": "crnaUser",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
