@@ -24,7 +24,7 @@ const ServiceProviderListView = ({data={}, proposal=false, orderId='', proposalD
                     </RowView>
                     <Text size={20} regular>₹ {proposalData.price}</Text>
                     <RowView style={{justifyContent:'space-between'}}>
-                        <Text>Deliver: {DateFormat(proposalData.date)}</Text>
+                        <Text>Deliver: {proposalData.date}</Text>
                     </RowView>
                 </View>:
                 <View style={{paddingHorizontal:10, height:'95%', justifyContent: 'space-between',width:'70%'}}>

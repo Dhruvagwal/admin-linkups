@@ -44,24 +44,11 @@ const Options=({children})=>{
 const Index = ({navigation}) => {
     const {setAuth} = AuthConsumer()
     const {state:{profile}, Update} = DataConsumer()
-    const [isSeller, setIsSeller] = useState(false)
     const [showImage, setShowImage] = useState(false)
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [name, setName] = useState()
     const [isEdit, setisEdit] = useState(false)
-    
-    useEffect(() => {
-        let source = axios.CancelToken.source()
-        try{
-            setName(profile.name)
-            getDataById('serviceProvider',profile.id, source.token).then(({data})=>{
-                data!==undefined && setIsSeller(false)
-                setLoading(false)  
-        })}catch(err){}
-        return ()=>{
-            source.cancel()
-        }
-    }, [])
+
     const LOGOUT = async ()=>{
         await setAuth(false)
         Logout()
@@ -91,7 +78,7 @@ const Index = ({navigation}) => {
                 <View style={{alignItems:'center', alignSelf:'center'}}>
                     <Pressable onPress={()=>setShowImage(true)}>
                         <Image source={{uri:profile.url}} style={{height:IMAGE_SIZE, width:IMAGE_SIZE, borderRadius:IMAGE_SIZE}}/>
-                    </Pressable>-
+                    </Pressable>
                     <ImagePicker Update={Update} setLoading={setLoading} id={profile.id} style={styles.camera}>
                         <Feather name="camera" size={24} color={color.white} />
                     </ImagePicker>
@@ -123,7 +110,7 @@ const Index = ({navigation}) => {
                         <Pressable style={{padding:15}} onPress={SellerApp} android_ripple={{color:color.dark}}>
                             <Options>
                                 <AntDesign name="customerservice" size={24} color={color.white} />
-                                <Text>  +Linkups Provider</Text>
+                                <Text>  Linkups Provider</Text>
                             </Options>
                         </Pressable>
 

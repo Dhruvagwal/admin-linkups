@@ -9,7 +9,7 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ];
 const Day = ({children, setActive, active=false})=>{
-    return <Pressable onPress={()=>setActive(`${children[0]}/${children[1]}/${children[2]}`)} style={[styles.tag, active&&styles.activeTag]}>
+    return <Pressable onPress={()=>setActive(`${children[0]}-${monthNames[children[1]-1]}-${children[2]}`)} style={[styles.tag, active&&styles.activeTag]}>
         <Text bold>{children[0]} {monthNames[children[1]-1]}</Text>
         <Text size={15} regular>{children[2]}</Text>
     </Pressable>
@@ -30,7 +30,7 @@ const calendar = ({date, setDate, time, setTime}) => {
     return <View>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal>
             {
-                dateList.map(item=><Day key={item} active={`${item[0]}/${item[1]}/${item[2]}`===date} setActive={setDate} >{item}</Day>)
+                dateList.map(item=><Day key={item} active={`${item[0]}-${monthNames[item[1]-1]}-${item[2]}`===date} setActive={setDate} >{item}</Day>)
             }
         </ScrollView>
         <ScrollView showsHorizontalScrollIndicator={false}>

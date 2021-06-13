@@ -37,6 +37,8 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'space-around',
         alignItems:'flex-end',
+        borderTopRightRadius:30,
+        borderTopLeftRadius:30
     },
     option:{
         flexDirection:'row',

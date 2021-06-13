@@ -17,7 +17,7 @@ import Calendar from 'components/calendar'
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
-const stateList = ['subCategory', 'problem', 'time']
+const stateList = ['subCategory', 'problem','upload', 'time']
 
 const Background = ()=>{
     return <View style={[{flex:1},StyleSheet.absoluteFillObject]}>
@@ -59,11 +59,11 @@ const Time = ({state, category})=>{
     </View>
 }
 
-const Problem = ({setSelect,state, setState, subCategory}) =>{
+const Problem = ({setSelect,state, setState, subCategory, isSub=true}) =>{
     const [text, setText] = useState('')
     const _onPress =async (item)=>{
         setState({...state, problem:item?item:text})
-        subCategory === undefined ?  setSelect(stateList[2]) : setSelect(stateList[1])
+        isSub? setSelect(stateList[1]) : setSelect(stateList[2])
     }
     const active = useKeyboard()
     const reason = subCategory.problem? subCategory.problem : subCategory.reason
@@ -103,7 +103,34 @@ const Problem = ({setSelect,state, setState, subCategory}) =>{
                 </Pressable>}
     </View>
 }
-
+const Upload = ({setState, setSelect, state, subCategory})=>{
+    const [response, setResponse] = useState(state.url)
+    const [Loading, setLoading] = useState(false)
+    const _onPress = ()=>{
+        response && setState({...state, url:response})
+        subCategory? setSelect(stateList[3]) : setSelect(stateList[2])
+    }
+    return <View>
+        <ImagePicker setResponse={setResponse} setLoading={setLoading} uploadImage={false}>
+        {state.url || response ?
+            <Image
+                source={{uri:response}}
+                style={{height:WIDTH-20, width:WIDTH-20, borderRadius:10, alignSelf:'center', marginVertical:20}}
+                resizeMode='center'
+            />
+        :
+        <View style={{width:WIDTH-20, height:WIDTH-20, borderRadius:10, borderWidth:2, borderColor:color.blue, alignSelf:'center', alignItems:'center', justifyContent:'center', marginVertical:20}}>
+            <Entypo name="image" size={50} color={color.blue} />
+        </View>}
+        </ImagePicker>
+        {response && <Pressable onPress={_onPress} style={{alignSelf:'center', borderRadius:10, backgroundColor:color.active, padding:10}}>
+            <Text bold>Upload</Text>
+        </Pressable>}
+        <Pressable onPress={_onPress} style={{alignSelf:'center',padding:10}}>
+            <Text regular>Skip </Text>
+        </Pressable>
+    </View>
+}
 const AddOrder = ({navigation, route}) => {
     const {category, subCategory} = route.params
     const [data, setData] = useState(category)
@@ -133,13 +160,15 @@ const AddOrder = ({navigation, route}) => {
                     subCategory=== undefined ?
                     <>
                         {select===stateList[0] && <SubCategoryListView  setSub={setSub} state={state} setSelect={setSelect} setState={setState} data={data}/>}
-                        {select===stateList[1] && <Problem subCategory={sub} state={state} setSelect={setSelect} setState={setState} data={data}/>}
-                        {select===stateList[2] && <Time category={category} state={state} setSelect={setSelect} setState={setState}/>}
+                        {select===stateList[1] && <Problem isSub={subCategory!==undefined&&true} subCategory={sub} state={state} setSelect={setSelect} setState={setState} data={data}/>}
+                        {select===stateList[2] && <Upload state={state} subCategory={sub} setSelect={setSelect} setState={setState}/>}
+                        {select===stateList[3] && <Time category={category} state={state} setSelect={setSelect} setState={setState}/>}
                     </>
                     :
                     <>
                         {select===stateList[0] && <Problem subCategory={subCategory} state={state} setSelect={setSelect} setState={setState} data={data}/>}
-                        {select===stateList[1] && <Time category={category} state={state} setSelect={setSelect} setState={setState}/>}
+                        {select===stateList[1] && <Upload state={state} setSelect={setSelect} setState={setState}/>}
+                        {select===stateList[2] && <Time category={category} state={state} setSelect={setSelect} setState={setState}/>}
                     </>
                 }
             </>

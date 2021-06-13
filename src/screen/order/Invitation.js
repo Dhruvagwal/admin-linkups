@@ -3,6 +3,7 @@ import { Dimensions, StyleSheet, View, Image, ScrollView, Pressable, BackHandler
 
 import { Ionicons, Entypo, MaterialIcons} from '@expo/vector-icons'; 
 import LottieView from 'lottie-react-native';
+import storage from '@react-native-firebase/storage'
 
 import {Text, RowView} from 'styles'
 import Loading from 'components/Loading'
@@ -62,19 +63,25 @@ const Invitation = ({route, navigation}) => {
     const [invited, setInvited] = useState([])
     const [data, setData] = useState()
     const Save=async()=>{
+        var url = info.url
         setLoading(true)
         const id = 'ORD-'+Math.floor(Math.random()*1000000)
         delete info.categoryData;
+        if(url){
+            await storage().ref(`orderImage/${id}`).putFile(info.url);
+            url = await storage().ref(`orderImage/${id}`).getDownloadURL();
+        }
         const DATA = {
             invited,
             type:'service',
             user:state.profile.id,
-            info:{...info, created:new Date()},
+            info:{...info},
             status:'posted',
             coord:state.profile.coord,
             Address:state.profile.Address,
             postedAt: new Date(),
-            id
+            id,
+            url
         }
         await saveOrder(DATA)
 
@@ -88,8 +95,9 @@ const Invitation = ({route, navigation}) => {
             body:`${state.profile.name} give the proposal first hurry up!!`,
             data:{id}
         }
-        data.map(({token})=>{
+        data.map(({token, id})=>{
             sendPushNotification(token, notifyDataFeed)
+            Message({phone:'+'+id, message:`${state.profile.name} give the proposal first hurry up!!`,})
         })
         data.filter(item=>invited.find(res=>res===item.id)).map(async ({token})=>sendPushNotification(token, notifyData))
         setSuccess(true)

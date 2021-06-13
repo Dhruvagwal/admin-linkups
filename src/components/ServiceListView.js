@@ -19,7 +19,7 @@ const ServiceListView = ({data={}}) => {
     return (
         <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.OrderDescription,{id:data.id})} style={styles.container}>
                 <RowView style={{justifyContent:'space-between', width:'100%'}}>
-                    <Image source={{uri:SubCat.url}} style={{width:70, height:70}}/>
+                    <Image source={{uri:data.url?data.url:SubCat.url}} style={{width:70, height:70, borderRadius:10}}/>
                     <View style={{justifyContent: 'space-between',marginBottom:5, marginLeft:10,height:'80%', width :'95%'}}>
                         <Text style={{width:WIDTH*.5}} bold numberOfLines={1}>{SubCat.name}</Text>
                         <RowView style={{justifyContent:'space-between', width:'80%'}}>

@@ -3,7 +3,7 @@ import { Platform, Pressable } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import upload from 'hooks/upload'
 
-export default function ImageSelector({style, children, id, Update, setLoading}) {
+export default function ImageSelector({style, children, id, Update, setLoading, uploadImage=true, setResponse=()=>{}}) {
   useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
@@ -23,9 +23,12 @@ export default function ImageSelector({style, children, id, Update, setLoading})
       aspect: [4, 4],
       quality: 1,
     });
-    await upload(result, id)
-    await Update()
+    if(uploadImage){
+      await upload(result, id)
+      await Update()
+    }
     setLoading(false)
+    setResponse(result.uri)
   };
 
   return (

@@ -7,11 +7,9 @@ import {Text, RowView} from 'styles'
 import color from 'colors'
 import moment from 'moment';
 import Loading from 'components/Loading'
-import { updateOrder } from 'hooks/useData'
-import DateFormat from 'hooks/DateFormat'
+import { updateOrder, Message } from 'hooks/useData'
 import {DataConsumer} from 'context/data'
 import { sendPushNotification } from 'middlewares/notification'
-import * as RootNavigation from 'navigation/RootNavigation'
 import CONSTANT from 'navigation/navigationConstant'
 
 const HEIGHT = Dimensions.get('screen').height
@@ -51,7 +49,7 @@ const Review=({data={}})=><View style={{...styles.contentContainer, backgroundCo
 const Point = ({children, last=false, text, onPress=()=>{}})=><Pressable onPress={onPress} android_ripple={{color:color.dark}} style={{...styles.Points, borderBottomWidth:last ? 0:2}}>
     <RowView>
         {children}
-        <Text regular style={{marginLeft:10}}>{text}</Text>
+        <Text regular>{text}</Text>
     </RowView>
 </Pressable> 
 
@@ -60,7 +58,7 @@ const ServiceProfile = ({route, navigation}) => {
     const [loading, setLoading] = useState(false)
     const [pro, setPro] = useState('')
     const [rating, setRating] = useState(0)
-    const {state, setLoad} = DataConsumer()
+    const {state} = DataConsumer()
     useEffect(() => {
         var rate = 0
         const result = state.category.find(item=>item.id === data.category)
@@ -69,7 +67,7 @@ const ServiceProfile = ({route, navigation}) => {
             data.rating.map(item=>{
                 rate = item.rating + rate
             })    
-            setRating(rate*1.2/data.rating.length)
+            setRating(Math.round(rate*12/data.rating.length)/10)
         } 
     }, [])
     const accept = async ()=>{
@@ -84,7 +82,8 @@ const ServiceProfile = ({route, navigation}) => {
             body:`${state.profile.name} accepted your proposal`
         }
         await updateOrder(updateData, orderId)
-        await sendPushNotification(data.token, notifyData)
+        Message({phone:'+'+data.id, message:`Congratulation,\n${state.profile.name} accepted your proposal as ${pro}.`})
+        sendPushNotification(data.token, notifyData)
         navigation.navigate(CONSTANT.Library,{load:true})
         setLoading(false)
     }
@@ -127,27 +126,22 @@ const ServiceProfile = ({route, navigation}) => {
                     <Text size={12} style={{margin:10, marginBottom:-5}}>Details</Text>
                     <View style={styles.contentContainer}>
                         {!invitation && <Point>
-                            <Entypo name="price-tag" size={20} color={color.blue} />
-                            <RowView style={{marginLeft:10}}>
+                            <RowView>
                                 <Text regular>Price:</Text>
                                 <Text size={20} bold> {`₹ ${proposalData.price}`}</Text>
                             </RowView>
                         </Point>}
                         {
                             !invitation && 
-                            <Point text={`${DateFormat(proposalData.date)}\n${proposalData.time}`}>
-                                <MaterialIcons name="date-range" size={20} color={color.blue} />
-                            </Point>
+                            <Point text={`${proposalData.date}\n${proposalData.time}`}/>
                         }
                         <Point text={`+${data.id}`} onPress={()=>Linking.openURL(`tel:+${data.id}`)}>
-                            <Ionicons name="call" size={20} color={color.blue} /> 
+                            <View style={{padding:5, backgroundColor:color.active, borderRadius:10, marginRight:10}}>
+                                <Ionicons name="ios-call" size={15} color={color.white} />
+                            </View>
                         </Point>
-                        <Point text={data.Address} onPress={()=>_openMap(data.coord, state.profile.name)}>
-                            <Entypo name="address" size={20} color={color.blue} />
-                        </Point>
-                        <Point last text={`Since ${moment(data.createdOn).format('DD-MM-YYYY')}`}>
-                            <Entypo name="flag" size={20} color={color.blue}/>
-                        </Point>
+                        <Point text={data.Address} onPress={()=>_openMap(data.coord, state.profile.name)}/>
+                        <Point last text={`Since ${moment(data.createdOn).format('DD-MM-YYYY')}`}/>
                     </View>
 
 
