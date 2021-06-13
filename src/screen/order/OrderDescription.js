@@ -7,7 +7,6 @@ import color from 'colors'
 import Loading from 'components/Loading' 
 import ServiceProviderListView from 'components/ServiceProviderListView'
 import {DataConsumer} from 'context/data'
-import DateFormat from 'hooks/DateFormat'
 import * as RootNavigation from 'navigation/RootNavigation'
 import CONSTANT from 'navigation/navigationConstant'
 import {updateOrder, getDataById, updateProviderProfile, Message} from 'hooks/useData'
@@ -73,7 +72,8 @@ const OrderDescription = ({route}) => {
             body:`${profile.name} paid you`
         }
         await updateOrder(UpdatedData,data.id )
-        await sendPushNotification(provider.token, notifyData)
+        sendPushNotification(provider.token, notifyData)
+        Message({phone:'+'+provider.id, message:'Paid'})
         setReview(true)
     }
     
