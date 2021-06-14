@@ -101,7 +101,7 @@ const Invitation = ({route, navigation}) => {
         })
         data.filter(item=>invited.find(res=>res===item.id)).map(async ({token})=>sendPushNotification(token, notifyData))
         setSuccess(true)
-        setTimeout(()=>{setSuccess(false);RootNavigation.navigate(CONSTANT.Library,{load:true})}, 3000)
+        setTimeout(()=>{setSuccess(false);RootNavigation.navigate(CONSTANT.Library,{load:true})}, 2500)
         setLoading(false)
     }
     useEffect(() => {

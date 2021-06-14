@@ -99,7 +99,7 @@ const Index = ({navigation}) => {
                         </Pressable>
                     </RowView>
                     <Text style={{alignSelf:'center'}} regular>+91 {profile.id && profile.id.replace('91','')}</Text>
-                    {!isOpen && <View style={{flex:1, justifyContent:'center'}}>
+                    {!isOpen && <View style={{flex:.8, justifyContent:'center'}}>
                         <Pressable style={{padding:15}} android_ripple={{color:color.dark}} onPress={()=>navigation.navigate(CONSTANT.Address)}>
                             <Options>
                                 <FontAwesome name="address-book" size={24} color={color.white} />
@@ -111,13 +111,6 @@ const Index = ({navigation}) => {
                             <Options>
                                 <AntDesign name="customerservice" size={24} color={color.white} />
                                 <Text>  Linkups Provider</Text>
-                            </Options>
-                        </Pressable>
-
-                        <Pressable style={{padding:15}} android_ripple={{color:color.dark}}>
-                            <Options>
-                                <Entypo name="language" size={24} color={color.white} />
-                                <Text>  Language</Text>
                             </Options>
                         </Pressable>
 

@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { StyleSheet, View, Dimensions, Image, ScrollView, Button, Pressable } from 'react-native'
-import { MaterialCommunityIcons, AntDesign, MaterialIcons } from '@expo/vector-icons'; 
+import { StyleSheet, View, Dimensions, Image, ScrollView, Pressable } from 'react-native'
 
 import {Text, RowView} from 'styles'
 import color from 'colors'
@@ -9,12 +8,15 @@ import ServiceProviderListView from 'components/ServiceProviderListView'
 import {DataConsumer} from 'context/data'
 import * as RootNavigation from 'navigation/RootNavigation'
 import CONSTANT from 'navigation/navigationConstant'
-import {updateOrder, getDataById, updateProviderProfile, Message} from 'hooks/useData'
+import {updateOrder, getDataById, updateProviderProfile, Message, updateUserProfile} from 'hooks/useData'
 import moment from 'moment';
 import FeedBackScreen from './FeedBackScreen'
 import { sendPushNotification } from 'middlewares/notification'
 import TimeDiff from 'middlewares/TimeDiff'
 import ImageViewer from 'components/ImageViewer';
+import RazorpayCheckout from 'react-native-razorpay';
+import TextInput from 'components/TextInput'
+import validateEmailId from 'hooks/validateEmailId'
 
 
 const HEIGHT= Dimensions.get('screen').height
@@ -32,12 +34,14 @@ const Point = ({last=false,text=''})=><RowView style={{...styles.Points, borderB
 
 const OrderDescription = ({route}) => {
     const {id} = route.params
-    const {state:{profile}} = DataConsumer()
+    const {state:{profile}, Update} = DataConsumer()
     const [data, setData] = useState({})
+    const [email, setEmail] = useState(false)
     const [SubCat, setSubCat] = useState({})
     const [category, setCategory] = useState({})
     const [invited, setInvited] = useState([])
     const [proposal, setProposal] = useState([])
+    const [emailAddress,setEmailAddress] = useState('')
     const [review, setReview] = useState(false)
     const [loading, setLoading] = useState(true)
     const [provider, setProvider] = useState([])
@@ -63,18 +67,44 @@ const OrderDescription = ({route}) => {
     }
 
     const checkout =async ()=>{
-        const UpdatedData = {
-            status:status[3],
-            paidOn:moment().format('LLL')
+        if(profile.email){
+            var options = {
+                description: `Pay For ${SubCat.name}`,
+                image: 'https://i.imgur.com/3g7nmJC.png',
+                currency: 'INR',
+                key: 'rzp_test_LNiP3v84muxD7h',
+                amount:data.proposal.find(response=>response.id===provider.id).price*100,
+                name: profile.name,
+                prefill: {
+                    email: profile.email,
+                    contact: profile.id,
+                    name: profile.name
+                },
+                theme: {color: color.dark}
+            }
+            RazorpayCheckout.open(options).then(async (response) => {
+                console.log(response.razorpay_payment_id)
+                const UpdatedData = {
+                    status:status[3],
+                    paidOn:moment().format('LLL'),
+                    txnId:response.razorpay_payment_id
+                }
+                const notifyData = {
+                    title:`Payment Done`,
+                    body:`${profile.name} paid you`
+                }    
+                await updateOrder(UpdatedData,data.id )
+                sendPushNotification(provider.token, notifyData)
+                Message({phone:'+'+provider.id, message:'Paid'})
+                setReview(true)
+              }).catch((error) => {
+                  console.log('error',error)
+                alert('Payment Failed');
+              })
+    
+        }else{
+            setEmail(true)
         }
-        const notifyData = {
-            title:`Payment Done`,
-            body:`${profile.name} paid you`
-        }
-        await updateOrder(UpdatedData,data.id )
-        sendPushNotification(provider.token, notifyData)
-        Message({phone:'+'+provider.id, message:'Paid'})
-        setReview(true)
     }
     
     useEffect(() => {
@@ -114,17 +144,36 @@ const OrderDescription = ({route}) => {
             }
         }
     }, [route.params, loading])
+
+    const validate = validateEmailId(emailAddress)
+
+    const _onEmailUpdate =async ()=>{
+        setLoading(true)
+       await updateUserProfile({email:emailAddress})
+       await Update()
+       setEmail(false)
+       setLoading(false)
+
+    }
     if(showImage){
         return <ImageViewer uri={data.url?data.url:SubCat.url} showImage={showImage} setShowImage={setShowImage}/>
     }
-    return (
+    else if(email){
+        return !loading? <View style={{flex:1, justifyContent:'center', padding:20}}>
+            <TextInput keyboardType='email-address' value={emailAddress} setValue={setEmailAddress} label='Email Address'/>
+            {validate && <Pressable onPress={_onEmailUpdate} style={{backgroundColor:color.active, width:WIDTH, alignSelf:'flex-end', padding:10, position:'absolute', bottom:0, right:0, alignItems:'center'}}>
+                <Text regular>Save</Text>
+            </Pressable>}
+        </View>
+        :
+        <Loading/>
+    }
+    else return (
         !loading ? <View style={{flex:1}}>          
                 <View style={{height:HEIGHT*.02}}/>
                 <Background/>
-                {review && <FeedBackScreen data={data} provider={provider}/>}
+                {review && <FeedBackScreen subCat={SubCat.name} data={data} provider={provider}/>}
                 <View style={{margin:20, flex:1}}>
-                    <Text size={20} bold>Linkups</Text>
-                    <Text size={13}>Order Detail</Text>
                     <ScrollView showsVerticalScrollIndicator={false}>    
                         <View style={{marginTop:10}}>
                             <Pressable onPress={()=>setShowImage(true)} style={{...styles.container, backgroundColor: '#0000'}}>

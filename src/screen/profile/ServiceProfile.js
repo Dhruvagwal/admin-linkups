@@ -11,6 +11,7 @@ import { updateOrder, Message } from 'hooks/useData'
 import {DataConsumer} from 'context/data'
 import { sendPushNotification } from 'middlewares/notification'
 import CONSTANT from 'navigation/navigationConstant'
+import TimeDiff from 'middlewares/TimeDiff'
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
@@ -38,12 +39,16 @@ const IMAGE_SIZE = 200
 const Review=({data={}})=><View style={{...styles.contentContainer, backgroundColor: 'rgba(34, 42, 56,0.8)',}}>
     <RowView>
         <View style={{marginLeft:10}}>
-            <Text><AntDesign name="star" size={15} color={color.active} /> {Math.round(data.rating*1.2*100)/100}</Text>
+            <Text regular>
+                <AntDesign name="star" size={15} color={color.active} /> {Math.round(data.rating*1.2*100)/100}
+            </Text>
+            <Text regular>{data.subCat}</Text>
         </View>
     </RowView>
-    <View>
-        <Text size={12} style={{width:'100%'}} numberOfLines={2}>{data.review}</Text>
+    <View style={{marginHorizontal:10}}>
+        <Text regular size={12} style={{width:'100%'}} numberOfLines={2}>{data.review}</Text>
     </View>
+    <Text style={{position: 'absolute',right: 10,top:10}} size={13}>{TimeDiff(data.postedAt).diff}</Text>
 </View>
 
 const Point = ({children, last=false, text, onPress=()=>{}})=><Pressable onPress={onPress} android_ripple={{color:color.dark}} style={{...styles.Points, borderBottomWidth:last ? 0:2}}>
@@ -148,7 +153,9 @@ const ServiceProfile = ({route, navigation}) => {
                     {data.rating && <View style={{marginTop:10}}>
                         <Text size={12} style={{margin:10, marginBottom:-5}}>Customer Reviews</Text>
                         {
-                            data.rating && data.rating.map(item=><Review key={Math.random().toString()} data={item}/>)
+                            data.rating && data.rating
+                            .sort((a,b)=>TimeDiff(a.postedAt).minutes-TimeDiff(b.postedAt).minutes)
+                            .map(item=><Review key={Math.random().toString()} data={item}/>)
                         }
                     </View>}
 

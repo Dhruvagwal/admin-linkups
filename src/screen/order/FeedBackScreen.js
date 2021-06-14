@@ -23,15 +23,20 @@ const ReviewView = ({source, text='', active, setActive, id})=><Pressable
     <Text size={13} regular>{text}</Text>
     {active === id && <View style={{padding:5 ,borderRadius:100, backgroundColor: color.active, marginTop:10}}/>}
 </Pressable>
-const FeedBack = ({data, provider}) => {
+const FeedBack = ({data, provider, subCat}) => {
     const Rating = [1,2,3,4]
     const [active, setActive] =useState()
     const [text, setText] = useState()
     const [loading, setLoading] = useState(false)
-
     const Submit=async ()=>{
         setLoading(true)
-        const FeedBackData = {id:data.user, rating:active, review:text}
+        const FeedBackData = {
+            id:data.user, 
+            rating:active, 
+            review:text,
+            subCat,
+            postedAt:new Date()
+        }
         const rating = provider.rating === undefined ? [FeedBackData] : [...provider.rating,FeedBackData ]
         await updateProviderProfile(provider.id,{rating})
         RootNavigation.navigate(CONSTANT.Library, {load:true})

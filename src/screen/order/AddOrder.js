@@ -4,20 +4,25 @@ import { MaterialIcons, Entypo, AntDesign, Feather } from '@expo/vector-icons';
 
 import ImagePicker from 'components/ImagePicker'
 
-import {Text, RowView} from 'styles'
+import {Text} from 'styles'
 import color from 'colors'
-import Loading from 'components/Loading'
 import * as RootNavigation from 'navigation/RootNavigation'
 import CONSTANT from 'navigation/navigationConstant'
-import {getCategory} from 'hooks/useData'
 import useKeyboard from 'hooks/useKeyboard'
 import Calendar from 'components/calendar'
-// import BackHandler from 'hooks/useBackHandler'
+import { stat } from 'react-native-fs';
+import { Snackbar } from 'react-native-paper';
 
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
 const stateList = ['subCategory', 'problem','upload', 'time']
+
+const getFileSize = async (uri) => {
+    const {size} = await stat(uri);
+    const extension =  uri.slice(uri.length-3,uri.length)
+    return {size, extension}
+};
 
 const Background = ()=>{
     return <View style={[{flex:1},StyleSheet.absoluteFillObject]}>
@@ -104,14 +109,15 @@ const Problem = ({setSelect,state, setState, subCategory, isSub=true}) =>{
     </View>
 }
 const Upload = ({setState, setSelect, state, subCategory})=>{
+    const [fileData, setfileData] = useState()
     const [response, setResponse] = useState(state.url)
-    const [Loading, setLoading] = useState(false)
+    response && getFileSize(response).then(data=>!fileData && setfileData(data))
     const _onPress = ()=>{
         response && setState({...state, url:response})
         subCategory? setSelect(stateList[3]) : setSelect(stateList[2])
     }
-    return <View>
-        <ImagePicker setResponse={setResponse} setLoading={setLoading} uploadImage={false}>
+    return <View style={{flex:1}}>
+        <ImagePicker setResponse={setResponse} setLoading={()=>{}} uploadImage={false}>
         {state.url || response ?
             <Image
                 source={{uri:response}}
@@ -123,12 +129,20 @@ const Upload = ({setState, setSelect, state, subCategory})=>{
             <Entypo name="image" size={50} color={color.blue} />
         </View>}
         </ImagePicker>
-        {response && <Pressable onPress={_onPress} style={{alignSelf:'center', borderRadius:10, backgroundColor:color.active, padding:10}}>
-            <Text bold>Upload</Text>
-        </Pressable>}
-        <Pressable onPress={_onPress} style={{alignSelf:'center',padding:10}}>
-            <Text regular>Skip </Text>
-        </Pressable>
+        {(response && fileData && fileData.size/(1024*1024)<10 && (fileData.extension==='jpg' && 'png')) ? <Pressable onPress={_onPress} style={{alignSelf:'center', borderRadius:10, backgroundColor:color.active, padding:10}}>
+                <Text bold>Upload</Text>
+            </Pressable>
+            :
+            <Pressable onPress={_onPress} style={{alignSelf:'center',padding:10}}>
+                <Text regular>Skip </Text>
+            </Pressable>
+        }
+        <Snackbar onDismiss={()=>{}} style={styles.Snackbar} visible={fileData && fileData.size/(1024*1024)>10}>
+            <Text regular>File size must be less than 10mb</Text>
+        </Snackbar>
+        <Snackbar onDismiss={()=>{}} style={styles.Snackbar} visible={fileData && fileData.extension!=='jpg' && 'png'}>
+            <Text regular>Should support .png or .jpg format</Text>
+        </Snackbar>
     </View>
 }
 const AddOrder = ({navigation, route}) => {
@@ -203,5 +217,8 @@ const styles = StyleSheet.create({
         alignSelf:'center',
         borderRadius:10,
         marginTop:20
+    },
+    Snackbar:{
+        backgroundColor:color.lightDark
     }
 })
