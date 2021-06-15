@@ -16,6 +16,7 @@ import TimeDiff from 'middlewares/TimeDiff'
 import ImageViewer from 'components/ImageViewer';
 import RazorpayCheckout from 'react-native-razorpay';
 import TextInput from 'components/TextInput'
+import StatusTracker from 'components/StatusTracker'
 import validateEmailId from 'hooks/validateEmailId'
 
 
@@ -57,8 +58,6 @@ const OrderDescription = ({route}) => {
         await updateOrder({status:status[4]}, data.id)
         data.proposal && await data.proposal.map(async({id})=>{
             await getDataById('serviceProvider',id).then(async (res)=>{
-                const dataAdd = {id:data.id, time: new Date(), type:'return', amount:SubCat.charge}
-                await updateProviderProfile(id,{wallet:res.data.wallet+SubCat.charge, history:[...res.data.history, dataAdd]})
                 sendPushNotification(res.data.token, notifyData)
             })
         })
@@ -73,7 +72,7 @@ const OrderDescription = ({route}) => {
                 image: 'https://i.imgur.com/3g7nmJC.png',
                 currency: 'INR',
                 key: 'rzp_test_LNiP3v84muxD7h',
-                amount:data.proposal.find(response=>response.id===provider.id).price*100,
+                amount:SubCat.charge*100,
                 name: profile.name,
                 prefill: {
                     email: profile.email,
@@ -173,34 +172,34 @@ const OrderDescription = ({route}) => {
                 <View style={{height:HEIGHT*.02}}/>
                 <Background/>
                 {review && <FeedBackScreen subCat={SubCat.name} data={data} provider={provider}/>}
-                <View style={{margin:20, flex:1}}>
+                <View style={{margin:10, marginTop:20, flex:1}}>
                     <ScrollView showsVerticalScrollIndicator={false}>    
                         <View style={{marginTop:10}}>
-                            <Pressable onPress={()=>setShowImage(true)} style={{...styles.container, backgroundColor: '#0000'}}>
+                            <View style={{...styles.container, backgroundColor: '#0000', marginBottom:20}}>
                                 <RowView style={{height:100}}>
-                                    <Image source={{uri:data.url?data.url:SubCat.url}} style={{width:100, height:100, borderRadius:10}}/>
+                                    <Pressable onPress={()=>setShowImage(true)}>
+                                        <Image source={{uri:data.url?data.url:SubCat.url}} style={{width:100, height:100, borderRadius:10}}/>
+                                    </Pressable>
                                     <View style={{alignItems:'flex-start', height:100, marginLeft:10, justifyContent:'space-between'}}>
                                         <Text style={{width:WIDTH*.6}} bold numberOfLines={2} adjustsFontSizeToFit>{SubCat.name}</Text>
                                         <Text size={13}>Status:<Text regular style={{textTransform:'capitalize', color:color.active}} size={13}> {data.status}</Text></Text>
                                         <Text size={13}>{TimeDiff(data.postedAt).diff}</Text>
                                     </View>
                                 </RowView>
-                            </Pressable>
+                            </View>
+                            {data.status!=='posted'&&'cancelled' && <StatusTracker data={data}/>}
                             <Text style={{margin:10, marginBottom:0}} size={12}>Info</Text>
                             <View style={{...styles.container, backgroundColor: '#0000',paddingTop:0}}>
                                 <Point text={category.name}/>
                                 <Point text={data.info.problem}/>
-                                {(data.status===status[1] || data.status===status[2] || data.status===status[3]) && <Point text={'Starts on: '+moment(data.startsOn).format('LLL')}/>}
-                                {data.status===status[0] && <Point text={`${data.info.date} \n${data.info.time}`} />}
-                                {(data.status===status[2] || data.status===status[3])&& <Point text={`Ends on: ${moment(data.endsOn).format('LLL')}`} />}
-                                {(data.status===status[3])&& <Point text={`Paid on: ${moment(data.paidOn).format('LLL')}`} />}
+                                <Point last text={`Service Charge: ₹${SubCat.charge}`}/>
                             </View>
                             {data.status !== status[4] &&
                                 <>
                                     {data.status===status[0]?
                                         <>
                                         {proposal.length>0 && <View style={{marginTop:10}}>
-                                            <Text style={{margin:10}} size={12}>Proposals</Text>
+                                            <Text style={{margin:10}} size={12}>Intrested</Text>
                                             {
                                                 proposal.map(item=><ServiceProviderListView key={Math.random().toString()} proposalData={data.proposal.find(response=>response.id===item.id)} orderId={data.id} data={item} category={category} proposal/>)
                                             }

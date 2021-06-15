@@ -59,6 +59,7 @@
     "react-native-reanimated": "~2.1.0",
     "react-native-safe-area-context": "^3.2.0",
     "react-native-screens": "~3.0.0",
+    "react-native-step-indicator": "^1.0.3",
     "react-native-svg-uri": "^0.0.1",
     "react-native-unimodules": "~0.13.3",
     "react-native-uuid": "^2.0.1",

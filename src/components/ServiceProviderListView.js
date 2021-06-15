@@ -10,22 +10,20 @@ import CONSTANT from 'navigation/navigationConstant'
 
 
 const ServiceProviderListView = ({data={}, proposal=false, orderId='', proposalData={}, invitation=false}) => {
-    const IMAGE_SIZE = 90
+    const IMAGE_SIZE = 65
     return (
         <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.ServiceProfile, {data, proposal, orderId, proposalData, invitation})}>
             <RowView style={styles.container}>
                 <Image source={{uri:data.url}} style={{height:IMAGE_SIZE, width:IMAGE_SIZE, borderRadius:10}}/>
-                {!invitation ? <View style={{paddingHorizontal:10, height:'95%', justifyContent: 'space-between',width:'75%'}}>
-                    <RowView style={{alignItems:'flex-start'}}>
-                        <RowView>
-                            <MaterialIcons name="verified" size={24} color={color.blue} />
-                            <Text regular size={18} style={{width:'65%'}} numberOfLines={1}> {data.name}</Text>
-                        </RowView>
+                {!invitation ? <View style={{paddingHorizontal:10, height:'95%',width:'75%'}}>
+                    <RowView>
+                        <MaterialIcons name="verified" size={24} color={color.blue} />
+                        <Text regular size={18} style={{width:'65%'}} numberOfLines={1}> {data.name}</Text>
                     </RowView>
-                    <Text size={20} regular>₹ {proposalData.price}</Text>
-                    <RowView style={{justifyContent:'space-between'}}>
-                        <Text>Deliver: {proposalData.date}</Text>
-                    </RowView>
+                    <View>
+                        <Text size={13} regular>{proposalData.date}</Text>
+                        <Text size={13} regular>{proposalData.time}</Text>
+                    </View>
                 </View>:
                 <View style={{paddingHorizontal:10, height:'95%', justifyContent: 'space-between',width:'70%'}}>
                     <View style={{alignItems:'flex-start'}}>
@@ -53,7 +51,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(34, 42, 56,0.8)',
         padding:10,
         borderRadius:20,
-        height:120,
+        height:80,
         marginBottom:10
     },
     Call:{

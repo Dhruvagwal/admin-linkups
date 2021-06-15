@@ -86,8 +86,11 @@ const Index = ({route}) => {
                                 {
                                     res.subCategory && res.subCategory.map(item=>
                                         <Pressable android_ripple={{color:color.dark}} onPress={()=>RootNavigation.navigate(CONSTANT.AddOrder, {category:res, subCategory:item})} key={item.id} style={styles.subCategory}>
-                                            <Image source={{uri:item.url}} style={{width:70, height:70}}/>
-                                            <Text size={18} bold style={{marginHorizontal:10, width:'60%'}} numberOfLines={2}>{item.name}</Text>
+                                            <Image source={{uri:item.url}} style={{width:50, height:50}}/>
+                                            <View style={{marginLeft:10}}>
+                                                <Text style={{width:WIDTH/1.7-100}} regular numberOfLines={1}>{item.name}</Text>
+                                                <Text size={13} theme={color.blue} bold>₹{item.charge}</Text>
+                                            </View>
                                         </Pressable>
                                     )
                                 }

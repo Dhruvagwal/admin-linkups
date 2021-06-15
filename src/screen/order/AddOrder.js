@@ -41,28 +41,31 @@ const SubCategoryListView = ({data={}, setSelect,state, setState, setSub})=>{
         <Text size={13} regular>{data.name}</Text>
         {
             data.subCategory.map(item=><Pressable onPress={()=>_onPress(item)} key={item.id} style={styles.contentContainer} android_ripple={{color:color.dark}}>
-                        <Image source={{uri:item.url}} style={{height:100, width:100}}/>
-                        <Text style={{marginLeft:10, width:'65%'}} size={15} bold>{item.name}</Text>
+                        <Image source={{uri:item.url}} style={{height:50, width:50}}/>
+                        <View style={{width:WIDTH-110}}>
+                            <Text style={{marginLeft:10}} size={15} regular>{item.name}</Text>
+                            <Text style={{marginLeft:10}} theme={color.active} size={13} bold>Service Charge ₹{item.charge}</Text>
+                        </View>
                 </Pressable>
             )
         }
     </View>
 }
 
-const Time = ({state, category})=>{
-    const [date, setDate] =useState()
-    const [time, setTime] =useState()
-    const _onPress = (item)=>{
-        RootNavigation.navigate(CONSTANT.Invitation,{...state, time, date, categoryData:category})
-    }
-    return <View style={{flex: 1,padding:10, marginTop:10}}>
-        <Text size={13} style={{marginHorizontal:10}} regular>Set Deadline</Text>
-        <Calendar date={date} setDate={setDate} time={time} setTime={setTime}/>
-        {(time && date) && <Pressable onPress={_onPress} style={styles.Button}>
-            <Text>Save</Text>
-        </Pressable>}
-    </View>
-}
+// const Time = ({state, category})=>{
+//     const [date, setDate] =useState()
+//     const [time, setTime] =useState()
+//     const _onPress = (item)=>{
+//         RootNavigation.navigate(CONSTANT.Invitation,{...state, time, date, categoryData:category})
+//     }
+//     return <View style={{flex: 1,padding:10, marginTop:10}}>
+//         <Text size={13} style={{marginHorizontal:10}} regular>Set Deadline</Text>
+//         <Calendar date={date} setDate={setDate} time={time} setTime={setTime}/>
+//         {(time && date) && <Pressable onPress={_onPress} style={styles.Button}>
+//             <Text>Save</Text>
+//         </Pressable>}
+//     </View>
+// }
 
 const Problem = ({setSelect,state, setState, subCategory, isSub=true}) =>{
     const [text, setText] = useState('')
@@ -108,29 +111,29 @@ const Problem = ({setSelect,state, setState, subCategory, isSub=true}) =>{
                 </Pressable>}
     </View>
 }
-const Upload = ({setState, setSelect, state, subCategory})=>{
+const Upload = ({state, category})=>{
     const [fileData, setfileData] = useState()
     const [response, setResponse] = useState(state.url)
     response && getFileSize(response).then(data=>!fileData && setfileData(data))
     const _onPress = ()=>{
-        response && setState({...state, url:response})
-        subCategory? setSelect(stateList[3]) : setSelect(stateList[2])
+        RootNavigation.navigate(CONSTANT.Invitation,{...state, url:response, categoryData:category})
     }
-    return <View style={{flex:1}}>
+    return <View style={{flex:1, justifyContent:'center'}}>
         <ImagePicker setResponse={setResponse} setLoading={()=>{}} uploadImage={false}>
         {state.url || response ?
             <Image
                 source={{uri:response}}
-                style={{height:WIDTH-20, width:WIDTH-20, borderRadius:10, alignSelf:'center', marginVertical:20}}
+                style={{height:200, width:200, borderRadius:10, alignSelf:'center', marginVertical:20}}
                 resizeMode='center'
             />
-        :
-        <View style={{width:WIDTH-20, height:WIDTH-20, borderRadius:10, borderWidth:2, borderColor:color.blue, alignSelf:'center', alignItems:'center', justifyContent:'center', marginVertical:20}}>
-            <Entypo name="image" size={50} color={color.blue} />
-        </View>}
+            :
+            <View style={{width:200, height:200, borderRadius:10, borderWidth:2, borderColor:color.blue, alignSelf:'center', alignItems:'center', justifyContent:'center', marginVertical:20}}>
+                <Entypo name="image" size={40} color={color.blue} />
+                <Text size={13} theme={color.inActive} regular style={{margin:10,alignSelf:'center', position: 'absolute', bottom:0}} >Upload Image (Optional)</Text>
+            </View>}
         </ImagePicker>
         {(response && fileData && fileData.size/(1024*1024)<10 && (fileData.extension==='jpg' && 'png')) ? <Pressable onPress={_onPress} style={{alignSelf:'center', borderRadius:10, backgroundColor:color.active, padding:10}}>
-                <Text bold>Upload</Text>
+                <Text regular>Upload</Text>
             </Pressable>
             :
             <Pressable onPress={_onPress} style={{alignSelf:'center',padding:10}}>
@@ -175,14 +178,12 @@ const AddOrder = ({navigation, route}) => {
                     <>
                         {select===stateList[0] && <SubCategoryListView  setSub={setSub} state={state} setSelect={setSelect} setState={setState} data={data}/>}
                         {select===stateList[1] && <Problem isSub={subCategory!==undefined&&true} subCategory={sub} state={state} setSelect={setSelect} setState={setState} data={data}/>}
-                        {select===stateList[2] && <Upload state={state} subCategory={sub} setSelect={setSelect} setState={setState}/>}
-                        {select===stateList[3] && <Time category={category} state={state} setSelect={setSelect} setState={setState}/>}
+                        {select===stateList[2] && <Upload category={category} state={state}/>}
                     </>
                     :
                     <>
                         {select===stateList[0] && <Problem subCategory={subCategory} state={state} setSelect={setSelect} setState={setState} data={data}/>}
-                        {select===stateList[1] && <Upload state={state} setSelect={setSelect} setState={setState}/>}
-                        {select===stateList[2] && <Time category={category} state={state} setSelect={setSelect} setState={setState}/>}
+                        {select===stateList[1] && <Upload category={category} state={state}/>}
                     </>
                 }
             </>
@@ -209,6 +210,7 @@ const styles = StyleSheet.create({
         padding:10,
         flexDirection:'row',
         alignItems:'center',
+        borderRadius:10
     },
     button:{
         backgroundColor:color.active,
