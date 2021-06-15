@@ -9,7 +9,6 @@ import LoadingScreen from 'screen/Loading'
 import LanguageScreen from 'screen/setting/language'
 import AddOrderScreen from 'screen/order/AddOrder'
 import OrderDescriptionScreen from 'screen/order/OrderDescription'
-import InvitationScreen from 'screen/order/Invitation'
 import ServiceProfileScreen from 'screen/profile/ServiceProfile'
 import SettingScreen from 'screen/setting'
 import LibraryScreen from 'screen/Library'
@@ -74,7 +73,6 @@ const Index = () => {
                       <Stack.Screen name={CONSTANT.Language} component={LanguageScreen}/>
                       <Stack.Screen name={CONSTANT.OrderDescription} component={OrderDescriptionScreen}/>
                       <Stack.Screen name={CONSTANT.AddOrder} component={AddOrderScreen}/>
-                      <Stack.Screen name={CONSTANT.Invitation} component={InvitationScreen}/>
                       <Stack.Screen name={CONSTANT.ServiceProfile} component={ServiceProfileScreen}/>
                       <Stack.Screen name={CONSTANT.Setting} component={SettingScreen}/>
                       <Stack.Screen name={CONSTANT.Library} component={LibraryScreen}/>

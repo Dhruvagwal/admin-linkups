@@ -1,28 +1,19 @@
 import React, {useState, useEffect} from 'react'
-import { StyleSheet, View, Dimensions, ScrollView, Image, Pressable, TextInput, BackHandler, KeyboardAvoidingView} from 'react-native'
-import { MaterialIcons, Entypo, AntDesign, Feather } from '@expo/vector-icons';
-
-import ImagePicker from 'components/ImagePicker'
+import { StyleSheet, View, Dimensions, Image, Pressable, BackHandler} from 'react-native'
 
 import {Text} from 'styles'
 import color from 'colors'
-import * as RootNavigation from 'navigation/RootNavigation'
-import CONSTANT from 'navigation/navigationConstant'
-import useKeyboard from 'hooks/useKeyboard'
-import Calendar from 'components/calendar'
+import Loading from 'components/Loading'
 import { stat } from 'react-native-fs';
-import { Snackbar } from 'react-native-paper';
-
+import getDistance from 'geolib/es/getDistance';
+import {getServiceProvider, saveOrder, Message} from 'hooks/useData'
+import {DataConsumer} from 'context/data'
+import LottieView from 'lottie-react-native';
+import Problem from './Problem'
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
-const stateList = ['subCategory', 'problem','upload', 'time']
-
-const getFileSize = async (uri) => {
-    const {size} = await stat(uri);
-    const extension =  uri.slice(uri.length-3,uri.length)
-    return {size, extension}
-};
+const stateList = ['subCategory', 'problem']
 
 const Background = ()=>{
     return <View style={[{flex:1},StyleSheet.absoluteFillObject]}>
@@ -31,7 +22,7 @@ const Background = ()=>{
     </View>
 }
 
-const SubCategoryListView = ({data={}, setSelect,state, setState, setSub})=>{
+const SubCategoryListView = ({data={}, setSelect,setState, setSub})=>{
     const _onPress = (item)=>{
         setSub(item)
         setState(res=>({...res, subCategory:item.id}))
@@ -52,110 +43,27 @@ const SubCategoryListView = ({data={}, setSelect,state, setState, setSub})=>{
     </View>
 }
 
-// const Time = ({state, category})=>{
-//     const [date, setDate] =useState()
-//     const [time, setTime] =useState()
-//     const _onPress = (item)=>{
-//         RootNavigation.navigate(CONSTANT.Invitation,{...state, time, date, categoryData:category})
-//     }
-//     return <View style={{flex: 1,padding:10, marginTop:10}}>
-//         <Text size={13} style={{marginHorizontal:10}} regular>Set Deadline</Text>
-//         <Calendar date={date} setDate={setDate} time={time} setTime={setTime}/>
-//         {(time && date) && <Pressable onPress={_onPress} style={styles.Button}>
-//             <Text>Save</Text>
-//         </Pressable>}
-//     </View>
-// }
-
-const Problem = ({setSelect,state, setState, subCategory, isSub=true}) =>{
-    const [text, setText] = useState('')
-    const _onPress =async (item)=>{
-        setState({...state, problem:item?item:text})
-        isSub? setSelect(stateList[1]) : setSelect(stateList[2])
-    }
-    const active = useKeyboard()
-    const reason = subCategory.problem? subCategory.problem : subCategory.reason
-    return <View style={{padding:20, flex:1}}>
-        {!active && <>
-        {
-            subCategory.problem?
-            <Text size={13} regular>Problem Face</Text>
-            :
-            <Text size={13} regular>For</Text>
-        }
-        {
-            reason.map(item=><Pressable onPress={()=>_onPress(item)} key={item} style={[styles.contentContainer, {padding:20, justifyContent:'center'}]} android_ripple={{color:color.dark}}>
-                <Text bold>{item}</Text>
-            </Pressable>)
-        }
-        </>}
-        <View style={[styles.contentContainer, {justifyContent:'center'}]} android_ripple={{color:color.dark}}>
-                <TextInput
-                    placeholder='Edit'
-                    value={text}
-                    onChangeText={setText}
-                    placeholderTextColor={color.white}
-                    style={{
-                        fontFamily:'Montserrat-Bold',
-                        width:'100%',
-                        textAlign:'center',
-                        fontSize:15,
-                        color:color.white,
-                    }}
-                    multiline
-                />
-        </View>
-        {active &&
-                <Pressable onPress={()=>_onPress()} style={styles.button}>
-                    <Text regular>Submit</Text>
-                </Pressable>}
-    </View>
-}
-const Upload = ({state, category})=>{
-    const [fileData, setfileData] = useState()
-    const [response, setResponse] = useState(state.url)
-    response && getFileSize(response).then(data=>!fileData && setfileData(data))
-    const _onPress = ()=>{
-        RootNavigation.navigate(CONSTANT.Invitation,{...state, url:response, categoryData:category})
-    }
-    return <View style={{flex:1, justifyContent:'center'}}>
-        <ImagePicker setResponse={setResponse} setLoading={()=>{}} uploadImage={false}>
-        {state.url || response ?
-            <Image
-                source={{uri:response}}
-                style={{height:200, width:200, borderRadius:10, alignSelf:'center', marginVertical:20}}
-                resizeMode='center'
-            />
-            :
-            <View style={{width:200, height:200, borderRadius:10, borderWidth:2, borderColor:color.blue, alignSelf:'center', alignItems:'center', justifyContent:'center', marginVertical:20}}>
-                <Entypo name="image" size={40} color={color.blue} />
-                <Text size={13} theme={color.inActive} regular style={{margin:10,alignSelf:'center', position: 'absolute', bottom:0}} >Upload Image (Optional)</Text>
-            </View>}
-        </ImagePicker>
-        {(response && fileData && fileData.size/(1024*1024)<10 && (fileData.extension==='jpg' && 'png')) ? <Pressable onPress={_onPress} style={{alignSelf:'center', borderRadius:10, backgroundColor:color.active, padding:10}}>
-                <Text regular>Upload</Text>
-            </Pressable>
-            :
-            <Pressable onPress={_onPress} style={{alignSelf:'center',padding:10}}>
-                <Text regular>Skip </Text>
-            </Pressable>
-        }
-        <Snackbar onDismiss={()=>{}} style={styles.Snackbar} visible={fileData && fileData.size/(1024*1024)>10}>
-            <Text regular>File size must be less than 10mb</Text>
-        </Snackbar>
-        <Snackbar onDismiss={()=>{}} style={styles.Snackbar} visible={fileData && fileData.extension!=='jpg' && 'png'}>
-            <Text regular>Should support .png or .jpg format</Text>
-        </Snackbar>
-    </View>
-}
 const AddOrder = ({navigation, route}) => {
     const {category, subCategory} = route.params
-    const [data, setData] = useState(category)
     const [sub, setSub] = useState()
+    const {state:{profile}} = DataConsumer()
+    const [provider, setProvider] = useState([])
     const [select, setSelect] = useState(stateList[0])
+    const [success, setSuccess] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [state, setState] = useState({category:category.id,subCategory:subCategory !== undefined ? subCategory.id :undefined})
     var index = stateList.indexOf(select)
     useEffect(()=>{
+        getServiceProvider(category.id).then(({data})=>{
+            const sortedInvite = data.filter(item=>
+                getDistance(
+                    { latitude: profile.coord.latitude, longitude: profile.coord.longitude },
+                    { latitude: item.coord.latitude, longitude: item.coord.longitude }
+                ) <= category.minDistance
+            )
+            setProvider(sortedInvite); 
+            setLoading(false)
+        })
         const backAction = () => {
             index>0 ? setSelect(stateList[index-1]):navigation.goBack()
             return true
@@ -163,8 +71,23 @@ const AddOrder = ({navigation, route}) => {
       
         const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
         return () => backHandler.remove();
-    },[index])
-    return (
+    },[])
+    if(success){
+        return <View style={{flex:1}}>            
+                <LottieView
+                    source={require('../../../assets/lottieFiles/loading.json')}
+                    style={styles.loading}
+                    autoPlay
+                />
+                <LottieView
+                    source={require('../../../assets/lottieFiles/popper.json')}
+                    style={{width:WIDTH, height:HEIGHT, position:'absolute'}}
+                    autoPlay
+                />
+        </View>
+    }
+    else if(loading) return <Loading/>
+    else return (
         <View style={{flex:1}}>
             <>
                 <Background/>
@@ -176,14 +99,12 @@ const AddOrder = ({navigation, route}) => {
                 {
                     subCategory=== undefined ?
                     <>
-                        {select===stateList[0] && <SubCategoryListView  setSub={setSub} state={state} setSelect={setSelect} setState={setState} data={data}/>}
-                        {select===stateList[1] && <Problem isSub={subCategory!==undefined&&true} subCategory={sub} state={state} setSelect={setSelect} setState={setState} data={data}/>}
-                        {select===stateList[2] && <Upload category={category} state={state}/>}
+                        {select===stateList[0] && <SubCategoryListView  setSub={setSub} setSelect={setSelect} setState={setState} data={category}/>}
+                        {select===stateList[1] && <Problem setSuccess={setSuccess} setLoading={setLoading} subCategory={sub} state={state} data={provider}/>}
                     </>
                     :
                     <>
-                        {select===stateList[0] && <Problem subCategory={subCategory} state={state} setSelect={setSelect} setState={setState} data={data}/>}
-                        {select===stateList[1] && <Upload category={category} state={state}/>}
+                        {select===stateList[0] && <Problem  setSuccess={setSuccess} setLoading={setLoading} subCategory={subCategory} state={state} data={provider}/>}
                     </>
                 }
             </>
@@ -195,15 +116,6 @@ const AddOrder = ({navigation, route}) => {
 export default AddOrder
 
 const styles = StyleSheet.create({
-    Button:{
-        backgroundColor: color.active,
-        position:'absolute',
-        bottom:0,
-        padding: 20,
-        width:WIDTH,
-        alignItems:'center',
-        justifyContent:'center'
-    },
     contentContainer:{
         backgroundColor: 'rgba(34, 42, 56,0.8)',
         marginVertical:10,
@@ -212,15 +124,4 @@ const styles = StyleSheet.create({
         alignItems:'center',
         borderRadius:10
     },
-    button:{
-        backgroundColor:color.active,
-        padding:10,
-        alignItems:'center',
-        alignSelf:'center',
-        borderRadius:10,
-        marginTop:20
-    },
-    Snackbar:{
-        backgroundColor:color.lightDark
-    }
 })

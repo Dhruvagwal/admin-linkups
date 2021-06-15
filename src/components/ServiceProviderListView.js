@@ -11,8 +11,8 @@ import CONSTANT from 'navigation/navigationConstant'
 
 const ServiceProviderListView = ({data={}, proposal=false, orderId='', proposalData={}, invitation=false}) => {
     const IMAGE_SIZE = 65
-    var rate = 0
-    const rating = data.rating.map(({rating})=>{rate=rating+rate})
+    // var rate = 0
+    // data.rating.map(({rating})=>{rate=rating*1.2+rate})
     return (
         <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.ServiceProfile, {data, proposal, orderId, proposalData, invitation})}>
             <RowView style={styles.container}>
@@ -23,7 +23,7 @@ const ServiceProviderListView = ({data={}, proposal=false, orderId='', proposalD
                         <Text regular size={18} style={{width:'65%'}} numberOfLines={1}> {data.name}</Text>
                     </RowView>
                     <RowView style={{marginTop:5}}>
-                        <Text size={15} regular>{Math.round(rate*10/data.rating.length)/10} </Text>
+                        <Text size={15} regular>4.5 </Text>
                         <AntDesign name="star" size={15} color={color.active} />
                     </RowView>
                 </View>:
