@@ -36,13 +36,13 @@ const Background = ()=>{
 
 const IMAGE_SIZE = 100
 
-const Review=({data={}})=><View style={{...styles.contentContainer, backgroundColor: 'rgba(34, 42, 56,0.8)',}}>
+const Review=({data={}})=><View style={{...styles.contentContainer, backgroundColor: 'rgba(34, 42, 56,0.8)',padding:5, borderRadius:10}}>
     <RowView>
         <View style={{marginLeft:10}}>
             <Text regular>
                 <AntDesign name="star" size={15} color={color.active} /> {Math.round(data.rating*1.2*100)/100}
             </Text>
-            <Text regular>{data.subCat}</Text>
+            <Text regular size={13}>{data.subCat}</Text>
         </View>
     </RowView>
     <View style={{marginHorizontal:10}}>

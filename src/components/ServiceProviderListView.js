@@ -11,19 +11,21 @@ import CONSTANT from 'navigation/navigationConstant'
 
 const ServiceProviderListView = ({data={}, proposal=false, orderId='', proposalData={}, invitation=false}) => {
     const IMAGE_SIZE = 65
+    var rate = 0
+    const rating = data.rating.map(({rating})=>{rate=rating+rate})
     return (
         <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.ServiceProfile, {data, proposal, orderId, proposalData, invitation})}>
             <RowView style={styles.container}>
                 <Image source={{uri:data.url}} style={{height:IMAGE_SIZE, width:IMAGE_SIZE, borderRadius:10}}/>
                 {!invitation ? <View style={{paddingHorizontal:10, height:'95%',width:'75%'}}>
                     <RowView>
-                        <MaterialIcons name="verified" size={24} color={color.blue} />
+                        {data.verified && <MaterialIcons name="verified" size={24} color={color.blue} />}
                         <Text regular size={18} style={{width:'65%'}} numberOfLines={1}> {data.name}</Text>
                     </RowView>
-                    <View>
-                        <Text size={13} regular>{proposalData.date}</Text>
-                        <Text size={13} regular>{proposalData.time}</Text>
-                    </View>
+                    <RowView style={{marginTop:5}}>
+                        <Text size={15} regular>{Math.round(rate*10/data.rating.length)/10} </Text>
+                        <AntDesign name="star" size={15} color={color.active} />
+                    </RowView>
                 </View>:
                 <View style={{paddingHorizontal:10, height:'95%', justifyContent: 'space-between',width:'70%'}}>
                     <View style={{alignItems:'flex-start'}}>
