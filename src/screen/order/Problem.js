@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { StyleSheet, View, Dimensions, ScrollView, Image, Pressable, TextInput, BackHandler, KeyboardAvoidingView} from 'react-native'
 import { MaterialIcons, Entypo, AntDesign, Feather } from '@expo/vector-icons';
+import SoundPlayer from 'react-native-sound-player'
 
 import ImagePicker from 'components/ImagePicker'
 
@@ -51,7 +52,7 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data}) =>{
             id,
             url
         }
-        await saveOrder(DATA)
+        saveOrder(DATA)
 
         const notifyDataFeed = {
             title:`Got An New Feed`,
@@ -63,6 +64,11 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data}) =>{
             Message({phone:'+'+id, message:`${profile.name} give the proposal first hurry up!!`,})
         })
         setSuccess(true)
+        setTimeout(()=>{
+            try {
+                SoundPlayer.playSoundFile('success', 'mp3')
+            } catch(err){}
+        },1300)
         setTimeout(()=>{setSuccess(false);RootNavigation.navigate(CONSTANT.Library,{load:true})}, 2500)
         setLoading(false)
     }
@@ -74,13 +80,13 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data}) =>{
         {!active && <>
         {
             subCategory.problem?
-            <Text size={13} regular>Problem Face</Text>
+            <Text size={13} regular>Problem</Text>
             :
             <Text size={13} regular>For</Text>
         }
         {
             reason.map(res=>
-                <RowView>                    
+                <RowView key={Math.random()}>                    
                     {res.map(item=><Pressable onPress={()=>setText(item)} key={Math.random()} style={[styles.contentContainer, {padding:20, justifyContent:'center', flexGrow:1, marginRight:5},item===text&&{backgroundColor: color.blue,elevation:5}]}>
                         <Text regular>{item}</Text>
                     </Pressable>)}
@@ -117,7 +123,7 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data}) =>{
         </ImagePicker>}
         {text.length>0 &&
             <Pressable onPress={()=>_onPress()} style={styles.button}>
-                <Text regular>Submit</Text>
+                <Text bold>Done</Text>
             </Pressable>
         }
         <Snackbar onDismiss={()=>{}} style={styles.Snackbar} visible={fileData && fileData.size/(1024*1024)>10}>

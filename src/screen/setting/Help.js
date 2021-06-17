@@ -21,9 +21,6 @@ const CustomTextInput = ({label, numberOfLines=1, problem, setProblem})=>{
             onChangeText={setProblem}
             textAlignVertical='top'
         />
-        <Pressable style={{position:'absolute', bottom:10, right:10}} onPress={()=>console.log('trigger')}>
-            <FontAwesome name="microphone" size={24} color={color.white} />
-        </Pressable>
     </RowView>
 }
 

@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import { StyleSheet, Image, View ,Dimensions, Pressable, ScrollView} from 'react-native'
+import { StyleSheet, Image, View ,Dimensions, Pressable, ScrollView, Modal} from 'react-native'
 import axios from 'axios'
 
 import {Text, RowView} from 'styles'
@@ -29,23 +29,23 @@ const Index = ({route}) => {
     const {setCat, state:{profile}, Update} = DataConsumer()
     const [category, setCategory] = useState([])
     const [refreshing, setRefreshing] = React.useState(false);
+    const [activeCategory, setActiveCategory] = useState()
 
     const loadData = async (token)=>{
         setRefreshing(true);
         if(category.length===0){
             const Category = await getCategory(token)
+            setActiveCategory(Category.data[0].id)
             setCategory(Category.data)
             setCat(Category.data)
         }
+        setRefreshing(false)
         const tokenNot = await registerForPushNotificationsAsync()
-        await Update(token)
         if(tokenNot !== profile.token){
             updateUserProfile({token:tokenNot}, token)
             Update()
         } 
-        setRefreshing(false)
     }
-
     useEffect(() => {
         let source = axios.CancelToken.source()
         try{
@@ -59,6 +59,7 @@ const Index = ({route}) => {
     return (
         <View style={{flex:1}}>
             <Background/>
+            {refreshing && <Modal transparent/>}
             {/* ======================= */}
             <View style={{height:HEIGHT*.02}}/>
             {/* ======================== */}
@@ -70,34 +71,31 @@ const Index = ({route}) => {
                     </View>
                 </RowView>
                 {!refreshing ? <ScrollView>
-                    <Text style={{marginHorizontal:20}} size={13}>Book Now :</Text>
                     <View style={styles.topContainer} >
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                            {
-                                category.map(item=><Pressable android_ripple={{color:color.dark}} onPress={()=>RootNavigation.navigate(CONSTANT.AddOrder, {category:item})} key={item.id} style={{alignItems:'center', padding:10, width:WIDTH/2-20}}>
-                                    <Image source={{uri:item.url}} style={{width:70, height:70}}/>
-                                    <Text size={13} bold>{item.name}</Text>
-                                </Pressable>)
-                            }                                                                                                                                                                                           
-                                                                                                                                                          
+                            <View style={{width:WIDTH-20, flexDirection:'row', justifyContent:'space-around' }}>
+                                {
+                                    category.map(item=><Pressable android_ripple={{color:color.dark}} onPress={()=>setActiveCategory(item.id)} key={item.id} style={[{alignItems:'center', padding:10, borderRadius:10, width:100, height:100}, activeCategory===item.id && {backgroundColor:'rgba(34, 42, 56,0.8)'}]}>
+                                        <Image source={{uri:item.url}} style={{width:50, height:50}}/>
+                                        <Text size={13} bold>{item.name}</Text>
+                                    </Pressable>)
+                                }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                            </View>
                         </ScrollView>
                     </View>
                     {
-                        category.map(res=><View key={res.id} style={styles.middleContainer}>
-                            {res.subCategory && <Text size={13} style={{marginHorizontal:20}}>From {res.name}s</Text>}
-                            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                        category.map(res=>res.id===activeCategory && <View key={res.id} style={styles.middleContainer}>
                                 {
                                     res.subCategory && res.subCategory.map(item=>
                                         <Pressable android_ripple={{color:color.dark}} onPress={()=>RootNavigation.navigate(CONSTANT.AddOrder, {category:res, subCategory:item})} key={item.id} style={styles.subCategory}>
                                             <Image source={{uri:item.url}} style={{width:50, height:50}}/>
                                             <View style={{marginLeft:10}}>
                                                 <Text style={{width:WIDTH/1.7-100}} regular numberOfLines={1}>{item.name}</Text>
-                                                <Text size={13} theme={color.blue} bold>₹{item.charge}</Text>
+                                                <Text size={13} theme={color.blue} bold> Service Charge ₹{item.charge}</Text>
                                             </View>
                                         </Pressable>
                                     )
                                 }
-                            </ScrollView>
                         </View>)
                     }
                 </ScrollView>:<Loading/>}
@@ -146,13 +144,11 @@ const styles = StyleSheet.create({
         padding:10
     },
     topContainer:{
-        backgroundColor: 'rgba(34, 42, 56,0.8)',
-        padding:10,
         borderRadius:10,
         flexDirection:'row',
         justifyContent:'space-around',
-        marginBottom:20,
-        margin:10
+        margin:10,
+        width:WIDTH-20,
     },
     middleContainer:{
         marginBottom:20
@@ -160,11 +156,10 @@ const styles = StyleSheet.create({
     subCategory:{
         flexDirection:'row',
         alignItems:'center',
-        backgroundColor: 'rgba(34, 42, 56,0.8)',
-        borderRadius:10,
+        borderBottomWidth:2,
+        borderBottomColor:color.lightDark,
         padding:10,
-        marginVertical:10,
+        marginBottom:10,
         marginHorizontal:10,
-        width:WIDTH/1.7,
     }
 })

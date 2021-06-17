@@ -19,7 +19,7 @@ const App = () => {
   });
 
   if(!fontsLoaded){
-    return <Loading/>
+    return <View/>
   }
   return (
     <>

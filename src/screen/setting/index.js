@@ -23,7 +23,7 @@ const WIDTH =Dimensions.get('screen').width
 const BackGround = ()=>{
     return <View style={[{flex:1},StyleSheet.absoluteFillObject]}>
         <View style={[{flex:1, alignItems:'stretch',flexDirection:'row', backgroundColor:color.dark, height:HEIGHT},StyleSheet.absoluteFillObject]}/>
-        <View style={{backgroundColor:color.secondaryDark,height:1000, width:400,transform:[{rotate:'45deg'}, {translateY:-100}]}}/>
+        <View style={{backgroundColor:color.secondaryDark,height:1550, width:'100%',transform:[{rotate:'36deg'}]}}/>
     </View>
 }
 
@@ -60,9 +60,9 @@ const Index = ({navigation}) => {
     const _setName = async ()=>{
         setLoading(true)
         await updateUserProfile({name})
-        await Update()
         setisEdit(false)
         setLoading(false)
+        Update()
     }
     return (
         !showImage ? <View style={{flex:1}}>

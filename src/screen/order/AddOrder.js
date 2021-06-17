@@ -12,7 +12,6 @@ import Problem from './Problem'
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
-const stateList = ['subCategory', 'problem']
 
 const Background = ()=>{
     return <View style={[{flex:1},StyleSheet.absoluteFillObject]}>
@@ -21,39 +20,16 @@ const Background = ()=>{
     </View>
 }
 
-const SubCategoryListView = ({data={}, setSelect,setState, setSub})=>{
-    const _onPress = (item)=>{
-        setSub(item)
-        setState(res=>({...res, subCategory:item.id}))
-        setSelect(stateList[1])
-    }
-    return <View style={{padding:20}}>
-        <Text size={13} regular>{data.name}</Text>
-        {
-            data.subCategory.map(item=><Pressable onPress={()=>_onPress(item)} key={item.id} style={styles.contentContainer} android_ripple={{color:color.dark}}>
-                        <Image source={{uri:item.url}} style={{height:50, width:50}}/>
-                        <View style={{width:WIDTH-110}}>
-                            <Text style={{marginLeft:10}} size={15} regular>{item.name}</Text>
-                            <Text style={{marginLeft:10}} theme={color.active} size={13} bold>Service Charge ₹{item.charge}</Text>
-                        </View>
-                </Pressable>
-            )
-        }
-    </View>
-}
-
-const AddOrder = ({navigation, route}) => {
+const AddOrder = ({route}) => {
     const {category, subCategory} = route.params
-    const [sub, setSub] = useState()
-    const {state:{profile}} = DataConsumer()
+    const {state:{profile}, Update} = DataConsumer()
     const [provider, setProvider] = useState([])
-    const [select, setSelect] = useState(stateList[0])
     const [success, setSuccess] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [state, setState] = useState({category:category.id,subCategory:subCategory !== undefined ? subCategory.id :undefined})
-    var index = stateList.indexOf(select)
+    const state = {category:category.id,subCategory:subCategory !== undefined ? subCategory.id :undefined}
     useEffect(()=>{
-        getServiceProvider(category.id).then(({data})=>{
+        getServiceProvider(category.id).then(async ({data})=>{
+            await Update()
             const sortedInvite = data.filter(item=>
                 getDistance(
                     { latitude: profile.coord.latitude, longitude: profile.coord.longitude },
@@ -62,13 +38,6 @@ const AddOrder = ({navigation, route}) => {
             )
             setProvider(sortedInvite); 
         })
-        const backAction = () => {
-            index>0 ? setSelect(stateList[index-1]):navigation.goBack()
-            return true
-        };
-      
-        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-        return () => backHandler.remove();
     },[])
     if(success){
         return <View style={{flex:1}}>            
@@ -87,25 +56,13 @@ const AddOrder = ({navigation, route}) => {
     else if(loading) return <Loading/>
     else return (
         <View style={{flex:1}}>
-            <>
                 <Background/>
                 <View style={{height:HEIGHT*.02}}/>
                 <View style={{margin:20, marginBottom:0}}>
                     <Text size={20} bold>Linkups</Text>
                     <Text size={13}>Post Order</Text>
                 </View>
-                {
-                    subCategory=== undefined ?
-                    <>
-                        {select===stateList[0] && <SubCategoryListView  setSub={setSub} setSelect={setSelect} setState={setState} data={category}/>}
-                        {select===stateList[1] && <Problem setSuccess={setSuccess} setLoading={setLoading} subCategory={sub} state={state} data={provider}/>}
-                    </>
-                    :
-                    <>
-                        {select===stateList[0] && <Problem  setSuccess={setSuccess} setLoading={setLoading} subCategory={subCategory} state={state} data={provider}/>}
-                    </>
-                }
-            </>
+                <Problem  setSuccess={setSuccess} setLoading={setLoading} subCategory={subCategory} state={state} data={provider}/>
         </View>
 
     )

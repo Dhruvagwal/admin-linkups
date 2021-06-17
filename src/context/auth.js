@@ -2,7 +2,7 @@ import React, {useContext, useState, useReducer} from 'react'
 
 const Context = React.createContext()
 
-const INITIAL_STATE = {auth: false}
+const INITIAL_STATE = {auth: true}
 
 const reducer = (state, action)=>{
     switch (action.type){

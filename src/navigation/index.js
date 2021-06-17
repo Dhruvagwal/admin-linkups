@@ -27,11 +27,11 @@ const routeNameRef = React.createRef();
 const Index = () => {
   useEffect(()=>{
     verifyToken()
-      .then(response=>{setAuth(response); setLoading(false)})
+      .then(response=>{setAuth(response)})
       .catch(()=>setAuth(false))
   },[])
     const Stack = createStackNavigator()
-    const [Loading, setLoading] = useState(true)
+    // const [Loading, setLoading] = useState(true)
     const {setName} = DataConsumer()
     const {state:{auth}, setAuth} = AuthConsumer()
 
@@ -67,7 +67,6 @@ const Index = () => {
                     linking={linking}
                 >
                 <Stack.Navigator headerMode={false} screenOptions={{ animationEnabled: false }} >
-                    {Loading && <Stack.Screen name={CONSTANT.Loading} component={LoadingScreen}/>}
                     {auth ? <>
                       <Stack.Screen name={CONSTANT.Home} component={HomeScreen}/>
                       <Stack.Screen name={CONSTANT.Language} component={LanguageScreen}/>

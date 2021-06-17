@@ -13,7 +13,7 @@ const BottomBar = () => {
     return (
         <View style={styles.container}>
             <Pressable android_ripple={{color:color.active}} onPress={()=>RootNavigation.navigate(CONSTANT.Home)} style={styles.option}>
-                <Entypo name="home" size={30} color={CONSTANT.Home === currentRouteName ? color.active : color.inActive} />
+                <Entypo name="home" size={30} color={( currentRouteName===undefined || CONSTANT.Home === currentRouteName) ? color.active : color.inActive} />
             </Pressable>
             <Pressable android_ripple={{color:color.active}} onPress={()=>RootNavigation.navigate(CONSTANT.Library)} style={styles.option}>
                 <Ionicons name="library" size={24} color={CONSTANT.Library === currentRouteName ? color.active : color.inActive} />

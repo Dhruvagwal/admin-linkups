@@ -12,6 +12,7 @@ import {DataConsumer} from 'context/data'
 import { sendPushNotification } from 'middlewares/notification'
 import CONSTANT from 'navigation/navigationConstant'
 import TimeDiff from 'middlewares/TimeDiff'
+import ScreenModal from 'components/ScreenModal'
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
@@ -25,6 +26,24 @@ const _openMap = ({latitude, longitude}, label)=>{
     });
 
     Linking.openURL(url);
+}
+
+
+const AcceptScreen = ({accept,setNotice})=>{
+    return <ScreenModal>
+    <Text regular>Important!</Text>
+    <Pressable style={{position:'absolute', right:0, padding:10}} onPress={()=>setNotice(false)}>
+        <Entypo name="cross" size={24} color={color.inActive} />
+    </Pressable>
+    <Text size={18} regular style={{marginVertical:10}}>
+        Once you accept this offer,
+        you have to pay ₹150 to Kavita as a service Charge{'\n'}
+        {/* एक बार जब आप इस प्रस्ताव को स्वीकार कर लेंगे, तो आपको सेवा शुल्क के रूप में कविता को ₹150 का भुगतान करना होगा */}
+    </Text>
+    <Pressable onPress={accept} style={styles.okButton}>
+        <Text regular>Ok</Text>
+    </Pressable>
+</ScreenModal>
 }
 
 const Background = ()=>{
@@ -59,12 +78,13 @@ const Point = ({children, last=false, text, onPress=()=>{}})=><Pressable onPress
 </Pressable> 
 
 const ServiceProfile = ({route, navigation}) => {
-    const {data, proposal, orderId, proposalData, invitation} = route.params
+    const {data, proposal, orderId, proposalData} = route.params
     const [loading, setLoading] = useState(false)
     const [pro, setPro] = useState('')
     const [orderData, setOrderData] = useState({})
     const [rating, setRating] = useState(0)
     const {state} = DataConsumer()
+    const [notice, setNotice] = useState(false)
     useEffect(() => {
         var rate = 0
         const result = state.category.find(item=>item.id === data.category)
@@ -81,6 +101,7 @@ const ServiceProfile = ({route, navigation}) => {
     }, [])
     const accept = async ()=>{
         setLoading(true)
+        setNotice(false)
         const updateData = {
             provider: data.id,
             startsOn:new Date(),
@@ -110,11 +131,10 @@ const ServiceProfile = ({route, navigation}) => {
         { latitude: state.profile.coord.latitude, longitude: state.profile.coord.longitude },
         { latitude: data.coord.latitude, longitude: data.coord.longitude }
     )
-
-    
     return (
         <View style={{flex:1}}>
             <Background/>
+            {notice && <AcceptScreen accept={accept} setNotice={setNotice}/>}
             <View style={{height:HEIGHT*.05}}/>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{padding:20}}>
@@ -130,10 +150,6 @@ const ServiceProfile = ({route, navigation}) => {
                         </View>
                     </RowView>
                     <View style={styles.contentContainer}>
-                        {
-                            !invitation && 
-                            <Point text={`${proposalData.date}\n${proposalData.time}`}/>
-                        }
                         <Point text={`+${data.id}`} onPress={()=>Linking.openURL(`tel:+${data.id}`)}>
                             <View style={{padding:5, backgroundColor:color.active, borderRadius:10, marginRight:10}}>
                                 <Ionicons name="ios-call" size={15} color={color.white} />
@@ -165,8 +181,8 @@ const ServiceProfile = ({route, navigation}) => {
             </ScrollView>
             {!loading ?
             <>
-                {proposal && <Pressable onPress={accept} style={styles.accept}>
-                    <Text size={20} bold>Accept</Text>
+                {proposal && <Pressable onPress={()=>{setNotice(true)}} style={styles.accept}>
+                    <Text size={20} bold>Hire Me!</Text>
                 </Pressable>}
             </>:
             <Loading/>}
@@ -183,6 +199,14 @@ const styles = StyleSheet.create({
     },
     contentContainer:{
         marginTop:20
+    },
+    okButton:{
+        backgroundColor:color.active,
+        borderRadius:10,
+        alignSelf:'flex-end',
+        padding:10,
+        width:70,
+        alignItems:'center'
     },
     Points:{
         borderBottomWidth:2,

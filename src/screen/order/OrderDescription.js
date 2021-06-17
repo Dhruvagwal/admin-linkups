@@ -24,8 +24,8 @@ const Background = ()=><View style={[{flex:1, alignItems:'stretch',flexDirection
     <View style={{backgroundColor:color.secondaryDark, width:'15%'}}/>
 </View>
 
-const Point = ({last=false,text=''})=><RowView style={{...styles.Points, borderBottomWidth:last ? 0:2}}>
-    <Text style={{marginLeft:10}} regular>{text}</Text>
+const Point = ({last=false,text='',bold=false})=><RowView style={{...styles.Points, borderBottomWidth:last ? 0:2}}>
+    <Text style={{marginLeft:10}} regular={!bold} bold={bold}>{text}</Text>
 </RowView>
 
 
@@ -106,17 +106,16 @@ const OrderDescription = ({route}) => {
                                     </Pressable>
                                     <View style={{alignItems:'flex-start', height:100, marginLeft:10, justifyContent:'space-between'}}>
                                         <Text style={{width:WIDTH*.6}} bold numberOfLines={2} adjustsFontSizeToFit>{SubCat.name}</Text>
-                                        <Text size={13}>Status:<Text regular style={{textTransform:'capitalize', color:color.active}} size={13}> {data.status}</Text></Text>
+                                        <Text size={13}>Status:<Text bold style={{textTransform:'capitalize', color:color.active}} size={13}> {data.status}</Text></Text>
                                         <Text size={13}>{TimeDiff(data.postedAt).diff}</Text>
                                     </View>
                                 </RowView>
                             </View>
-                            {data.status!=='posted'&&'cancelled' && <StatusTracker data={data}/>}
-                            <Text style={{margin:10, marginBottom:0}} size={12}>Info</Text>
-                            <View style={{...styles.container, backgroundColor: '#0000',paddingTop:0}}>
+                            {(data.status!=='posted'&& data.status!=='cancelled') && <StatusTracker data={data}/>}
+                            <View style={{...styles.container, backgroundColor: '#0000',paddingTop:10}}>
+                                <Point bold text={`Service Charge: ₹${SubCat.charge}`}/>
                                 <Point text={category.name}/>
-                                <Point text={data.info.problem}/>
-                                <Point last text={`Service Charge: ₹${SubCat.charge}`}/>
+                                <Point last text={data.info.problem}/>
                             </View>
                             {data.status !== status[4] &&
                                 <>
@@ -152,6 +151,11 @@ const OrderDescription = ({route}) => {
                             </View>
                         }
                     </ScrollView>
+                    {(data.status==='posted' && data.proposal===undefined) && <View style={{backgroundColor:color.lightDark, padding:10, borderRadius:10, elevation:3}}>
+                        <Text regular>
+                            Sent to nearby electricians 
+                        </Text>
+                    </View>}
                 </View>
         </View>
         :

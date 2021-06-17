@@ -38,6 +38,7 @@ const Index = ({route}) => {
             setData(postData)
             setRefreshing(false)
         }catch(err){
+            alert('Something Wnent Wrong')
         }
     }
     useEffect(() => {
@@ -57,7 +58,7 @@ const Index = ({route}) => {
             setData(filter_Result)
         }
         else{
-            setData(postData.data)
+            setData(postData.data.filter(({status})=>status!=='cancelled'))
         }
         setRefreshing(false);
     }
@@ -81,6 +82,8 @@ const Index = ({route}) => {
                     </RowView>
                 </RowView>
                 {/* ====================== */}
+                {
+                    data.length>0 ? 
                     <ScrollView 
                         showsVerticalScrollIndicator={false} 
                         style={{flex:1}} 
@@ -101,6 +104,11 @@ const Index = ({route}) => {
                         }
                         <Text>{'\n'}</Text>
                     </ScrollView>
+                    :
+                    <View style={{flex:0.8, alignItems:'center', justifyContent:'center'}}>
+                        <Image source={require('../../../assets/nodata.png')} style={{width:200, height:200}} resizeMode='center'/>
+                    </View>
+                }
             </View>
             <BottomBar/>
         </View>
