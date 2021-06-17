@@ -38,9 +38,12 @@ const Index = ({route}) => {
             setCat(Category.data)
         }
         const tokenNot = await registerForPushNotificationsAsync()
-        tokenNot !== profile.token && await updateUserProfile({token:tokenNot}, token)
+        await Update(token)
+        if(tokenNot !== profile.token){
+            updateUserProfile({token:tokenNot}, token)
+            Update()
+        } 
         setRefreshing(false)
-        Update(token)
     }
 
     useEffect(() => {

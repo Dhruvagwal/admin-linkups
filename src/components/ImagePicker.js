@@ -23,7 +23,7 @@ export default function ImageSelector({style, children, id, Update, setLoading, 
       aspect: [4, 4],
       quality: 1,
     });
-    if(uploadImage){
+    if(uploadImage && result.cancelled!==true){
       await upload(result, id)
       await Update()
     }

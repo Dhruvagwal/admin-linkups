@@ -55,6 +55,7 @@
     "react-native-maps": "^0.27.1",
     "react-native-modal": "^11.10.0",
     "react-native-paper": "^4.9.1",
+    "react-native-push-notification": "^7.3.1",
     "react-native-razorpay": "^2.2.7",
     "react-native-reanimated": "~2.1.0",
     "react-native-safe-area-context": "^3.2.0",
