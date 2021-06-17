@@ -4,7 +4,6 @@ import { StyleSheet, View, Dimensions, Image, Pressable, BackHandler} from 'reac
 import {Text} from 'styles'
 import color from 'colors'
 import Loading from 'components/Loading'
-import { stat } from 'react-native-fs';
 import getDistance from 'geolib/es/getDistance';
 import {getServiceProvider, saveOrder, Message} from 'hooks/useData'
 import {DataConsumer} from 'context/data'
@@ -50,7 +49,7 @@ const AddOrder = ({navigation, route}) => {
     const [provider, setProvider] = useState([])
     const [select, setSelect] = useState(stateList[0])
     const [success, setSuccess] = useState(false)
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [state, setState] = useState({category:category.id,subCategory:subCategory !== undefined ? subCategory.id :undefined})
     var index = stateList.indexOf(select)
     useEffect(()=>{
@@ -62,7 +61,6 @@ const AddOrder = ({navigation, route}) => {
                 ) <= category.minDistance
             )
             setProvider(sortedInvite); 
-            setLoading(false)
         })
         const backAction = () => {
             index>0 ? setSelect(stateList[index-1]):navigation.goBack()

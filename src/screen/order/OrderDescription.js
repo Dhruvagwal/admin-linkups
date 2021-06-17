@@ -8,16 +8,12 @@ import ServiceProviderListView from 'components/ServiceProviderListView'
 import {DataConsumer} from 'context/data'
 import * as RootNavigation from 'navigation/RootNavigation'
 import CONSTANT from 'navigation/navigationConstant'
-import {updateOrder, getDataById, updateProviderProfile, Message, updateUserProfile} from 'hooks/useData'
-import moment from 'moment';
+import {updateOrder, getDataById, updateUserProfile} from 'hooks/useData'
 import FeedBackScreen from './FeedBackScreen'
 import { sendPushNotification } from 'middlewares/notification'
 import TimeDiff from 'middlewares/TimeDiff'
 import ImageViewer from 'components/ImageViewer';
-import RazorpayCheckout from 'react-native-razorpay';
-import TextInput from 'components/TextInput'
 import StatusTracker from 'components/StatusTracker'
-import validateEmailId from 'hooks/validateEmailId'
 
 
 const HEIGHT= Dimensions.get('screen').height
@@ -35,14 +31,11 @@ const Point = ({last=false,text=''})=><RowView style={{...styles.Points, borderB
 
 const OrderDescription = ({route}) => {
     const {id} = route.params
-    const {state:{profile}, Update} = DataConsumer()
+    const {state:{profile}} = DataConsumer()
     const [data, setData] = useState({})
-    const [email, setEmail] = useState(false)
     const [SubCat, setSubCat] = useState({})
     const [category, setCategory] = useState({})
-    const [invited, setInvited] = useState([])
     const [proposal, setProposal] = useState([])
-    const [emailAddress,setEmailAddress] = useState('')
     const [review, setReview] = useState(false)
     const [loading, setLoading] = useState(true)
     const [provider, setProvider] = useState([])
@@ -64,47 +57,6 @@ const OrderDescription = ({route}) => {
         RootNavigation.navigate(CONSTANT.Library,{load:true})
         setMiniLoading(false)
     }
-
-    const checkout =async ()=>{
-        if(profile.email){
-            var options = {
-                description: `Pay For ${SubCat.name}`,
-                image: 'https://i.imgur.com/3g7nmJC.png',
-                currency: 'INR',
-                key: 'rzp_test_LNiP3v84muxD7h',
-                amount:SubCat.charge*100,
-                name: profile.name,
-                prefill: {
-                    email: profile.email,
-                    contact: profile.id,
-                    name: profile.name
-                },
-                theme: {color: color.dark}
-            }
-            RazorpayCheckout.open(options).then(async (response) => {
-                console.log(response.razorpay_payment_id)
-                const UpdatedData = {
-                    status:status[3],
-                    paidOn:moment().format('LLL'),
-                    txnId:response.razorpay_payment_id
-                }
-                const notifyData = {
-                    title:`Payment Done`,
-                    body:`${profile.name} paid you`
-                }    
-                await updateOrder(UpdatedData,data.id )
-                sendPushNotification(provider.token, notifyData)
-                Message({phone:'+'+provider.id, message:'Paid'})
-                setReview(true)
-              }).catch((error) => {
-                  console.log('error',error)
-                alert('Payment Failed');
-              })
-    
-        }else{
-            setEmail(true)
-        }
-    }
     
     useEffect(() => {
         if(loading){
@@ -119,15 +71,7 @@ const OrderDescription = ({route}) => {
             })
         }else{
             if (data.status===status[0]){
-                var Invitedlist = []
                 var Propsallist = []
-                data.invited>0 && data.invited.map(async item=>{
-                    await getDataById('serviceProvider',item)
-                    .then(({data})=>{
-                        Invitedlist = [...Invitedlist, data]
-                        setInvited(Invitedlist)
-                    })
-                });
                 if(data.proposal!== undefined && data.proposal.length > 0 ){
                     data.proposal.map(async item=>{
                     await getDataById('serviceProvider',item.id)
@@ -144,28 +88,8 @@ const OrderDescription = ({route}) => {
         }
     }, [route.params, loading])
 
-    const validate = validateEmailId(emailAddress)
-
-    const _onEmailUpdate =async ()=>{
-        setLoading(true)
-       await updateUserProfile({email:emailAddress})
-       await Update()
-       setEmail(false)
-       setLoading(false)
-
-    }
     if(showImage){
         return <ImageViewer uri={data.url?data.url:SubCat.url} showImage={showImage} setShowImage={setShowImage}/>
-    }
-    else if(email){
-        return !loading? <View style={{flex:1, justifyContent:'center', padding:20}}>
-            <TextInput keyboardType='email-address' value={emailAddress} setValue={setEmailAddress} label='Email Address'/>
-            {validate && <Pressable onPress={_onEmailUpdate} style={{backgroundColor:color.active, width:WIDTH, alignSelf:'flex-end', padding:10, position:'absolute', bottom:0, right:0, alignItems:'center'}}>
-                <Text regular>Save</Text>
-            </Pressable>}
-        </View>
-        :
-        <Loading/>
     }
     else return (
         !loading ? <View style={{flex:1}}>          
@@ -204,12 +128,6 @@ const OrderDescription = ({route}) => {
                                                 proposal.map(item=><ServiceProviderListView key={Math.random().toString()} proposalData={data.proposal.find(response=>response.id===item.id)} orderId={data.id} data={item} category={category} proposal/>)
                                             }
                                         </View>}
-                                        {invited.length>0 && <View style={{marginTop:10}}>
-                                            <Text style={{margin:10}} size={12}>Invited</Text>
-                                            {
-                                                invited.map(item=><ServiceProviderListView key={Math.random().toString()} data={item} invitation/>)
-                                            }
-                                        </View>}
                                         </>:
                                         <View style={{marginTop:10}}>
                                             <Text style={{margin:10}} size={12}>Provider</Text>
@@ -235,11 +153,6 @@ const OrderDescription = ({route}) => {
                         }
                     </ScrollView>
                 </View>
-                {
-                    data.status === status[2] && <Pressable onPress={checkout} style={styles.bottomButton}>
-                        <Text regular>Checkout</Text>
-                    </Pressable>
-                }
         </View>
         :
         <Loading/>

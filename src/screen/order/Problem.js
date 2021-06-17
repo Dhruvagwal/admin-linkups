@@ -108,7 +108,8 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data}) =>{
         {!active && <ImagePicker setResponse={setResponse} setLoading={()=>{}} style={{marginTop:20, overflow: 'hidden', borderRadius:10}} uploadImage={false}>
             {!response ? <View style={{width:WIDTH-40, height:130, borderWidth:2, borderColor:color.blue, borderRadius:10, alignItems:'center', justifyContent:'center'}}>
                 <Entypo name="image" size={30} color={color.blue} />
-                <Text regular size={13} >Upload Image (Optional)</Text>
+                <Text regular size={13} >Upload Image</Text>
+                <Text regular size={10} theme={color.inActive} >(Optional)</Text>
             </View>
             :
             <Image resizeMode='center' style={{width:WIDTH-40, height:130}} source={{uri:response}} />
