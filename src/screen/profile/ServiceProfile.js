@@ -29,7 +29,7 @@ const _openMap = ({latitude, longitude}, label)=>{
 }
 
 
-const AcceptScreen = ({accept,setNotice})=>{
+const AcceptScreen = ({accept,setNotice, price, data})=>{
     return <ScreenModal>
     <Text regular>Important!</Text>
     <Pressable style={{position:'absolute', right:0, padding:10}} onPress={()=>setNotice(false)}>
@@ -37,7 +37,7 @@ const AcceptScreen = ({accept,setNotice})=>{
     </Pressable>
     <Text size={18} regular style={{marginVertical:10}}>
         Once you accept this offer,
-        you have to pay ₹150 to Kavita as a service Charge{'\n'}
+        you have to pay ₹{price} to {data.name} as a service Charge{'\n'}
         {/* एक बार जब आप इस प्रस्ताव को स्वीकार कर लेंगे, तो आपको सेवा शुल्क के रूप में कविता को ₹150 का भुगतान करना होगा */}
     </Text>
     <Pressable onPress={accept} style={styles.okButton}>
@@ -81,10 +81,14 @@ const ServiceProfile = ({route, navigation}) => {
     const {data, proposal, orderId, proposalData} = route.params
     const [loading, setLoading] = useState(false)
     const [pro, setPro] = useState('')
-    const [orderData, setOrderData] = useState({})
+    const [orderData, setOrderData] = useState()
     const [rating, setRating] = useState(0)
     const {state} = DataConsumer()
     const [notice, setNotice] = useState(false)
+    var result
+    if(orderData){
+        result =  state.category.find(item=>item.id===data.category).subCategory.find(({id})=>id===orderData.info.subCategory)
+    }
     useEffect(() => {
         var rate = 0
         const result = state.category.find(item=>item.id === data.category)
@@ -111,7 +115,6 @@ const ServiceProfile = ({route, navigation}) => {
             title:`Got New Order`,
             body:`${state.profile.name} accepted your proposal`
         }
-        const result = state.category.find(item=>item.id===data.category).subCategory.find(({id})=>id===orderData.info.subCategory)
         const dataAdd = {
             id:orderId, 
             time: new Date(), 
@@ -134,7 +137,7 @@ const ServiceProfile = ({route, navigation}) => {
     return (
         <View style={{flex:1}}>
             <Background/>
-            {notice && <AcceptScreen accept={accept} setNotice={setNotice}/>}
+            {notice && <AcceptScreen data={data}  price={result.charge} accept={accept} setNotice={setNotice}/>}
             <View style={{height:HEIGHT*.05}}/>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{padding:20}}>

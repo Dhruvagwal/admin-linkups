@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import { StyleSheet, Image, View ,Dimensions, Pressable, ScrollView, Modal} from 'react-native'
+import { StyleSheet, Image, View ,Dimensions, Pressable, ScrollView, Modal, Button} from 'react-native'
 import axios from 'axios'
 
 import {Text, RowView} from 'styles'
@@ -40,7 +40,7 @@ const Index = ({route}) => {
             setCat(Category.data)
         }
         setRefreshing(false)
-        const tokenNot = await registerForPushNotificationsAsync()
+        const tokenNot = registerForPushNotificationsAsync()
         if(tokenNot !== profile.token){
             updateUserProfile({token:tokenNot}, token)
             Update()
@@ -73,13 +73,13 @@ const Index = ({route}) => {
                 {!refreshing ? <ScrollView>
                     <View style={styles.topContainer} >
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                            <View style={{width:WIDTH-20, flexDirection:'row', justifyContent:'space-around' }}>
+                            <View style={{width:WIDTH-20,flexDirection:'row', justifyContent:'space-around' }}>
                                 {
-                                    category.map(item=><Pressable android_ripple={{color:color.dark}} onPress={()=>setActiveCategory(item.id)} key={item.id} style={[{alignItems:'center', padding:10, borderRadius:10, width:100, height:100}, activeCategory===item.id && {backgroundColor:'rgba(34, 42, 56,0.8)'}]}>
+                                    category.map(item=><Pressable android_ripple={{color:color.dark}} onPress={()=>setActiveCategory(item.id)} key={item.id} style={[{alignItems:'center', padding:10, borderRadius:10, width:100, height:100, marginHorizontal:10}, activeCategory===item.id && {backgroundColor:'rgba(34, 42, 56,0.8)'}]}>
                                         <Image source={{uri:item.url}} style={{width:50, height:50}}/>
                                         <Text size={13} bold>{item.name}</Text>
                                     </Pressable>)
-                                }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                }
                             </View>
                         </ScrollView>
                     </View>
@@ -149,6 +149,7 @@ const styles = StyleSheet.create({
         justifyContent:'space-around',
         margin:10,
         width:WIDTH-20,
+        marginVertical:0
     },
     middleContainer:{
         marginBottom:20
