@@ -69,7 +69,7 @@ const BackGround = ()=>{
     </View>
 }
 
-const Address = () => {
+const Address = ({navigation}) => {
     const {state:{profile}, Update} = DataConsumer()
     const [loading, setLoading] = useState(false)
     const [change, setChange] = useState(false)
@@ -80,6 +80,7 @@ const Address = () => {
             var {lat, lng} = json.results[0].geometry.location;
             await updateUserProfile({Address:data.description, coord:{latitude:lat, longitude:lng}})
             await Update()
+            navigation.goBack()
             setLoading(false)
             setChange(false)
 		})
@@ -94,6 +95,7 @@ const Address = () => {
             await updateUserProfile({Address, coord:{latitude, longitude}})
             await Update()
         }
+        navigation.goBack()
         setLoading(false)
         
     }
@@ -112,7 +114,12 @@ const Address = () => {
             </View>
             <View style={{padding:10, backgroundColor:color.lightDark, borderTopLeftRadius:10, borderTopRightRadius:10, paddingVertical:20}}>
                 <Text size={13}>Your Address:</Text>
-                <Text bold>{profile.Address}</Text>
+                {
+                    profile.Address?
+                        <Text bold>{profile.Address}</Text>
+                        :
+                    <Text bold theme={color.red}>Please Select your Address</Text>
+                }
             </View>
             </>
             :

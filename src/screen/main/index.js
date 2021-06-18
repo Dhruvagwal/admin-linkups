@@ -24,7 +24,7 @@ const Background = ()=>{
 }
 
 
-const Index = ({route}) => {
+const Index = ({route, navigation}) => {
     const routes = route.params
     const {setCat, state:{profile}, Update} = DataConsumer()
     const [category, setCategory] = useState([])
@@ -40,7 +40,7 @@ const Index = ({route}) => {
             setCat(Category.data)
         }
         setRefreshing(false)
-        const tokenNot = registerForPushNotificationsAsync()
+        const tokenNot = await registerForPushNotificationsAsync()
         if(tokenNot !== profile.token){
             updateUserProfile({token:tokenNot}, token)
             Update()
@@ -87,7 +87,7 @@ const Index = ({route}) => {
                         category.map(res=>res.id===activeCategory && <View key={res.id} style={styles.middleContainer}>
                                 {
                                     res.subCategory && res.subCategory.map(item=>
-                                        <Pressable android_ripple={{color:color.dark}} onPress={()=>RootNavigation.navigate(CONSTANT.AddOrder, {category:res, subCategory:item})} key={item.id} style={styles.subCategory}>
+                                        <Pressable android_ripple={{color:color.dark}} onPress={()=>profile.coord ? RootNavigation.navigate(CONSTANT.AddOrder, {category:res, subCategory:item}) : navigation.navigate(CONSTANT.Address)} key={item.id} style={styles.subCategory}>
                                             <Image source={{uri:item.url}} style={{width:50, height:50}}/>
                                             <View style={{marginLeft:10}}>
                                                 <Text style={{width:WIDTH/1.7-100}} regular numberOfLines={1}>{item.name}</Text>

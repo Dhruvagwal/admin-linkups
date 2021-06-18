@@ -5,6 +5,7 @@ import {Text} from 'styles'
 import color from 'colors'
 import Loading from 'components/Loading'
 import getDistance from 'geolib/es/getDistance';
+import CONSTANT from 'navigation/navigationConstant.json'
 import {getServiceProvider, saveOrder, Message} from 'hooks/useData'
 import {DataConsumer} from 'context/data'
 import LottieView from 'lottie-react-native';
@@ -20,7 +21,7 @@ const Background = ()=>{
     </View>
 }
 
-const AddOrder = ({route}) => {
+const AddOrder = ({route, navigation}) => {
     const {category, subCategory} = route.params
     const {state:{profile}, Update} = DataConsumer()
     const [provider, setProvider] = useState([])
@@ -28,16 +29,17 @@ const AddOrder = ({route}) => {
     const [loading, setLoading] = useState(false)
     const state = {category:category.id,subCategory:subCategory !== undefined ? subCategory.id :undefined}
     useEffect(()=>{
-        getServiceProvider(category.id).then(async ({data})=>{
-            await Update()
-            const sortedInvite = data.filter(item=>
-                getDistance(
-                    { latitude: profile.coord.latitude, longitude: profile.coord.longitude },
-                    { latitude: item.coord.latitude, longitude: item.coord.longitude }
-                ) <= category.minDistance
-            )
-            setProvider(sortedInvite); 
-        })
+        if(profile.coord){
+            getServiceProvider(category.id).then(async ({data})=>{
+                const sortedInvite = data.filter(item=>
+                    getDistance(
+                        { latitude: profile.coord.latitude, longitude: profile.coord.longitude },
+                        { latitude: item.coord.latitude, longitude: item.coord.longitude }
+                    ) <= category.minDistance
+                )
+                setProvider(sortedInvite); 
+            })
+        }
     },[])
     if(success){
         return <View style={{flex:1}}>            
@@ -62,7 +64,7 @@ const AddOrder = ({route}) => {
                     <Text size={20} bold>Linkups</Text>
                     <Text size={13}>Post Order</Text>
                 </View>
-                <Problem  setSuccess={setSuccess} setLoading={setLoading} subCategory={subCategory} state={state} data={provider}/>
+                <Problem category={category} setSuccess={setSuccess} setLoading={setLoading} subCategory={subCategory} state={state} data={provider}/>
         </View>
 
     )

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { StyleSheet, View, TextInput, Pressable, Dimensions} from 'react-native'
+import { StyleSheet, View, TextInput, Pressable, Dimensions, Linking} from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'; 
 
 import {Text, RowView} from 'styles'
@@ -34,8 +34,10 @@ const Help = ({navigation}) => {
     const [sucess, setSuccess] = useState(false)
     const [other, setOther] = useState(false)
     const {state:{profile}} = DataConsumer()
+    const [care, setCare] = useState({})
     useEffect(()=>{
         getDataById('Linkups', 'LINKUPS_PROBLEM_FACE').then(({data})=>{setProblemList(data); setLoading(false)})
+        getDataById('Linkups','care').then(({data})=>{setCare(data)})
     },[])
     const _onPress = async ()=>{
         setLoading(true)
@@ -50,7 +52,6 @@ const Help = ({navigation}) => {
         setSuccess(true)
         setLoading(false)
     }
-
     return (
             !loading ? <View style={{paddingTop:25, padding:20, flex:1}}>  
             {!sucess ? <>
@@ -64,6 +65,14 @@ const Help = ({navigation}) => {
                             <Text bold>{item}</Text>
                         </Pressable>)
                     }
+                    <View style={{margin:10}}>
+                        <Pressable onPress={() => { Linking.openURL(`tel:${care.num}`) }}>
+                            <Text size={13} regular>Customer Care: <Text theme={color.blue} bold>{care.num}</Text> </Text>
+                        </Pressable>
+                        <Pressable onPress={()=>{Linking.openURL(`mailto:${care.email}?subject=${profile.name}&body=`)}} style={{marginTop:10}}>
+                            <Text size={13} regular>Email Id: <Text theme={color.blue} bold>{care.email}</Text></Text>
+                        </Pressable>
+                </View>
                     </>
                     :
                     <>

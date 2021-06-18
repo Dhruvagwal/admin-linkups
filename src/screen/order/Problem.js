@@ -4,6 +4,7 @@ import { MaterialIcons, Entypo, AntDesign, Feather } from '@expo/vector-icons';
 import SoundPlayer from 'react-native-sound-player'
 
 import ImagePicker from 'components/ImagePicker'
+import messageTemplate from 'data/messageTemplate' 
 
 import {Text, RowView} from 'styles'
 import color from 'colors'
@@ -28,13 +29,13 @@ const getFileSize = async (uri) => {
     return {size, extension}
 };
 
-const Problem = ({setSuccess,setLoading,state, subCategory, data}) =>{
+const Problem = ({setSuccess,setLoading,state, subCategory, data, category}) =>{
     const [text, setText] = useState('')
     const [response, setResponse] = useState(state.url)
     const [fileData, setfileData] = useState()
     const {state:{profile}} = DataConsumer()
     const _onPress =async ()=>{
-        setLoading(true)
+        // setLoading(true)
         const id = 'ORD-'+Math.floor(Math.random()*1000000)
         var url
         if(response){
@@ -59,9 +60,9 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data}) =>{
             body:`${profile.name} give the proposal first hurry up!!`,
             data:{id}
         }
-        data.map(({token, id})=>{
+        data.map(({token, id,name})=>{
             sendPushNotification(token, notifyDataFeed)
-            Message({phone:'+'+id, message:`${profile.name} give the proposal first hurry up!!`,})
+            Message({phone:'+'+id, message:messageTemplate({name,profile, subCategory, category}, 0)})
         })
         setSuccess(true)
         setTimeout(()=>{

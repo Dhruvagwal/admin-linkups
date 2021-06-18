@@ -13,6 +13,7 @@ import { sendPushNotification } from 'middlewares/notification'
 import CONSTANT from 'navigation/navigationConstant'
 import TimeDiff from 'middlewares/TimeDiff'
 import ScreenModal from 'components/ScreenModal'
+import messageTemplate from '../../data/messageTemplate';
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
@@ -35,13 +36,13 @@ const AcceptScreen = ({accept,setNotice, price, data})=>{
     <Pressable style={{position:'absolute', right:0, padding:10}} onPress={()=>setNotice(false)}>
         <Entypo name="cross" size={24} color={color.inActive} />
     </Pressable>
-    <Text size={18} regular style={{marginVertical:10}}>
+    <Text regular style={{marginVertical:10}}>
         Once you accept this offer,
-        you have to pay ₹{price} to {data.name} as a service Charge{'\n'}
+        you have to pay <Text bold size={18}>₹{price}</Text> to {data.name} as a <Text bold>Service Charge</Text>{'\n'}
         {/* एक बार जब आप इस प्रस्ताव को स्वीकार कर लेंगे, तो आपको सेवा शुल्क के रूप में कविता को ₹150 का भुगतान करना होगा */}
     </Text>
     <Pressable onPress={accept} style={styles.okButton}>
-        <Text regular>Ok</Text>
+        <Text bold>I'm Agree</Text>
     </Pressable>
 </ScreenModal>
 }
@@ -125,7 +126,8 @@ const ServiceProfile = ({route, navigation}) => {
         const history = data.history ?[...data.history, dataAdd] : [dataAdd]
         await updateProviderProfile(data.id, {wallet: data.wallet-result.get, history})
         await updateOrder(updateData, orderId)
-        Message({phone:'+'+data.id, message:`Congratulation,\n${state.profile.name} accepted your proposal as ${pro}.`})
+        // console.log(messageTemplate({data, profile:state.profile, subCat:result},2))
+        Message({phone:'+'+data.id, message:messageTemplate({data, profile:state.profile, subCat:result},2)})
         sendPushNotification(data.token, notifyData)
         navigation.navigate(CONSTANT.Library,{load:true})
         setLoading(false)
@@ -208,7 +210,6 @@ const styles = StyleSheet.create({
         borderRadius:10,
         alignSelf:'flex-end',
         padding:10,
-        width:70,
         alignItems:'center'
     },
     Points:{

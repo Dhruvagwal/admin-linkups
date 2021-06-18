@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import { RefreshControl, StyleSheet, Image, View ,Dimensions, Pressable, ScrollView, FlatList, Animated, Modal, Switch } from 'react-native'
+import { RefreshControl, StyleSheet, Image, View ,Dimensions, Pressable, ScrollView, FlatList, Animated, Modal, Switch, BackHandler } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'; 
 import axios from 'axios'
 
@@ -9,6 +9,7 @@ import ServiceListView from 'components/ServiceListView'
 import Filter from './filter'
 import TimeDiff from 'middlewares/TimeDiff'
 import BottomBar from 'components/BottomBar'
+import CONSTANT from '../../navigation/navigationConstant.json'
 import {getPost} from 'hooks/useData'
 
 const HEIGHT = Dimensions.get('screen').height
@@ -23,7 +24,7 @@ const Background = ()=>{
 }
 
 
-const Index = ({route}) => {
+const Index = ({route, navigation}) => {
     const routes = route.params
     const [data, setData] = useState([])
     const [filter, setFilter] = useState(false)
@@ -44,8 +45,15 @@ const Index = ({route}) => {
     useEffect(() => {
         let source = axios.CancelToken.source()
         loadData(source.token)
+            const backAction = () => {
+                navigation.navigate(CONSTANT.Home)
+            return true;
+        };
+        BackHandler.addEventListener("hardwareBackPress", backAction);
+              
         return ()=>{
             source.cancel()
+            BackHandler.removeEventListener("hardwareBackPress", backAction);
         }
     }, [routes])
 

@@ -3,10 +3,9 @@ import instances from '../data/axios'
 async function sendPushNotification(token, {title, body, data}) {
   const message = {
     to: token,
-    sound: 'default',
     title,
     body,
-    data,
+    data
   };
   instances.post('/Notification',message)
 }

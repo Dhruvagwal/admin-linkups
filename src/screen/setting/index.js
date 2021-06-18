@@ -54,7 +54,7 @@ const Index = ({navigation}) => {
         Logout()
     }
     const SellerApp = ()=>{
-        Linking.openURL('whatsapp://app').catch(()=>Linking.openURL("market://details?id=com.whatsapp"));
+        Linking.openURL('Linkups://app').catch(()=>Linking.openURL("market://details?id=com.whatsapp"));
     }
     const isOpen = useKeyboard()
     const _setName = async ()=>{
@@ -89,14 +89,10 @@ const Index = ({navigation}) => {
                             value={name===undefined?profile.name:name}
                             style={styles.TextInput}
                             onChangeText={setName}
-                            ref ={(data)=>{(data!==null && isEdit) && data.focus()}}
                             placeholder='Name Here'
                             placeholderTextColor={color.inActive}
                             editable={isEdit}
                         />
-                        <Pressable style={{position:'absolute', right:0}} onPress={()=>{setisEdit(res=>!res)}} >
-                            <MaterialIcons name="edit" size={24} color={color.white} />
-                        </Pressable>
                     </RowView>
                     <Text style={{alignSelf:'center'}} regular>+91 {profile.id && profile.id.replace('91','')}</Text>
                     {!isOpen && <View style={{flex:.8, justifyContent:'center'}}>
