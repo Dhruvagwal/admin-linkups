@@ -76,7 +76,7 @@ const Review=({data={}})=><View style={{...styles.contentContainer, backgroundCo
 const Point = ({children, last=false, text, onPress=()=>{}})=><Pressable onPress={onPress} android_ripple={{color:color.dark}} style={{...styles.Points, borderBottomWidth:last ? 0:2}}>
     <RowView>
         {children}
-        <Text regular>{text}</Text>
+        <Text size={13} regular>{text}</Text>
     </RowView>
 </Pressable> 
 
@@ -147,15 +147,23 @@ const ServiceProfile = ({route, navigation}) => {
                     <RowView>
                         <Image source={{uri:data.url}} style={styles.image}/>
                         <View style={styles.container}>
-                            <Text size={20} bold>{data.name}</Text>
+                            <Text bold>{data.name}</Text>
                             <RowView style={{marginBottom:10}}>
                                 {data.verified && <MaterialIcons name="verified" size={20} style={{marginRight:5}} color={color.blue} />}
-                                <Text>{pro}</Text>
+                                <Text size={13}>{pro}</Text>
                             </RowView>
                             {data.rating ?<Text regular>{rating} <AntDesign name="star" size={15} color={color.active} /></Text>: <Text regular theme={color.inActive}>No Review</Text>}
                         </View>
                     </RowView>
+
+                    {/* <View style={styles.contentContainer}>
+                        <Text size={13} regular>Available at</Text>
+                        <Point text={proposalData.time}/>
+                        <Point last text={proposalData.date}/>
+                    </View> */}
+
                     <View style={styles.contentContainer}>
+                        <Point text={`On ${proposalData.date}\n${proposalData.time}`}/>
                         <Point text={`+${data.id}`} onPress={()=>Linking.openURL(`tel:+${data.id}`)}>
                             <View style={{padding:5, backgroundColor:color.active, borderRadius:10, marginRight:10}}>
                                 <Ionicons name="ios-call" size={15} color={color.white} />
@@ -164,12 +172,11 @@ const ServiceProfile = ({route, navigation}) => {
                         <Point onPress={()=>_openMap(data.coord, state.profile.name)}>
                             <RowView>
                                 <MaterialCommunityIcons name="map-marker-distance" size={24} color={color.active}/>
-                                <Text regular style={{marginLeft:10}}>{distance>=1000 ? distance/1000+' km' : distance+' m'} away</Text>
+                                <Text size={13} regular style={{marginLeft:10}}>{distance>=1000 ? distance/1000+' km' : distance+' m'} away</Text>
                             </RowView>
                         </Point>
                         <Point last text={`Since ${moment(data.createdOn).format('DD-MM-YYYY')}`}/>
                     </View>
-
 
                     {data.rating && <View style={{marginTop:10}}>
                         <Text size={12} style={{margin:10, marginBottom:-5}}>Customer Reviews</Text>

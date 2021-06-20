@@ -15,10 +15,11 @@ const ServiceProviderListView = ({data={}, proposal=false, proposalData={}, orde
     const IMAGE_SIZE = 65
     var rate = 0
     data.rating && data.rating.map(({rating})=>{rate=rating*1.2+rate})
+    console.log(proposalData)
     return (
         <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.ServiceProfile, {data, proposal, orderId:order.id, proposalData})}>
             <RowView style={styles.container}>
-                <Text regular style={{position: 'absolute',right:10, top:10}} size={10}>{TimeDiff(order.proposal.find(({id})=>id===data.id).postedDate).diff}</Text>
+                <Text regular style={{position: 'absolute',right:10, top:10}} size={10}>{proposalData.postedDate && TimeDiff(proposalData.postedDate).diff}</Text>
                 <Image source={{uri:data.url}} style={{height:IMAGE_SIZE, width:IMAGE_SIZE, borderRadius:10}}/>
                 <View style={{paddingHorizontal:10, height:'95%',width:'75%'}}>
                     <RowView>
