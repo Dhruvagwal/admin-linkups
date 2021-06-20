@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import { RefreshControl, StyleSheet, Image, View ,Dimensions, Pressable, ScrollView, FlatList, Animated, Modal, Switch, BackHandler } from 'react-native'
+import { RefreshControl, StyleSheet, Image, View ,Dimensions, Pressable, ScrollView} from 'react-native'
 import { Ionicons } from '@expo/vector-icons'; 
 import axios from 'axios'
 
@@ -9,7 +9,7 @@ import ServiceListView from 'components/ServiceListView'
 import Filter from './filter'
 import TimeDiff from 'middlewares/TimeDiff'
 import BottomBar from 'components/BottomBar'
-import CONSTANT from '../../navigation/navigationConstant.json'
+import CONSTANT from 'navigation/navigationConstant.json'
 import {getPost} from 'hooks/useData'
 
 const HEIGHT = Dimensions.get('screen').height
@@ -38,6 +38,7 @@ const Index = ({route, navigation}) => {
             postData = postData.data.filter(({status})=>status!=='cancelled')
             setData(postData)
             setRefreshing(false)
+            setFilterList([])
         }catch(err){
             alert('Something Wnent Wrong')
         }
@@ -45,16 +46,6 @@ const Index = ({route, navigation}) => {
     useEffect(() => {
         let source = axios.CancelToken.source()
         loadData(source.token)
-            const backAction = () => {
-                navigation.navigate(CONSTANT.Home)
-            return true;
-        };
-        BackHandler.addEventListener("hardwareBackPress", backAction);
-              
-        return ()=>{
-            source.cancel()
-            BackHandler.removeEventListener("hardwareBackPress", backAction);
-        }
     }, [routes])
 
     const applyFilter =async (reset=false)=>{
@@ -90,33 +81,34 @@ const Index = ({route, navigation}) => {
                     </RowView>
                 </RowView>
                 {/* ====================== */}
-                {
-                    data.length>0 ? 
                     <ScrollView 
                         showsVerticalScrollIndicator={false} 
                         style={{flex:1}} 
                         refreshControl={
                             <RefreshControl
-                                refreshing={refreshing}
+                            refreshing={refreshing}
                                 onRefresh={loadData}
                                 color={[color.active]}
-                            />
+                                />
                         }
-                    >
-                        { data
-                            .sort((a,b)=>TimeDiff(a.postedAt).minutes-TimeDiff(b.postedAt).minutes)
-                            .map(
-                                item=>
-                                    <ServiceListView data={item} key={item.id}/>
-                                )
-                        }
-                        <Text>{'\n'}</Text>
+                        >
+                        {
+                           data.length>0 ? <>
+                                { data
+                                    .sort((a,b)=>TimeDiff(a.postedAt).minutes-TimeDiff(b.postedAt).minutes)
+                                    .map(
+                                        item=>
+                                            <ServiceListView data={item} key={item.id}/>
+                                        )
+                                }
+                                <Text>{'\n'}</Text>
+                        </>
+                        :
+                        <View style={{height:HEIGHT*.7, alignItems:'center', justifyContent:'center'}}>
+                            <Image source={require('../../../assets/nodata.png')} style={{width:200, height:200}} resizeMode='center'/>
+                        </View>
+                    }
                     </ScrollView>
-                    :
-                    <View style={{flex:0.8, alignItems:'center', justifyContent:'center'}}>
-                        <Image source={require('../../../assets/nodata.png')} style={{width:200, height:200}} resizeMode='center'/>
-                    </View>
-                }
             </View>
             <BottomBar/>
         </View>

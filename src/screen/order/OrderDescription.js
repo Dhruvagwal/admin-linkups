@@ -25,7 +25,7 @@ const Background = ()=><View style={[{flex:1, alignItems:'stretch',flexDirection
 </View>
 
 const Point = ({last=false,text='',bold=false})=><RowView style={{...styles.Points, borderBottomWidth:last ? 0:2}}>
-    <Text style={{marginLeft:10}} regular={!bold} bold={bold}>{text}</Text>
+    <Text size={13} style={{marginLeft:10}} regular={!bold} bold={bold}>{text}</Text>
 </RowView>
 
 
@@ -36,16 +36,16 @@ const OrderDescription = ({route}) => {
     const [SubCat, setSubCat] = useState({})
     const [category, setCategory] = useState({})
     const [proposal, setProposal] = useState([])
-    const [review, setReview] = useState(false)
     const [loading, setLoading] = useState(true)
     const [provider, setProvider] = useState([])
+    const [review, setReview] = useState(false)
     const [miniLoading, setMiniLoading] = useState(false)
     const [showImage, setShowImage] = useState(false)
     const status = ['posted', 'inprogress', 'completed', 'paid','cancelled']
     const Delete =async ()=>{
         const notifyData = {
             title:`Order Cancelled`,
-            body:`${profile.name} Cancelled the order. Your connects is refunded to your account`
+            body:`${profile.name} Cancelled the order. Your connects is refunded to your account`,
         }
         setMiniLoading(true)
         await updateOrder({status:status[4]}, data.id)
@@ -58,6 +58,10 @@ const OrderDescription = ({route}) => {
         setMiniLoading(false)
     }
     
+    if((data.status==='paid'|| data.status==='completed') && !review ){
+        const isTrue = provider.rating===undefined || provider.rating.find(({id, subCat})=>profile.id===id && subCat===SubCat.name)
+        !isTrue && setReview(true)
+    }
     useEffect(() => {
         if(loading){
             getDataById('order',id).then(async (response)=>{
@@ -130,7 +134,7 @@ const OrderDescription = ({route}) => {
                                         </>:
                                         <View style={{marginTop:10}}>
                                             <Text style={{margin:10}} size={12}>Provider</Text>
-                                            <ServiceProviderListView key={Math.random().toString()} orderId={data.id} proposalData={data.proposal.find(response=>response.id===provider.id)} data={provider} category={category}/>
+                                            <ServiceProviderListView key={Math.random().toString()} order={data} proposalData={data.proposal.find(response=>response.id===provider.id)} data={provider} category={category}/>
                                         </View>
                                     }
                                 </>

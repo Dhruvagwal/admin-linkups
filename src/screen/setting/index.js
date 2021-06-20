@@ -98,29 +98,25 @@ const Index = ({navigation}) => {
                     {!isOpen && <View style={{flex:.8, justifyContent:'center'}}>
                         <Pressable style={{padding:15}} android_ripple={{color:color.dark}} onPress={()=>navigation.navigate(CONSTANT.Address)}>
                             <Options>
-                                <FontAwesome name="address-book" size={24} color={color.white} />
-                                <Text>  My Address</Text>
+                                <Text regular>My Address</Text>
                             </Options>
                         </Pressable>
 
                         <Pressable style={{padding:15}} onPress={SellerApp} android_ripple={{color:color.dark}}>
                             <Options>
-                                <AntDesign name="customerservice" size={24} color={color.white} />
-                                <Text>  Linkups Provider</Text>
+                                <Text regular>Linkups Provider</Text>
                             </Options>
                         </Pressable>
 
                         <Pressable style={{padding:15}} onPress={()=>navigation.navigate(CONSTANT.Help)} android_ripple={{color:color.dark}}>
                             <Options>
-                                <Entypo name="help" size={24} color={color.white} />
-                                <Text>  Help & Support</Text>
+                                <Text regular>Help & Support</Text>
                             </Options>
                         </Pressable>
 
                         <Pressable style={{padding:15}} android_ripple={{color:color.dark}} onPress={LOGOUT}>
                             <Options>
-                                <MaterialIcons name="exit-to-app" size={24} color={color.red} style={{marginLeft:5}} />
-                                <Text style={{color:color.red}} regular>   Logout</Text>
+                                <Text style={{color:color.red}} regular>Logout</Text>
                             </Options>
                         </Pressable>
                     </View>}

@@ -1,11 +1,11 @@
 import messaging from '@react-native-firebase/messaging'
 import instances from '../data/axios'
-async function sendPushNotification(token, {title, body, data}) {
+async function sendPushNotification(token, {title, body}) {
   const message = {
     to: token,
     title,
     body,
-    data
+    data:'data'
   };
   instances.post('/Notification',message)
 }

@@ -1,11 +1,15 @@
-import React, {useEffect, useState, useRef} from 'react'
-import {NavigationContainer, DefaultTheme} from '@react-navigation/native'
+import React, {useEffect, useState} from 'react'
+import { View, Pressable, BackHandler } from 'react-native'
+import {NavigationContainer} from '@react-navigation/native'
 import {createStackNavigator} from '@react-navigation/stack'
 import axios from 'axios'
+import {useNetInfo} from "@react-native-community/netinfo";
 
 import CONSTANT from './navigationConstant.json'
 import HomeScreen from 'screen/main'
-import LoadingScreen from 'screen/Loading'
+import { Text, RowView } from 'styles'
+import Loading from 'components/Loading'
+
 import LanguageScreen from 'screen/setting/language'
 import AddOrderScreen from 'screen/order/AddOrder'
 import OrderDescriptionScreen from 'screen/order/OrderDescription'
@@ -14,6 +18,7 @@ import SettingScreen from 'screen/setting'
 import LibraryScreen from 'screen/Library'
 import AddressScreen from 'screen/setting/Address'
 import HelpScreen from 'screen/setting/Help'
+import {getDataById} from 'hooks/useData'
 
 import {navigationRef} from './RootNavigation';
 import {AuthConsumer} from '../context/auth'
@@ -24,17 +29,24 @@ import SignUpScreen from 'screen/Auth/SignUp'
 
 import color from 'colors'
 const routeNameRef = React.createRef();
-const Index = () => {
-  useEffect(()=>{
-    verifyToken()
-      .then(response=>{setAuth(response)})
-      .catch(()=>setAuth(false))
-  },[])
-    const Stack = createStackNavigator()
-    // const [Loading, setLoading] = useState(true)
-    const {setName} = DataConsumer()
-    const {state:{auth}, setAuth} = AuthConsumer()
 
+const Index = () => {
+
+    useEffect(()=>{
+      verifyToken()
+        .then(response=>{setAuth(response)})
+        .catch(()=>setAuth(false))
+      getDataById('Linkups','care').then(({data:{update}})=>setIsUpdate(update))
+      setTimeout(()=>{setLoading(false)},1000)
+      
+    },[])
+
+    const Stack = createStackNavigator()
+    const netInfo = useNetInfo();
+    const {setName} = DataConsumer()
+    const [loading, setLoading] = useState(true)
+    const [isUpdate, setIsUpdate] = useState(false)
+    const {state:{auth}, setAuth} = AuthConsumer()
 
     const BlackTheme = {
         dark: true,
@@ -56,7 +68,30 @@ const Index = () => {
 
       }
     }
-    return (<NavigationContainer 
+    if(loading) return  <Loading/>
+    else if(!netInfo.isConnected && !loading){
+      return <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+        <View style={{backgroundColor:color.lightDark, width:'80%', height:150, borderRadius:10, padding:10, elevation:5}}>
+          <Text bold theme={color.red} numberOfLines={1} adjustsFontSizeToFit>Internet might not be available</Text>
+          <Text style={{marginTop:5}} size={13} regular>Please Check your wifi connection or turn on mobile data</Text>
+          <Pressable onPress={()=>BackHandler.exitApp()} android_ripple={{color:color.dark}} style={{position:'absolute', bottom:10, right:10, padding:10}}>
+            <Text regular>OK</Text>
+          </Pressable>
+        </View>
+      </View>
+    }
+    else if(isUpdate){
+      return <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+        <View style={{backgroundColor:color.lightDark, width:'80%', height:150, borderRadius:10, padding:10, elevation:5}}>
+          <Text bold numberOfLines={1} theme={color.blue} adjustsFontSizeToFit>Stay Up-to-update</Text>
+          <Text style={{marginTop:5}} size={13} regular>Please Update our app for seamless experience</Text>
+          <Pressable onPress={()=>{}} android_ripple={{color:color.dark}} style={{position:'absolute', bottom:10, right:10, padding:10}}>
+            <Text regular>OK</Text>
+          </Pressable>
+        </View>
+      </View>
+    }
+    else return (<NavigationContainer 
                     ref={navigationRef} 
                     onReady={() => routeNameRef.current = navigationRef.current.getCurrentRoute().name}
                     onStateChange={async () => {

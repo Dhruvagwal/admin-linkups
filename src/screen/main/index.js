@@ -77,7 +77,11 @@ const Index = ({route, navigation}) => {
                                 {
                                     category.map(item=><Pressable android_ripple={{color:color.dark}} onPress={()=>setActiveCategory(item.id)} key={item.id} style={[{alignItems:'center', padding:10, borderRadius:10, width:100, height:100, marginHorizontal:10}, activeCategory===item.id && {backgroundColor:'rgba(34, 42, 56,0.8)'}]}>
                                         <Image source={{uri:item.url}} style={{width:50, height:50}}/>
-                                        <Text size={13} bold>{item.name}</Text>
+                                        <View style={{alignItems:'center'}}>
+                                            {
+                                                item.name.split(' ').map(item=><Text key={Math.random()} numberOfLines={1} adjustsFontSizeToFit size={13} bold>{item}</Text>)
+                                            }
+                                        </View>
                                     </Pressable>)
                                 }
                             </View>
@@ -90,8 +94,8 @@ const Index = ({route, navigation}) => {
                                         <Pressable android_ripple={{color:color.dark}} onPress={()=>profile.coord ? RootNavigation.navigate(CONSTANT.AddOrder, {category:res, subCategory:item}) : navigation.navigate(CONSTANT.Address)} key={item.id} style={styles.subCategory}>
                                             <Image source={{uri:item.url}} style={{width:50, height:50}}/>
                                             <View style={{marginLeft:10}}>
-                                                <Text style={{width:WIDTH/1.7-100}} regular numberOfLines={1}>{item.name}</Text>
-                                                <Text size={13} theme={color.blue} bold> Service Charge ₹{item.charge}</Text>
+                                                <Text style={{width:WIDTH-100}} size={13} regular numberOfLines={1}>{item.name}</Text>
+                                                <Text size={10} theme={color.blue} regular>Service Charge ₹{item.charge}</Text>
                                             </View>
                                         </Pressable>
                                     )

@@ -23,10 +23,10 @@ const ServiceListView = ({data={}}) => {
                     <View style={{justifyContent: 'space-between',marginBottom:5, marginLeft:10,height:'80%', width :'95%'}}>
                         <Text style={{width:WIDTH*.5}} bold numberOfLines={1}>{SubCat.name}</Text>
                         <RowView style={{justifyContent:'space-between', width:'80%'}}>
-                            <Text size={13} numberOfLines={1}>{diff.diff}</Text>
+                            <Text size={13} size={10} numberOfLines={1}>{diff.diff}</Text>
                             <Text size={13} bold style={{textTransform:'capitalize', color:color.active}}>{data.status}</Text>
                         </RowView>
-                        <Text>{data.info.problem}</Text>
+                        <Text size={13} regular>{data.info.problem}</Text>
                     </View>
                 </RowView>
         </Pressable>

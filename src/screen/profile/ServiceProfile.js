@@ -32,17 +32,17 @@ const _openMap = ({latitude, longitude}, label)=>{
 
 const AcceptScreen = ({accept,setNotice, price, data})=>{
     return <ScreenModal>
-    <Text regular>Important!</Text>
+    <Text regular size={13}>Important!</Text>
     <Pressable style={{position:'absolute', right:0, padding:10}} onPress={()=>setNotice(false)}>
         <Entypo name="cross" size={24} color={color.inActive} />
     </Pressable>
-    <Text regular style={{marginVertical:10}}>
+    <Text size={13} regular style={{marginVertical:10}}>
         Once you accept this offer,
-        you have to pay <Text bold size={18}>₹{price}</Text> to {data.name} as a <Text bold>Service Charge</Text>{'\n'}
+        you have to pay <Text regular theme={color.blue}>₹{price}</Text> to {data.name} as a <Text regular theme={color.blue}>Service Charge</Text>{'\n'}
         {/* एक बार जब आप इस प्रस्ताव को स्वीकार कर लेंगे, तो आपको सेवा शुल्क के रूप में कविता को ₹150 का भुगतान करना होगा */}
     </Text>
     <Pressable onPress={accept} style={styles.okButton}>
-        <Text bold>I'm Agree</Text>
+        <Text size={13} bold>I'm Agree</Text>
     </Pressable>
 </ScreenModal>
 }
@@ -60,15 +60,17 @@ const Review=({data={}})=><View style={{...styles.contentContainer, backgroundCo
     <RowView>
         <View style={{marginLeft:10}}>
             <Text regular>
-                <AntDesign name="star" size={15} color={color.active} /> {Math.round(data.rating*1.2*100)/100}
+                {Math.round(data.rating*1.2*100)/100} <AntDesign name="star" size={15} color={color.active} />
             </Text>
-            <Text regular size={13}>{data.subCat}</Text>
         </View>
     </RowView>
     <View style={{marginHorizontal:10}}>
         <Text regular size={12} style={{width:'100%'}} numberOfLines={2}>{data.review}</Text>
     </View>
-    <Text style={{position: 'absolute',right: 10,top:10}} size={13}>{TimeDiff(data.postedAt).diff}</Text>
+    <View style={{position: 'absolute',right: 10,top:10, alignItems:'flex-end'}}>
+        <Text size={10}>{TimeDiff(data.postedAt).diff}</Text>
+        <Text size={10} regular>{data.subCat}</Text>
+    </View>
 </View>
 
 const Point = ({children, last=false, text, onPress=()=>{}})=><Pressable onPress={onPress} android_ripple={{color:color.dark}} style={{...styles.Points, borderBottomWidth:last ? 0:2}}>
@@ -126,7 +128,6 @@ const ServiceProfile = ({route, navigation}) => {
         const history = data.history ?[...data.history, dataAdd] : [dataAdd]
         await updateProviderProfile(data.id, {wallet: data.wallet-result.get, history})
         await updateOrder(updateData, orderId)
-        // console.log(messageTemplate({data, profile:state.profile, subCat:result},2))
         Message({phone:'+'+data.id, message:messageTemplate({data, profile:state.profile, subCat:result},2)})
         sendPushNotification(data.token, notifyData)
         navigation.navigate(CONSTANT.Library,{load:true})
@@ -187,7 +188,7 @@ const ServiceProfile = ({route, navigation}) => {
             {!loading ?
             <>
                 {proposal && <Pressable onPress={()=>{setNotice(true)}} style={styles.accept}>
-                    <Text size={20} bold>Hire Me!</Text>
+                    <Text bold>Hire Me!</Text>
                 </Pressable>}
             </>:
             <Loading/>}

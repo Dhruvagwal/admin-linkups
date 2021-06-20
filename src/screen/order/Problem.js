@@ -35,7 +35,7 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data, category}) =>{
     const [fileData, setfileData] = useState()
     const {state:{profile}} = DataConsumer()
     const _onPress =async ()=>{
-        // setLoading(true)
+        setLoading(true)
         const id = 'ORD-'+Math.floor(Math.random()*1000000)
         var url
         if(response){
@@ -58,7 +58,7 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data, category}) =>{
         const notifyDataFeed = {
             title:`Got An New Feed`,
             body:`${profile.name} give the proposal first hurry up!!`,
-            data:{id}
+            data:'data'
         }
         data.map(({token, id,name})=>{
             sendPushNotification(token, notifyDataFeed)
@@ -88,8 +88,8 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data, category}) =>{
         {
             reason.map(res=>
                 <RowView key={Math.random()}>                    
-                    {res.map(item=><Pressable onPress={()=>setText(item)} key={Math.random()} style={[styles.contentContainer, {padding:20, justifyContent:'center', flexGrow:1, marginRight:5},item===text&&{backgroundColor: color.blue,elevation:5}]}>
-                        <Text regular>{item}</Text>
+                    {res.map(item=><Pressable onPress={()=>setText(item)} key={Math.random()} style={[styles.contentContainer, {justifyContent:'center', width:'50%', marginRight:5},item===text&&{backgroundColor: color.blue,elevation:5}]}>
+                        <Text regular size={13}>{item}</Text>
                     </Pressable>)}
                 </RowView>
             )
