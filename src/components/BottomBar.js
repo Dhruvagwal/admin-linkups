@@ -29,7 +29,7 @@ export default BottomBar
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor: 'rgba(26, 34, 47,0.8)',
+        backgroundColor: color.dark,
         position: 'absolute',
         bottom:0,
         width:'100%',

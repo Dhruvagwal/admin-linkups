@@ -128,7 +128,7 @@ const OrderDescription = ({route}) => {
                                         {proposal.length>0 && <View style={{marginTop:10}}>
                                             <Text style={{margin:10}} size={12}>Intrested</Text>
                                             {
-                                                proposal.map(item=><ServiceProviderListView key={Math.random().toString()} proposalData={data.proposal.find(response=>response.id===item.id)} orderId={data.id} data={item} category={category} proposal/>)
+                                                proposal.map(item=><ServiceProviderListView order={data} key={Math.random().toString()} proposalData={data.proposal.find(response=>response.id===item.id)} orderId={data.id} data={item} category={category} proposal/>)
                                             }
                                         </View>}
                                         </>:
@@ -156,7 +156,7 @@ const OrderDescription = ({route}) => {
                         }
                     </ScrollView>
                     {(data.status==='posted' && data.proposal===undefined) && <View style={{backgroundColor:color.lightDark, padding:10, borderRadius:10, elevation:3}}>
-                        <Text regular>
+                        <Text size={13} regular>
                             Sent to nearby electricians 
                         </Text>
                     </View>}
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     },
     container:{
         padding:10, 
-        backgroundColor: 'rgba(34, 42, 56,0.8)',
+        backgroundColor: 'rgba(18, 18, 18,0.8)',
         borderRadius:20
     },
     Points:{

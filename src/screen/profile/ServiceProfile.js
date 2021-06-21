@@ -56,7 +56,7 @@ const Background = ()=>{
 
 const IMAGE_SIZE = 100
 
-const Review=({data={}})=><View style={{...styles.contentContainer, backgroundColor: 'rgba(34, 42, 56,0.8)',padding:5, borderRadius:10}}>
+const Review=({data={}})=><View style={{...styles.contentContainer, backgroundColor: 'rgba(18, 18, 18,0.8)',padding:5, borderRadius:10}}>
     <RowView>
         <View style={{marginLeft:10}}>
             <Text regular>
@@ -155,12 +155,6 @@ const ServiceProfile = ({route, navigation}) => {
                             {data.rating ?<Text regular>{rating} <AntDesign name="star" size={15} color={color.active} /></Text>: <Text regular theme={color.inActive}>No Review</Text>}
                         </View>
                     </RowView>
-
-                    {/* <View style={styles.contentContainer}>
-                        <Text size={13} regular>Available at</Text>
-                        <Point text={proposalData.time}/>
-                        <Point last text={proposalData.date}/>
-                    </View> */}
 
                     <View style={styles.contentContainer}>
                         <Point text={`On ${proposalData.date}\n${proposalData.time}`}/>

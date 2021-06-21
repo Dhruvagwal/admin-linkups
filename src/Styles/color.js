@@ -1,13 +1,15 @@
 const colors = {
-    'dark':'#1A222F',
+    'dark':'#090909',
     'white':'#fff',
-    'secondaryDark':'#1E2735',
-    'lightDark':'#283140',
+    'secondaryDark':'#0c0c0c',
+    'lightDark':'#151515',
     'active': '#FF6E50',
     'inActive':'#aaacaf',
-    'elevatedDark':'#222a38',
+    'elevatedDark':'#121212',
     'red':'#ff4f4f',
-    'blue':'#7eaefc'
+    'blue':'#7eaefc',
+    'green':'#9df9a9',
+    'yellow':'#fcff7f'
 }
 
 export default colors

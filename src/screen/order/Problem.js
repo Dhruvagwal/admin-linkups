@@ -77,51 +77,52 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data, category}) =>{
     response && getFileSize(response).then(data=>!fileData && setfileData(data))
     var reason = subCategory.problem? subCategory.problem : subCategory.reason
     reason = chunk(reason,2)
-    return <View style={{padding:20, flex:1}}>
-        {!active && <>
-        {
-            subCategory.problem?
-            <Text size={13} regular>Problem</Text>
-            :
-            <Text size={13} regular>For</Text>
-        }
-        {
-            reason.map(res=>
-                <RowView key={Math.random()}>                    
-                    {res.map(item=><Pressable onPress={()=>setText(item)} key={Math.random()} style={[styles.contentContainer, {justifyContent:'center', width:'50%', marginRight:5},item===text&&{backgroundColor: color.blue,elevation:5}]}>
-                        <Text regular size={13}>{item}</Text>
-                    </Pressable>)}
-                </RowView>
-            )
-        }
-        </>}
-        <View style={[styles.contentContainer, {justifyContent:'center'}]} android_ripple={{color:color.dark}}>
-                <TextInput
-                    placeholder='Edit'
-                    value={text}
-                    onChangeText={setText}
-                    placeholderTextColor={color.white}
-                    style={{
-                        fontFamily:'Montserrat-Regular',
-                        textAlign:'center',
-                        flexGrow:1,
-                        fontSize:15,
-                        color:color.white,
-                        marginRight:5
-                    }}
-                    multiline
-                />
-        </View>
-        {!active && <ImagePicker setResponse={setResponse} setLoading={()=>{}} style={{marginTop:20, overflow: 'hidden', borderRadius:10}} uploadImage={false}>
-            {!response ? <View style={{width:WIDTH-40, height:130, borderWidth:2, borderColor:color.blue, borderRadius:10, alignItems:'center', justifyContent:'center'}}>
-                <Entypo name="image" size={30} color={color.blue} />
-                <Text regular size={13} >Upload Image</Text>
-                <Text regular size={10} theme={color.inActive} >(Optional)</Text>
+    return <View style={{flex:1}}>
+
+        <ScrollView style={{flex:1}}>
+            <View style={{padding:20, flex:1}}>
+                {!active && <>
+                    {
+                        reason.map(res=>
+                            <RowView key={Math.random()}>                    
+                                {res.map(item=><Pressable onPress={()=>setText(item.id)} key={Math.random()} style={[styles.contentContainer, {justifyContent:'center',flexDirection:'column', width:reason.length>=2?'50%':'100%', marginRight:5},item.id===text&&{backgroundColor: color.blue,elevation:5}]}>
+                                    <Image source={{uri:item.url}} style={{width:50, height:50}}/>
+                                    <Text regular size={13}>{item.id}</Text>
+                                </Pressable>)}
+                            </RowView>
+                        )
+                    }
+                </>}
+                <View style={[styles.contentContainer, {justifyContent:'center'}]} android_ripple={{color:color.dark}}>
+                        <TextInput
+                            placeholder="I'm looking for"
+                            value={text}
+                            onChangeText={setText}
+                            placeholderTextColor={color.white}
+                            style={{
+                                fontFamily:'Montserrat-Regular',
+                                textAlign:'center',
+                                flexGrow:1,
+                                fontSize:15,
+                                color:color.white
+                            }}
+                            multiline
+                        />
+                </View>
+                {!active && <ImagePicker setResponse={setResponse} setLoading={()=>{}} style={{marginTop:20, overflow: 'hidden', borderRadius:10}} uploadImage={false}>
+                    {!response ? <View style={{width:WIDTH-40, height:130, borderWidth:2, borderColor:color.blue, borderRadius:10, alignItems:'center', justifyContent:'center'}}>
+                        <Entypo name="image" size={30} color={color.blue} />
+                        <Text regular size={13} >Upload Image</Text>
+                        <Text regular size={10} theme={color.inActive} >(Optional)</Text>
+                    </View>
+                    :
+                    <Image resizeMode='center' style={{width:WIDTH-40, height:130}} source={{uri:response}} />
+                    }
+                </ImagePicker>}
+                <Text>{'\n'}</Text>
+                <Text>{'\n'}</Text>
             </View>
-            :
-            <Image resizeMode='center' style={{width:WIDTH-40, height:130}} source={{uri:response}} />
-            }
-        </ImagePicker>}
+        </ScrollView>
         {text.length>0 &&
             <Pressable onPress={()=>_onPress()} style={styles.button}>
                 <Text bold>Done</Text>
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
         justifyContent:'center'
     },
     contentContainer:{
-        backgroundColor: 'rgba(34, 42, 56,0.8)',
+        backgroundColor: 'rgba(18, 18, 18,0.8)',
         marginVertical:10,
         padding:10,
         flexDirection:'row',

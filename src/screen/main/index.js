@@ -75,13 +75,13 @@ const Index = ({route, navigation}) => {
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             <View style={{width:WIDTH-20,flexDirection:'row', justifyContent:'space-around' }}>
                                 {
-                                    category.map(item=><Pressable android_ripple={{color:color.dark}} onPress={()=>setActiveCategory(item.id)} key={item.id} style={[{alignItems:'center', padding:10, borderRadius:10, width:100, height:100, marginHorizontal:10}, activeCategory===item.id && {backgroundColor:'rgba(34, 42, 56,0.8)'}]}>
+                                    category.map(item=><Pressable android_ripple={{color:color.dark}} onPress={()=>setActiveCategory(item.id)} key={item.id} style={[{alignItems:'center', padding:10, borderRadius:10, width:100, height:100, marginHorizontal:10}, activeCategory===item.id && {backgroundColor:'rgba(18, 18, 18,0.8)'}]}>
                                         <Image source={{uri:item.url}} style={{width:50, height:50}}/>
-                                        <View style={{alignItems:'center'}}>
+                                        {activeCategory===item.id && <View style={{alignItems:'center'}}>
                                             {
-                                                item.name.split(' ').map(item=><Text key={Math.random()} numberOfLines={1} adjustsFontSizeToFit size={13} bold>{item}</Text>)
+                                                item.name.split(' ').map(item=><Text key={Math.random()} numberOfLines={1} adjustsFontSizeToFit size={10} bold>{item}</Text>)
                                             }
-                                        </View>
+                                        </View>}
                                     </Pressable>)
                                 }
                             </View>

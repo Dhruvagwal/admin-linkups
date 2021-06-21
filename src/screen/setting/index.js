@@ -96,27 +96,27 @@ const Index = ({navigation}) => {
                     </RowView>
                     <Text style={{alignSelf:'center'}} regular>+91 {profile.id && profile.id.replace('91','')}</Text>
                     {!isOpen && <View style={{flex:.8, justifyContent:'center'}}>
-                        <Pressable style={{padding:15}} android_ripple={{color:color.dark}} onPress={()=>navigation.navigate(CONSTANT.Address)}>
+                        <Pressable style={{padding:15}} android_ripple={{color:color.lightDark}} onPress={()=>navigation.navigate(CONSTANT.Address)}>
                             <Options>
-                                <Text regular>My Address</Text>
+                                <Text size={13} regular>My Address</Text>
                             </Options>
                         </Pressable>
 
-                        <Pressable style={{padding:15}} onPress={SellerApp} android_ripple={{color:color.dark}}>
+                        <Pressable style={{padding:15}} onPress={SellerApp} android_ripple={{color:color.lightDark}}>
                             <Options>
-                                <Text regular>Linkups Provider</Text>
+                                <Text size={13} regular>Linkups Provider</Text>
                             </Options>
                         </Pressable>
 
-                        <Pressable style={{padding:15}} onPress={()=>navigation.navigate(CONSTANT.Help)} android_ripple={{color:color.dark}}>
+                        <Pressable style={{padding:15}} onPress={()=>navigation.navigate(CONSTANT.Help)} android_ripple={{color:color.lightDark}}>
                             <Options>
-                                <Text regular>Help & Support</Text>
+                                <Text size={13} regular>Help & Support</Text>
                             </Options>
                         </Pressable>
 
-                        <Pressable style={{padding:15}} android_ripple={{color:color.dark}} onPress={LOGOUT}>
+                        <Pressable style={{padding:15}} android_ripple={{color:color.lightDark}} onPress={LOGOUT}>
                             <Options>
-                                <Text style={{color:color.red}} regular>Logout</Text>
+                                <Text size={13} style={{color:color.red}} regular>Logout</Text>
                             </Options>
                         </Pressable>
                     </View>}

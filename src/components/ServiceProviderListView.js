@@ -15,7 +15,7 @@ const ServiceProviderListView = ({data={}, proposal=false, proposalData={}, orde
     const IMAGE_SIZE = 65
     var rate = 0
     data.rating && data.rating.map(({rating})=>{rate=rating*1.2+rate})
-    console.log(proposalData)
+    console.log(order)
     return (
         <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.ServiceProfile, {data, proposal, orderId:order.id, proposalData})}>
             <RowView style={styles.container}>
@@ -44,7 +44,7 @@ export default ServiceProviderListView
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor: 'rgba(34, 42, 56,0.8)',
+        backgroundColor: 'rgba(18, 18, 18,0.8)',
         padding:10,
         borderRadius:20,
         height:80,
