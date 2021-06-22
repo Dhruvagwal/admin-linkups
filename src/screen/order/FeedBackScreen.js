@@ -6,7 +6,7 @@ import {Text, RowView} from 'styles'
 import color from 'colors'
 import ScreenModal from 'components/ScreenModal'
 import Loading from 'components/Loading'
-import {updateProviderProfile} from 'hooks/useData'
+import {updateProviderProfile, updateOrder} from 'hooks/useData'
 import * as RootNavigation from 'navigation/RootNavigation'
 import CONSTANT from 'navigation/navigationConstant'
 
@@ -35,10 +35,12 @@ const FeedBack = ({data, provider, subCat}) => {
             rating:active, 
             review:text,
             subCat,
-            postedAt:new Date()
+            postedAt:new Date(),
+            orderId: data.id
         }
         const rating = provider.rating === undefined ? [FeedBackData] : [...provider.rating,FeedBackData ]
-        await updateProviderProfile(provider.id,{rating})
+        updateProviderProfile(provider.id,{rating})
+        updateOrder({review:true}, data.id)
         RootNavigation.navigate(CONSTANT.Library, {load:true})
         setLoading(false)
     }

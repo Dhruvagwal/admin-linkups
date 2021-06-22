@@ -10,7 +10,7 @@ import CONSTANT from 'navigation/navigationConstant'
 import Loading from 'components/Loading'
 import {DataConsumer} from 'context/data'
 import {getCategory, updateUserProfile} from 'hooks/useData'
-import{ registerForPushNotificationsAsync } from 'middlewares/notification'
+import register, { registerForPushNotificationsAsync } from 'middlewares/notification'
 import ScreenModal from 'components/ScreenModal'
 
 const HEIGHT = Dimensions.get('screen').height
@@ -36,10 +36,11 @@ const Index = ({route, navigation}) => {
     const loadData = async (token)=>{
         setRefreshing(true);
         if(category.length===0){
-            const Category = await getCategory(token)
-            setActiveCategory(Category.data[0].id)
-            setCategory(Category.data)
-            setCat(Category.data)
+            const {data} = await getCategory(token)
+
+            setActiveCategory(data.reverse()[0].id)
+            setCategory(data.reverse())
+            setCat(data.reverse())
         }
         setRefreshing(false)
         const tokenNot = await registerForPushNotificationsAsync()
@@ -50,6 +51,7 @@ const Index = ({route, navigation}) => {
     }
     useEffect(() => {
         let source = axios.CancelToken.source()
+        register()
         try{
             loadData(source.token)
         }catch(err){}
@@ -97,8 +99,8 @@ const Index = ({route, navigation}) => {
                 </RowView>
                 {!refreshing ? <ScrollView>
                     <View style={styles.topContainer} >
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                            <View style={{width:'100%',flexDirection:'row', justifyContent:'space-around' }}>
+                        <ScrollView horizontal>
+                            <View style={{width:'100%',flexDirection:'row', justifyContent:'space-around', borderWidth:2, borderColor:color.blue}}>
                                 {
                                     category.map(item=><Pressable android_ripple={{color:color.dark}} onPress={()=>setActiveCategory(item.id)} key={item.id} style={[{alignItems:'center', padding:10, borderRadius:10, width:100, height:100, marginHorizontal:10}, activeCategory===item.id && {backgroundColor:color.blue}]}>
                                         <Image source={{uri:item.url}} style={{width:50, height:50}}/>

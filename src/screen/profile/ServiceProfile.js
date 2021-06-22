@@ -130,7 +130,7 @@ const ServiceProfile = ({route, navigation}) => {
         await updateOrder(updateData, orderId)
         Message({phone:'+'+data.id, message:messageTemplate({data, profile:state.profile, subCat:result},2)})
         sendPushNotification(data.token, notifyData)
-        navigation.navigate(CONSTANT.Library,{load:true})
+        navigation.goBack()
         setLoading(false)
     }
     var distance = getDistance(

@@ -50,6 +50,7 @@
     "react-native-geocoding": "^0.5.0",
     "react-native-gesture-handler": "~1.10.2",
     "react-native-google-places-autocomplete": "^2.2.0",
+    "react-native-google-speech-to-text": "^1.0.4",
     "react-native-image-slider-box": "^1.0.12",
     "react-native-image-viewing": "^0.2.0",
     "react-native-locale-detector": "^1.0.1",

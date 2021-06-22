@@ -6054,6 +6054,11 @@ react-native-google-places-autocomplete@^2.2.0:
     prop-types "^15.7.2"
     qs "~6.9.1"
 
+react-native-google-speech-to-text@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/react-native-google-speech-to-text/-/react-native-google-speech-to-text-1.0.4.tgz#abc6412e1a7609b963f322f729117fd5fa876c91"
+  integrity sha512-UuEQyJHiorI96qhPddtaWUR1VcuwcsZQHUVGOFLHuo6e5h4eSTjn3GejfMlQ3chSafb+fU1xsktASHnoDpx2KA==
+
 react-native-image-slider-box@^1.0.12:
   version "1.0.12"
   resolved "https://registry.npmjs.org/react-native-image-slider-box/-/react-native-image-slider-box-1.0.12.tgz"

@@ -6,6 +6,7 @@ import SoundPlayer from 'react-native-sound-player'
 import ImagePicker from 'components/ImagePicker'
 import messageTemplate from 'data/messageTemplate' 
 import { FontAwesome } from '@expo/vector-icons'; 
+import Speech from 'components/Speech'
 
 import {Text, RowView} from 'styles'
 import color from 'colors'
@@ -121,7 +122,6 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data, category}) =>{
                                 fontSize:15,
                                 color:color.white,
                             }}
-                            autoFocus
                             multiline
                         />
                         <View style={{position:'absolute', right:10}}>    
@@ -142,15 +142,15 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data, category}) =>{
                     active && <View style={{backgroundColor:color.blue,marginTop:50, padding:10, alignSelf:'center', borderRadius:1000, height:100, width:100, justifyContent:'center', alignItems:'center'}}>
                         <FontAwesome name="microphone" size={40} color={color.white} />
                         <Text style={{textAlign:'center'}} bold size={13}>Click to speak</Text>
+                        <Speech/>
                     </View>
                 }
                 <Text>{'\n'}</Text>
-                <Text>{'\n'}</Text>
+                <Pressable disabled={!text.length>0} onPress={()=>_onPress()} style={[styles.button, text.length<=0 && {backgroundColor:color.inActive}]}>
+                    <Text size={13} bold>Done</Text>
+                </Pressable>
             </View>
         </ScrollView>
-            <Pressable disabled={!text.length>0} onPress={()=>_onPress()} style={[styles.button, text.length<=0 && {backgroundColor:color.inActive}]}>
-                <Text size={13} bold>Done</Text>
-            </Pressable>
         <Snackbar onDismiss={()=>{}} style={styles.Snackbar} visible={fileData && fileData.size/(1024*1024)>10}>
             <Text regular>File size must be less than 10mb</Text>
         </Snackbar>
@@ -187,8 +187,6 @@ const styles = StyleSheet.create({
         alignSelf:'center',
         borderRadius:10,
         marginTop:20,
-        position: 'absolute',
-        bottom:0,
         margin:20,
         elevation:5,
         width:WIDTH/2,

@@ -43,11 +43,12 @@ export default ServiceProviderListView
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor: 'rgba(18, 18, 18,0.8)',
+        backgroundColor: color.lightDark,
         padding:10,
         borderRadius:20,
         height:80,
-        marginBottom:10
+        marginBottom:10,
+        elevation:5
     },
     Call:{
         backgroundColor:color.active, 

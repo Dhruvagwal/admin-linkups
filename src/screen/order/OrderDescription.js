@@ -7,6 +7,7 @@ import Loading from 'components/Loading'
 import ScreenModal from 'components/ScreenModal'
 import ServiceProviderListView from 'components/ServiceProviderListView'
 import {DataConsumer} from 'context/data'
+import { useIsFocused } from '@react-navigation/native'
 import * as RootNavigation from 'navigation/RootNavigation'
 import CONSTANT from 'navigation/navigationConstant'
 import {updateOrder, getDataById, updateUserProfile} from 'hooks/useData'
@@ -32,7 +33,7 @@ const Point = ({last=false,text='',bold=false, theme=color.white})=><RowView sty
 </RowView>
 
 
-const OrderDescription = ({route}) => {
+const OrderDescription = ({route, navigation}) => {
     const {id} = route.params
     const {state:{profile}} = DataConsumer()
     const [data, setData] = useState({})
@@ -41,10 +42,10 @@ const OrderDescription = ({route}) => {
     const [proposal, setProposal] = useState([])
     const [loading, setLoading] = useState(true)
     const [provider, setProvider] = useState([])
-    const [review, setReview] = useState(false)
     const [miniLoading, setMiniLoading] = useState(false)
     const [showImage, setShowImage] = useState(false)
     const [isCancel, setIsCancel] = useState(false)
+    const isFocused = useIsFocused()
     const status = ['posted', 'inprogress', 'completed', 'paid','cancelled']
     const url = SubCat.reason && SubCat.reason.find(({id})=>id===data.info.problem)
     const Delete =async ()=>{
@@ -61,11 +62,6 @@ const OrderDescription = ({route}) => {
         })
         RootNavigation.navigate(CONSTANT.Library,{load:true})
         setMiniLoading(false)
-    }
-    
-    if((data.status==='paid'|| data.status==='completed') && !review ){
-        const isTrue = provider.rating===undefined || provider.rating.find(({id, subCat})=>profile.id===id && subCat===SubCat.name)
-        !isTrue && setReview(true)
     }
     useEffect(() => {
         if(loading){
@@ -95,7 +91,20 @@ const OrderDescription = ({route}) => {
                 })
             }
         }
-    }, [route.params, loading])
+        const backAction = () => {
+            navigation.goBack()
+            return true;
+          };
+      
+          const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            backAction
+          );
+      
+        return ()=>{
+            backHandler.remove();
+        }
+    }, [route.params, loading, isFocused])
 
     if(showImage){
         return <ImageViewer uri={data.url?data.url:( url ? url.url : SubCat.url)} showImage={showImage} setShowImage={setShowImage}/>
@@ -115,7 +124,7 @@ const OrderDescription = ({route}) => {
                 </ScreenModal>}  
                 <View style={{height:HEIGHT*.02}}/>
                 <Background/>
-                {review && <FeedBackScreen subCat={SubCat.name} data={data} provider={provider}/>}
+                {(!data.review && (data.status==='paid' || data.status==='completed')) && <FeedBackScreen subCat={SubCat.name} data={data} provider={provider}/>}
                 <View style={{margin:10, marginTop:20, flex:1}}>
                     <ScrollView showsVerticalScrollIndicator={false} style={{height:HEIGHT}}>    
                         <View style={{marginTop:10}}>
@@ -148,7 +157,7 @@ const OrderDescription = ({route}) => {
                                     {data.status===status[0]?
                                         <>
                                         {proposal.length>0 && <View style={{marginTop:10}}>
-                                            <Text style={{margin:10}} size={12}>Intrested</Text>
+                                            <Text style={{margin:10}} size={13} bold theme={color.blue}>Click to Hire</Text>
                                             {
                                                 proposal.map(item=><ServiceProviderListView order={data} key={Math.random().toString()} proposalData={data.proposal.find(response=>response.id===item.id)} orderId={data.id} data={item} category={category} proposal/>)
                                             }
