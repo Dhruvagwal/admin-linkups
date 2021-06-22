@@ -68,6 +68,7 @@
     "react-native-unimodules": "~0.13.3",
     "react-native-uuid": "^2.0.1",
     "react-native-web": "^0.16.5",
+    "react-speech-recognition": "^3.8.2",
     "vm": "^0.1.0"
   },
   "devDependencies": {

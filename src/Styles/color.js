@@ -1,7 +1,7 @@
 const colors = {
     'dark':'#090909',
     'white':'#fff',
-    'secondaryDark':'#0c0c0c',
+    'secondaryDark':'#111111',
     'lightDark':'#151515',
     'active': '#FF6E50',
     'inActive':'#aaacaf',

@@ -6259,6 +6259,11 @@ react-refresh@^0.4.0:
   resolved "https://registry.npmjs.org/react-refresh/-/react-refresh-0.4.3.tgz"
   integrity sha512-Hwln1VNuGl/6bVwnd0Xdn1e84gT/8T9aYNL+HAKDArLCS7LWjwr7StE30IEYbIkx0Vi3vs+coQxe+SQDbGbbpA==
 
+react-speech-recognition@^3.8.2:
+  version "3.8.2"
+  resolved "https://registry.yarnpkg.com/react-speech-recognition/-/react-speech-recognition-3.8.2.tgz#c82e187db92e32e506f0593d80a2347f2079e0fd"
+  integrity sha512-ZbA8wNNdWPAiN7tHsMc/cgfRkssAQwL3F8yMDEbuxLCT0II7YrNurNb3hAq5X58+zMn7YQO+S3OZt0mp5QA38w==
+
 react@16.13.1:
   version "16.13.1"
   resolved "https://registry.npmjs.org/react/-/react-16.13.1.tgz"

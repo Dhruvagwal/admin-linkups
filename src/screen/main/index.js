@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import { StyleSheet, Image, View ,Dimensions, Pressable, ScrollView, Modal, Button} from 'react-native'
+import { StyleSheet, Image, View ,Dimensions, Pressable, ScrollView, Modal, BackHandler, Alert} from 'react-native'
 import axios from 'axios'
 
 import {Text, RowView} from 'styles'
@@ -11,6 +11,7 @@ import Loading from 'components/Loading'
 import {DataConsumer} from 'context/data'
 import {getCategory, updateUserProfile} from 'hooks/useData'
 import{ registerForPushNotificationsAsync } from 'middlewares/notification'
+import ScreenModal from 'components/ScreenModal'
 
 const HEIGHT = Dimensions.get('screen').height
 const WIDTH = Dimensions.get('screen').width
@@ -30,6 +31,7 @@ const Index = ({route, navigation}) => {
     const [category, setCategory] = useState([])
     const [refreshing, setRefreshing] = React.useState(false);
     const [activeCategory, setActiveCategory] = useState()
+    const [goBack, setgoBack] = useState(false)
 
     const loadData = async (token)=>{
         setRefreshing(true);
@@ -51,14 +53,37 @@ const Index = ({route, navigation}) => {
         try{
             loadData(source.token)
         }catch(err){}
+        const backAction = () => {
+            setgoBack(true)
+            return true;
+          };
+      
+          const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            backAction
+          );
+      
         return ()=>{
             source.cancel()
+            backHandler.remove();
         }
     }, [routes])
 
     return (
         <View style={{flex:1}}>
             <Background/>
+            {goBack && <ScreenModal>
+                <Text bold>Hold On!</Text>
+                <Text>Are you sure you want exit?</Text>
+                <RowView style={{alignSelf:'flex-end', marginTop:10}}>
+                    <Pressable style={{padding:10}} onPress={()=>setgoBack(false)}>
+                        <Text bold size={13} theme={color.blue}>NO</Text>
+                    </Pressable>
+                    <Pressable style={{padding:10}} onPress={()=>BackHandler.exitApp()}>
+                        <Text bold size={13}  style={{marginLeft:10}} theme={color.blue}> YES</Text>
+                    </Pressable>
+                </RowView>
+            </ScreenModal>}
             {refreshing && <Modal transparent/>}
             {/* ======================= */}
             <View style={{height:HEIGHT*.02}}/>
@@ -73,15 +98,15 @@ const Index = ({route, navigation}) => {
                 {!refreshing ? <ScrollView>
                     <View style={styles.topContainer} >
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                            <View style={{width:WIDTH-20,flexDirection:'row', justifyContent:'space-around' }}>
+                            <View style={{width:'100%',flexDirection:'row', justifyContent:'space-around' }}>
                                 {
-                                    category.map(item=><Pressable android_ripple={{color:color.dark}} onPress={()=>setActiveCategory(item.id)} key={item.id} style={[{alignItems:'center', padding:10, borderRadius:10, width:100, height:100, marginHorizontal:10}, activeCategory===item.id && {backgroundColor:'rgba(18, 18, 18,0.8)'}]}>
+                                    category.map(item=><Pressable android_ripple={{color:color.dark}} onPress={()=>setActiveCategory(item.id)} key={item.id} style={[{alignItems:'center', padding:10, borderRadius:10, width:100, height:100, marginHorizontal:10}, activeCategory===item.id && {backgroundColor:color.blue}]}>
                                         <Image source={{uri:item.url}} style={{width:50, height:50}}/>
-                                        {activeCategory===item.id && <View style={{alignItems:'center'}}>
+                                        <View style={{alignItems:'center'}}>
                                             {
                                                 item.name.split(' ').map(item=><Text key={Math.random()} numberOfLines={1} adjustsFontSizeToFit size={10} bold>{item}</Text>)
                                             }
-                                        </View>}
+                                        </View>
                                     </Pressable>)
                                 }
                             </View>
@@ -91,7 +116,7 @@ const Index = ({route, navigation}) => {
                         category.map(res=>res.id===activeCategory && <View key={res.id} style={styles.middleContainer}>
                                 {
                                     res.subCategory && res.subCategory.map(item=>
-                                        <Pressable android_ripple={{color:color.dark}} onPress={()=>profile.coord ? RootNavigation.navigate(CONSTANT.AddOrder, {category:res, subCategory:item}) : navigation.navigate(CONSTANT.Address)} key={item.id} style={styles.subCategory}>
+                                        <Pressable android_ripple={{color:color.inActive}} onPress={()=>RootNavigation.navigate(CONSTANT.AddOrder, {category:res, subCategory:item})} key={item.id} style={styles.subCategory}>
                                             <Image source={{uri:item.url}} style={{width:50, height:50}}/>
                                             <View style={{marginLeft:10}}>
                                                 <Text style={{width:WIDTH-100}} size={13} regular numberOfLines={1}>{item.name}</Text>
@@ -102,6 +127,8 @@ const Index = ({route, navigation}) => {
                                 }
                         </View>)
                     }
+                <Text>{'\n'}</Text>
+                <Text>{'\n'}</Text>
                 </ScrollView>:<Loading/>}
             </View>
             <BottomBar/>
@@ -164,7 +191,7 @@ const styles = StyleSheet.create({
         borderBottomWidth:2,
         borderBottomColor:color.lightDark,
         padding:10,
-        marginBottom:10,
         marginHorizontal:10,
+        paddingVertical:20
     }
 })

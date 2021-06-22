@@ -16,11 +16,12 @@ const ServiceListView = ({data={}}) => {
     const diff =TimeDiff(data.postedAt)
     const result = category.find(item=>item.id===data.info.category)
     const SubCat = result.subCategory.find(item=>item.id===data.info.subCategory)
+    const url = SubCat.reason && SubCat.reason.find(({id})=>id===data.info.problem)
     return (
         <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.OrderDescription,{id:data.id})} style={styles.container}>
                 <RowView style={{justifyContent:'space-between', width:'100%'}}>
-                    <Image source={{uri:data.url?data.url:SubCat.url}} style={{width:70, height:70, borderRadius:10}}/>
-                    <View style={{justifyContent: 'space-between',marginBottom:5, marginLeft:10,height:'80%', width :'95%'}}>
+                    <Image source={{uri:data.url?data.url:(url?url.url:SubCat.url)}} style={{width:50, height:50, borderRadius:10}}/>
+                    <View style={{marginBottom:5, marginLeft:10,height:'80%', width :'95%'}}>
                         <Text style={{width:WIDTH*.5}} bold numberOfLines={1}>{SubCat.name}</Text>
                         <RowView style={{justifyContent:'space-between', width:'80%'}}>
                             <Text size={13} size={10} numberOfLines={1}>{diff.diff}</Text>
@@ -38,7 +39,7 @@ export default ServiceListView
 const styles = StyleSheet.create({
     container:{
         overflow:'hidden',
-        height:110,
+        height:100,
         padding:10,
         justifyContent:'center',
         borderBottomColor:color.lightDark,

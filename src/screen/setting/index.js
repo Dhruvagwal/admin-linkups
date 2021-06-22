@@ -53,6 +53,22 @@ const Index = ({navigation}) => {
         await setAuth(false)
         Logout()
     }
+    useEffect(()=>{
+        const backAction = () => {
+            navigation.goBack()
+            return true;
+          };
+      
+          const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            backAction
+          );
+      
+        return ()=>{
+            source.cancel()
+            backHandler.remove();
+        }
+    },[])
     const SellerApp = ()=>{
         Linking.openURL('Linkups://app').catch(()=>Linking.openURL("market://details?id=com.whatsapp"));
     }

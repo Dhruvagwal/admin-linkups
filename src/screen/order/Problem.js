@@ -5,6 +5,7 @@ import SoundPlayer from 'react-native-sound-player'
 
 import ImagePicker from 'components/ImagePicker'
 import messageTemplate from 'data/messageTemplate' 
+import { FontAwesome } from '@expo/vector-icons'; 
 
 import {Text, RowView} from 'styles'
 import color from 'colors'
@@ -35,43 +36,51 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data, category}) =>{
     const [fileData, setfileData] = useState()
     const {state:{profile}} = DataConsumer()
     const _onPress =async ()=>{
-        setLoading(true)
-        const id = 'ORD-'+Math.floor(Math.random()*1000000)
-        var url
-        if(response){
-            await storage().ref(`orderImage/${id}`).putFile(response);
-            url = await storage().ref(`orderImage/${id}`).getDownloadURL();
+        if(profile.coord){
+            setLoading(true)
+            const id = 'ORD-'+Math.floor(Math.random()*1000000)
+            var url
+            if(response){
+                await storage().ref(`orderImage/${id}`).putFile(response);
+                url = await storage().ref(`orderImage/${id}`).getDownloadURL();
+            }
+            const DATA = {
+                type:'service',
+                user:profile.id,
+                info:{...state, problem:text},
+                status:'posted',
+                coord:profile.coord,
+                Address:profile.Address,
+                postedAt: new Date(),
+                id,
+                url
+            }
+            saveOrder(DATA)
+    
+            const notifyDataFeed = {
+                title:`Got An New Feed`,
+                body:`${profile.name} give the proposal first hurry up!!`,
+                data:'data'
+            }
+            data.map(({token, id,name})=>{
+                sendPushNotification(token, notifyDataFeed)
+                Message({phone:'+'+id, message:messageTemplate({name,profile, subCategory, category}, 0)})
+            })
+            setSuccess(true)
+            setTimeout(()=>{
+                try {
+                    SoundPlayer.playSoundFile('success', 'mp3')
+                } catch(err){}
+            },1300)
+            try{
+                setTimeout(()=>{setSuccess(false);RootNavigation.navigate(CONSTANT.OrderDescription,{id})}, 2500)
+            }catch(err){
+                RootNavigation.navigate(CONSTANT.Library,{id})
+            }
+            setLoading(false)
+        }else{
+            RootNavigation.navigate(CONSTANT.Address)
         }
-        const DATA = {
-            type:'service',
-            user:profile.id,
-            info:{...state, problem:text},
-            status:'posted',
-            coord:profile.coord,
-            Address:profile.Address,
-            postedAt: new Date(),
-            id,
-            url
-        }
-        saveOrder(DATA)
-
-        const notifyDataFeed = {
-            title:`Got An New Feed`,
-            body:`${profile.name} give the proposal first hurry up!!`,
-            data:'data'
-        }
-        data.map(({token, id,name})=>{
-            sendPushNotification(token, notifyDataFeed)
-            Message({phone:'+'+id, message:messageTemplate({name,profile, subCategory, category}, 0)})
-        })
-        setSuccess(true)
-        setTimeout(()=>{
-            try {
-                SoundPlayer.playSoundFile('success', 'mp3')
-            } catch(err){}
-        },1300)
-        setTimeout(()=>{setSuccess(false);RootNavigation.navigate(CONSTANT.Library,{load:true})}, 2500)
-        setLoading(false)
     }
     const active = useKeyboard()
     response && getFileSize(response).then(data=>!fileData && setfileData(data))
@@ -93,9 +102,14 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data, category}) =>{
                         )
                     }
                 </>}
-                <View style={[styles.contentContainer, {justifyContent:'center'}]} android_ripple={{color:color.dark}}>
+                <View style={[styles.contentContainer, {
+                            justifyContent:'center', 
+                            alignItems:'center',
+                            borderWidth:1,
+                            borderColor:color.blue
+                        }]} android_ripple={{color:color.dark}}>
                         <TextInput
-                            placeholder="I'm looking for"
+                            placeholder="What's your Problem?"
                             value={text}
                             onChangeText={setText}
                             placeholderTextColor={color.white}
@@ -103,11 +117,16 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data, category}) =>{
                                 fontFamily:'Montserrat-Regular',
                                 textAlign:'center',
                                 flexGrow:1,
+                                width:'100%',
                                 fontSize:15,
-                                color:color.white
+                                color:color.white,
                             }}
+                            autoFocus
                             multiline
                         />
+                        <View style={{position:'absolute', right:10}}>    
+                            <Entypo name="edit" size={24} color={color.white} />
+                        </View>
                 </View>
                 {!active && <ImagePicker setResponse={setResponse} setLoading={()=>{}} style={{marginTop:20, overflow: 'hidden', borderRadius:10}} uploadImage={false}>
                     {!response ? <View style={{width:WIDTH-40, height:130, borderWidth:2, borderColor:color.blue, borderRadius:10, alignItems:'center', justifyContent:'center'}}>
@@ -119,15 +138,19 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data, category}) =>{
                     <Image resizeMode='center' style={{width:WIDTH-40, height:130}} source={{uri:response}} />
                     }
                 </ImagePicker>}
+                {
+                    active && <View style={{backgroundColor:color.blue,marginTop:50, padding:10, alignSelf:'center', borderRadius:1000, height:100, width:100, justifyContent:'center', alignItems:'center'}}>
+                        <FontAwesome name="microphone" size={40} color={color.white} />
+                        <Text style={{textAlign:'center'}} bold size={13}>Click to speak</Text>
+                    </View>
+                }
                 <Text>{'\n'}</Text>
                 <Text>{'\n'}</Text>
             </View>
         </ScrollView>
-        {text.length>0 &&
-            <Pressable onPress={()=>_onPress()} style={styles.button}>
-                <Text bold>Done</Text>
+            <Pressable disabled={!text.length>0} onPress={()=>_onPress()} style={[styles.button, text.length<=0 && {backgroundColor:color.inActive}]}>
+                <Text size={13} bold>Done</Text>
             </Pressable>
-        }
         <Snackbar onDismiss={()=>{}} style={styles.Snackbar} visible={fileData && fileData.size/(1024*1024)>10}>
             <Text regular>File size must be less than 10mb</Text>
         </Snackbar>
@@ -151,7 +174,7 @@ const styles = StyleSheet.create({
         justifyContent:'center'
     },
     contentContainer:{
-        backgroundColor: 'rgba(18, 18, 18,0.8)',
+        backgroundColor: '#0000',
         marginVertical:10,
         padding:10,
         flexDirection:'row',

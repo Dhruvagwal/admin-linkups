@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import { RefreshControl, StyleSheet, Image, View ,Dimensions, Pressable, ScrollView} from 'react-native'
+import { RefreshControl, StyleSheet, Image, View ,Dimensions, Pressable, ScrollView, BackHandler} from 'react-native'
 import { Ionicons } from '@expo/vector-icons'; 
 import axios from 'axios'
 
@@ -46,6 +46,20 @@ const Index = ({route, navigation}) => {
     useEffect(() => {
         let source = axios.CancelToken.source()
         loadData(source.token)
+        const backAction = () => {
+            navigation.goBack()
+            return true;
+          };
+      
+          const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            backAction
+          );
+      
+        return ()=>{
+            source.cancel()
+            backHandler.remove();
+        }
     }, [routes])
 
     const applyFilter =async (reset=false)=>{
@@ -101,6 +115,7 @@ const Index = ({route, navigation}) => {
                                             <ServiceListView data={item} key={item.id}/>
                                         )
                                 }
+                                <Text>{'\n'}</Text>
                                 <Text>{'\n'}</Text>
                         </>
                         :

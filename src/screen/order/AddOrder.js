@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import { StyleSheet, View, Dimensions, Image, Pressable, BackHandler} from 'react-native'
+import { AntDesign } from '@expo/vector-icons'; 
 
-import {Text} from 'styles'
+import {Text, RowView} from 'styles'
 import color from 'colors'
 import Loading from 'components/Loading'
 import getDistance from 'geolib/es/getDistance';
@@ -40,6 +41,19 @@ const AddOrder = ({route, navigation}) => {
                 setProvider(sortedInvite); 
             })
         }
+        const backAction = () => {
+            navigation.goBack()
+            return true;
+          };
+      
+          const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress",
+            backAction
+          );
+      
+        return ()=>{
+            backHandler.remove();
+        }
     },[])
     if(success){
         return <View style={{flex:1}}>            
@@ -60,10 +74,15 @@ const AddOrder = ({route, navigation}) => {
         <View style={{flex:1}}>
                 <Background/>
                 <View style={{height:HEIGHT*.02}}/>
-                <View style={{margin:20, marginBottom:0}}>
-                    <Text size={20} bold>Linkups</Text>
-                    <Text size={13}>Post Order</Text>
-                </View>
+                <RowView style={{marginLeft:20}}>
+                    <Pressable onPress={()=>navigation.goBack()}>
+                        <AntDesign name="arrowleft" size={24} color={color.white} />
+                    </Pressable>
+                    <View style={{marginVertical:20, marginLeft:10}}>
+                        <Text size={20} bold>Linkups</Text>
+                        <Text size={13} regular>{subCategory.name}</Text>
+                    </View>
+                </RowView>
                 <Problem category={category} setSuccess={setSuccess} setLoading={setLoading} subCategory={subCategory} state={state} data={provider}/>
         </View>
 

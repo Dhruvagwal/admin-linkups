@@ -15,7 +15,6 @@ const ServiceProviderListView = ({data={}, proposal=false, proposalData={}, orde
     const IMAGE_SIZE = 65
     var rate = 0
     data.rating && data.rating.map(({rating})=>{rate=rating*1.2+rate})
-    console.log(order)
     return (
         <Pressable onPress={()=>RootNavigation.navigate(CONSTANT.ServiceProfile, {data, proposal, orderId:order.id, proposalData})}>
             <RowView style={styles.container}>

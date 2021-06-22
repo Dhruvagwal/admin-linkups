@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react'
-import { StyleSheet, View, Dimensions, Image, ScrollView, Pressable } from 'react-native'
+import { StyleSheet, View, Dimensions, Image, ScrollView, Pressable, BackHandler } from 'react-native'
 
 import {Text, RowView} from 'styles'
 import color from 'colors'
 import Loading from 'components/Loading' 
+import ScreenModal from 'components/ScreenModal'
 import ServiceProviderListView from 'components/ServiceProviderListView'
 import {DataConsumer} from 'context/data'
 import * as RootNavigation from 'navigation/RootNavigation'
@@ -19,13 +20,15 @@ import StatusTracker from 'components/StatusTracker'
 const HEIGHT= Dimensions.get('screen').height
 const WIDTH= Dimensions.get('screen').width
 
-const Background = ()=><View style={[{flex:1, alignItems:'stretch',flexDirection:'row'},StyleSheet.absoluteFillObject]}>
-    <View style={{backgroundColor:color.dark, width:'85%'}}/>
-    <View style={{backgroundColor:color.secondaryDark, width:'15%'}}/>
-</View>
+const Background = ()=>{
+    return <View style={[{flex:1},StyleSheet.absoluteFillObject]}>
+        <View style={[{flex:1, alignItems:'stretch',flexDirection:'row', backgroundColor:color.dark, height:HEIGHT},StyleSheet.absoluteFillObject]}/>
+        <View style={{backgroundColor:color.secondaryDark,height:1550, width:'100%',transform:[{rotate:'-36deg'}]}}/>
+    </View>
+}
 
-const Point = ({last=false,text='',bold=false})=><RowView style={{...styles.Points, borderBottomWidth:last ? 0:2}}>
-    <Text size={13} style={{marginLeft:10}} regular={!bold} bold={bold}>{text}</Text>
+const Point = ({last=false,text='',bold=false, theme=color.white})=><RowView style={{...styles.Points, borderBottomWidth:last ? 0:2}}>
+    <Text theme={theme} size={13} style={{marginLeft:10}} regular={!bold} bold={bold}>{text}</Text>
 </RowView>
 
 
@@ -41,7 +44,9 @@ const OrderDescription = ({route}) => {
     const [review, setReview] = useState(false)
     const [miniLoading, setMiniLoading] = useState(false)
     const [showImage, setShowImage] = useState(false)
+    const [isCancel, setIsCancel] = useState(false)
     const status = ['posted', 'inprogress', 'completed', 'paid','cancelled']
+    const url = SubCat.reason && SubCat.reason.find(({id})=>id===data.info.problem)
     const Delete =async ()=>{
         const notifyData = {
             title:`Order Cancelled`,
@@ -93,20 +98,31 @@ const OrderDescription = ({route}) => {
     }, [route.params, loading])
 
     if(showImage){
-        return <ImageViewer uri={data.url?data.url:SubCat.url} showImage={showImage} setShowImage={setShowImage}/>
+        return <ImageViewer uri={data.url?data.url:( url ? url.url : SubCat.url)} showImage={showImage} setShowImage={setShowImage}/>
     }
     else return (
-        !loading ? <View style={{flex:1}}>          
+        !loading ? <View style={{flex:1}}>        
+                {isCancel && <ScreenModal>
+                    <Text regular>Are you sure{'\n'}you want to cancel it ?</Text>
+                    <RowView style={{alignSelf:'flex-end'}}>
+                        <Pressable onPress={()=>setIsCancel(false)}  style={{padding:10}}>
+                            <Text bold>NO</Text>
+                        </Pressable>
+                        <Pressable onPress={Delete} style={{padding:10}}>
+                            <Text theme={color.red} bold>YES</Text>
+                        </Pressable>
+                    </RowView>
+                </ScreenModal>}  
                 <View style={{height:HEIGHT*.02}}/>
                 <Background/>
                 {review && <FeedBackScreen subCat={SubCat.name} data={data} provider={provider}/>}
                 <View style={{margin:10, marginTop:20, flex:1}}>
-                    <ScrollView showsVerticalScrollIndicator={false}>    
+                    <ScrollView showsVerticalScrollIndicator={false} style={{height:HEIGHT}}>    
                         <View style={{marginTop:10}}>
                             <View style={{...styles.container, backgroundColor: '#0000', marginBottom:20}}>
                                 <RowView style={{height:100}}>
                                     <Pressable onPress={()=>setShowImage(true)}>
-                                        <Image source={{uri:data.url?data.url:SubCat.url}} style={{width:100, height:100, borderRadius:10}}/>
+                                        <Image source={{uri:data.url?data.url:( url ? url.url : SubCat.url)}} style={{width:100, height:100, borderRadius:10}}/>
                                     </Pressable>
                                     <View style={{alignItems:'flex-start', height:100, marginLeft:10, justifyContent:'space-between'}}>
                                         <Text style={{width:WIDTH*.6}} bold numberOfLines={2} adjustsFontSizeToFit>{SubCat.name}</Text>
@@ -117,10 +133,16 @@ const OrderDescription = ({route}) => {
                             </View>
                             {(data.status!=='posted'&& data.status!=='cancelled') && <StatusTracker data={data}/>}
                             <View style={{...styles.container, backgroundColor: '#0000',paddingTop:10}}>
-                                <Point bold text={`Service Charge: ₹${SubCat.charge}`}/>
+                                <Point bold  theme={color.blue} text={`Service Charge: ₹ ${SubCat.charge}`}/>
                                 <Point text={category.name}/>
                                 <Point last text={data.info.problem}/>
                             </View>
+                            {(data.status==='posted' && data.proposal===undefined) && <View style={{backgroundColor:color.lightDark, padding:10, borderRadius:10, elevation:3}}>
+                                <Text theme={color.blue} size={13} bold>
+                                    NOTE:{'\n'}Your nearby {category.name} provider will call you earlier.
+                                </Text>
+                            </View>
+                            }
                             {data.status !== status[4] &&
                                 <>
                                     {data.status===status[0]?
@@ -141,25 +163,30 @@ const OrderDescription = ({route}) => {
                             }
                         </View>
                         <Text>{'\n'}</Text>
+                    </ScrollView>
+                    <View style={{marginBottom:10}}>
                         {!miniLoading ?
-                            <>
-                                {data.status===status[0] && <Pressable onPress={Delete}>
-                                    <RowView style={{...styles.container, opacity:1, padding:20, alignItems:'center', justifyContent:'center'}}>
-                                        <Text style={{color:color.red}} regular>Cancel</Text>
+                            <RowView style={{justifyContent:'space-around'}}>
+                                {data.status===status[0] && 
+                                <>
+                                <Pressable onPress={()=>BackHandler.exitApp()}>
+                                    <RowView style={{...styles.container, alignSelf: 'center', width:WIDTH/2.5, opacity:1, padding:20, alignItems:'center', justifyContent:'center', backgroundColor:color.lightDark, elevation:5}}>
+                                        <Text style={{color:color.red}} bold>Exit</Text>
                                     </RowView>
-                                </Pressable>}
-                            </>
+                                </Pressable>
+                                <Pressable onPress={()=>setIsCancel(true)}>
+                                    <RowView style={{...styles.container, alignSelf: 'center', width:WIDTH/2.5, opacity:1, padding:20, alignItems:'center', justifyContent:'center', backgroundColor:color.lightDark, elevation:5}}>
+                                        <Text style={{color:color.red}} bold>Cancel</Text>
+                                    </RowView>
+                                </Pressable>
+                                </>}
+                            </RowView>
                             :
                             <View>
                                 <Loading whole={false}/>
                             </View>
                         }
-                    </ScrollView>
-                    {(data.status==='posted' && data.proposal===undefined) && <View style={{backgroundColor:color.lightDark, padding:10, borderRadius:10, elevation:3}}>
-                        <Text size={13} regular>
-                            Sent to nearby electricians 
-                        </Text>
-                    </View>}
+                    </View>
                 </View>
         </View>
         :
