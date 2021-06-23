@@ -1,12 +1,11 @@
 import React, {useState, useEffect} from 'react'
 import { StyleSheet, View, Dimensions, ScrollView, Image, Pressable, TextInput, BackHandler, KeyboardAvoidingView} from 'react-native'
-import { MaterialIcons, Entypo, AntDesign, Feather } from '@expo/vector-icons';
+import { MaterialIcons, Entypo, FontAwesome} from '@expo/vector-icons';
 import SoundPlayer from 'react-native-sound-player'
 
 import ImagePicker from 'components/ImagePicker'
 import messageTemplate from 'data/messageTemplate' 
-import { FontAwesome } from '@expo/vector-icons'; 
-import Speech from 'components/Speech'
+import SpeechToText from 'react-native-google-speech-to-text';
 
 import {Text, RowView} from 'styles'
 import color from 'colors'
@@ -36,6 +35,18 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data, category}) =>{
     const [response, setResponse] = useState(state.url)
     const [fileData, setfileData] = useState()
     const {state:{profile}} = DataConsumer()
+    const speechToTextHandler = async () => {
+ 
+        let speechToTextData = null;
+            try {
+                speechToTextData = await SpeechToText.startSpeech('Try saying something', 'en_IN');
+                setText(speechToTextData)
+      
+            } catch (error) {
+                console.log('error: ', error);
+            }
+    }
+
     const _onPress =async ()=>{
         if(profile.coord){
             setLoading(true)
@@ -56,7 +67,7 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data, category}) =>{
                 id,
                 url
             }
-            saveOrder(DATA)
+            await saveOrder(DATA)
     
             const notifyDataFeed = {
                 title:`Got An New Feed`,
@@ -118,15 +129,14 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data, category}) =>{
                                 fontFamily:'Montserrat-Regular',
                                 textAlign:'center',
                                 flexGrow:1,
-                                width:'100%',
                                 fontSize:15,
                                 color:color.white,
                             }}
                             multiline
                         />
-                        <View style={{position:'absolute', right:10}}>    
-                            <Entypo name="edit" size={24} color={color.white} />
-                        </View>
+                        <Pressable style={{position:'absolute', right: 0, paddingHorizontal:10}} onPress={speechToTextHandler}>    
+                            <FontAwesome name="microphone" size={24} color={color.white} />
+                        </Pressable>
                 </View>
                 {!active && <ImagePicker setResponse={setResponse} setLoading={()=>{}} style={{marginTop:20, overflow: 'hidden', borderRadius:10}} uploadImage={false}>
                     {!response ? <View style={{width:WIDTH-40, height:130, borderWidth:2, borderColor:color.blue, borderRadius:10, alignItems:'center', justifyContent:'center'}}>
@@ -138,13 +148,6 @@ const Problem = ({setSuccess,setLoading,state, subCategory, data, category}) =>{
                     <Image resizeMode='center' style={{width:WIDTH-40, height:130}} source={{uri:response}} />
                     }
                 </ImagePicker>}
-                {
-                    active && <View style={{backgroundColor:color.blue,marginTop:50, padding:10, alignSelf:'center', borderRadius:1000, height:100, width:100, justifyContent:'center', alignItems:'center'}}>
-                        <FontAwesome name="microphone" size={40} color={color.white} />
-                        <Text style={{textAlign:'center'}} bold size={13}>Click to speak</Text>
-                        <Speech/>
-                    </View>
-                }
                 <Text>{'\n'}</Text>
                 <Pressable disabled={!text.length>0} onPress={()=>_onPress()} style={[styles.button, text.length<=0 && {backgroundColor:color.inActive}]}>
                     <Text size={13} bold>Done</Text>

@@ -27,7 +27,7 @@ const ServiceListView = ({data={}}) => {
                             <Text size={13} size={10} numberOfLines={1}>{diff.diff}</Text>
                             <Text size={13} bold style={{textTransform:'capitalize', color:color.active}}>{data.status}</Text>
                         </RowView>
-                        <Text size={13} regular>{data.info.problem}</Text>
+                        <Text size={13} numberOfLines={1} style={{width:'75%'}} regular>{data.info.problem}</Text>
                     </View>
                 </RowView>
         </Pressable>

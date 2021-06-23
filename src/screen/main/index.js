@@ -99,8 +99,8 @@ const Index = ({route, navigation}) => {
                 </RowView>
                 {!refreshing ? <ScrollView>
                     <View style={styles.topContainer} >
-                        <ScrollView horizontal>
-                            <View style={{width:'100%',flexDirection:'row', justifyContent:'space-around', borderWidth:2, borderColor:color.blue}}>
+                        <ScrollView showsHorizontalScrollIndicator={false} horizontal>
+                            <View style={{width:'100%',flexDirection:'row', justifyContent:'space-around'}}>
                                 {
                                     category.map(item=><Pressable android_ripple={{color:color.dark}} onPress={()=>setActiveCategory(item.id)} key={item.id} style={[{alignItems:'center', padding:10, borderRadius:10, width:100, height:100, marginHorizontal:10}, activeCategory===item.id && {backgroundColor:color.blue}]}>
                                         <Image source={{uri:item.url}} style={{width:50, height:50}}/>
