@@ -46,20 +46,20 @@ const Index = ({route, navigation}) => {
     useEffect(() => {
         let source = axios.CancelToken.source()
         loadData(source.token)
-        const backAction = () => {
-            navigation.goBack()
-            return true;
-          };
+        // const backAction = () => {
+        //     navigation.goBack()
+        //     return true;
+        //   };
       
-          const backHandler = BackHandler.addEventListener(
-            "hardwareBackPress",
-            backAction
-          );
+        //   const backHandler = BackHandler.addEventListener(
+        //     "hardwareBackPress",
+        //     backAction
+        //   );
       
-        return ()=>{
-            source.cancel()
-            backHandler.remove();
-        }
+        // return ()=>{
+        //     source.cancel()
+        //     backHandler.remove();
+        // }
     }, [routes])
 
     const applyFilter =async (reset=false)=>{

@@ -84,11 +84,16 @@ const Problem = ({ setSuccess, setLoading, state, subCategory, data, category, n
                 } catch (err) { }
             }, 1300)
             try {
-                setTimeout(() => { setSuccess(false); RootNavigation.navigate(CONSTANT.OrderDescription, { id }) }, 2500)
+                setTimeout(async () => { 
+                    RootNavigation.navigate(CONSTANT.OrderDescription, { id });
+                    setSuccess(false); 
+                }, 2500)
+                setTimeout(async () => { 
+                    setLoading(false)
+                }, 3000)
             } catch (err) {
                 RootNavigation.navigate(CONSTANT.Library, { id })
             }
-            setLoading(false)
         } else {
             RootNavigation.navigate(CONSTANT.Address)
         }
@@ -99,7 +104,6 @@ const Problem = ({ setSuccess, setLoading, state, subCategory, data, category, n
     reason = chunk(reason, 2)
     if (camera) return <Camera setCamera={setCamera} setImage={setResponse} />
     else return <View style={{ flex: 1 }}>
-        <ScrollView style={{ flex: 1 }}>
             <View style={{ height: HEIGHT * .02 }} />
             <RowView style={{ marginLeft: 20 }}>
                 <Pressable onPress={() => navigation.goBack()}>
@@ -110,6 +114,7 @@ const Problem = ({ setSuccess, setLoading, state, subCategory, data, category, n
                     <Text size={13} regular>{subCategory.name}</Text>
                 </View>
             </RowView>
+        <ScrollView style={{ flex: 1 }}>
             <View style={{ padding: 20, flex: 1 }}>
                 {!active && <>
                     {

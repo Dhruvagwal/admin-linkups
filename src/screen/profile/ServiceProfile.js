@@ -37,7 +37,7 @@ const AcceptScreen = ({accept,setNotice, price, data})=>{
         <Entypo name="cross" size={24} color={color.inActive} />
     </Pressable>
     <Text size={13} regular style={{marginVertical:10}}>
-        Once you accept this offer,
+        Once you accept this service,
         you have to pay <Text regular theme={color.blue}>₹{price}</Text> to {data.name} as a <Text regular theme={color.blue}>Service Charge</Text>{'\n'}
         {/* एक बार जब आप इस प्रस्ताव को स्वीकार कर लेंगे, तो आपको सेवा शुल्क के रूप में कविता को ₹150 का भुगतान करना होगा */}
     </Text>
@@ -150,7 +150,7 @@ const ServiceProfile = ({route, navigation}) => {
                             <Text bold>{data.name}</Text>
                             <RowView style={{marginBottom:10}}>
                                 {data.verified && <MaterialIcons name="verified" size={20} style={{marginRight:5}} color={color.blue} />}
-                                <Text size={13}>{pro}</Text>
+                                <Text regular size={13}>{pro}</Text>
                             </RowView>
                             {data.rating ?<Text regular>{rating} <AntDesign name="star" size={15} color={color.active} /></Text>: <Text regular theme={color.inActive}>No Review</Text>}
                         </View>

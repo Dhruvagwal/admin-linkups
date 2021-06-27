@@ -7,6 +7,7 @@ import {DataConsumer} from 'context/data'
 import axios from 'axios'
 
 import {Logout} from 'hooks/useAuth'
+import ScreenModal from 'components/ScreenModal'
 import {getDataById, updateUserProfile} from 'hooks/useData'
 import CONSTANT from 'navigation/navigationConstant.json'
 import {Text, RowView} from 'styles'
@@ -48,6 +49,7 @@ const Index = ({navigation}) => {
     const [loading, setLoading] = useState(false)
     const [name, setName] = useState()
     const [isEdit, setisEdit] = useState(false)
+    const [logoutScreen, setLogOutScreen] = useState(false)
 
     const LOGOUT = async ()=>{
         await setAuth(false)
@@ -81,6 +83,20 @@ const Index = ({navigation}) => {
     }
     return (
         !showImage ? <View style={{flex:1}}>
+            {
+                logoutScreen && <ScreenModal>
+                <Text bold>Please Wait!</Text>
+                <Text regular>Are you sure you want Logout?</Text>
+                <RowView style={{alignSelf:'flex-end', marginTop:10}}>
+                    <Pressable style={{padding:10}} onPress={()=>setLogOutScreen(false)}>
+                        <Text bold size={13} theme={color.blue}>NO</Text>
+                    </Pressable>
+                    <Pressable style={{padding:10}} onPress={LOGOUT}>
+                        <Text bold size={13}  style={{marginLeft:10}} theme={color.blue}> YES</Text>
+                    </Pressable>
+                </RowView>
+            </ScreenModal>
+            }
             <BackGround/>
             <View style={{height:HEIGHT*.02}}/>
             {!loading ?<View style={{padding:20,flex:1}}>
@@ -135,7 +151,7 @@ const Index = ({navigation}) => {
                             </Options>
                         </Pressable>
 
-                        <Pressable style={{padding:15}} android_ripple={{color:color.lightDark}} onPress={LOGOUT}>
+                        <Pressable style={{padding:15}} android_ripple={{color:color.lightDark}} onPress={()=>setLogOutScreen(true)}>
                             <Options>
                                 <Text size={13} style={{color:color.red}} regular>Logout</Text>
                             </Options>

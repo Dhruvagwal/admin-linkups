@@ -66,6 +66,8 @@ const OrderDescription = ({route, navigation}) => {
     }
     useEffect(() => {
         setLoading(true)
+      
+      
         getDataById('order',id).then(async (response)=>{
             setData(response.data)
             await getDataById('Category', response.data.info.category).then(catRes=>{
@@ -90,19 +92,6 @@ const OrderDescription = ({route, navigation}) => {
                 })
             }
         })
-        const backAction = () => {
-            navigation.goBack()
-            return true;
-          };
-      
-          const backHandler = BackHandler.addEventListener(
-            "hardwareBackPress",
-            backAction
-          );
-      
-        return ()=>{
-            backHandler.remove();
-        }
     }, [route.params, isFocused])
 
     if(showImage){

@@ -55,26 +55,26 @@ const Index = ({route, navigation}) => {
         try{
             loadData(source.token)
         }catch(err){}
-        const backAction = () => {
-            setgoBack(true)
-            return true;
-          };
+        // const backAction = () => {
+        //     setgoBack(true)
+        //     return true;
+        //   };
       
-          const backHandler = BackHandler.addEventListener(
-            "hardwareBackPress",
-            backAction
-          );
+        //   const backHandler = BackHandler.addEventListener(
+        //     "hardwareBackPress",
+        //     backAction
+        //   );
       
-        return ()=>{
-            source.cancel()
-            backHandler.remove();
-        }
+        // return ()=>{
+        //     source.cancel()
+        //     backHandler.remove();
+        // }
     }, [routes])
 
     return (
         <View style={{flex:1}}>
             <Background/>
-            {goBack && <ScreenModal>
+            {/* {goBack && <ScreenModal>
                 <Text bold>Hold On!</Text>
                 <Text>Are you sure you want exit?</Text>
                 <RowView style={{alignSelf:'flex-end', marginTop:10}}>
@@ -85,7 +85,7 @@ const Index = ({route, navigation}) => {
                         <Text bold size={13}  style={{marginLeft:10}} theme={color.blue}> YES</Text>
                     </Pressable>
                 </RowView>
-            </ScreenModal>}
+            </ScreenModal>} */}
             {refreshing && <Modal transparent/>}
             {/* ======================= */}
             <View style={{height:HEIGHT*.02}}/>
