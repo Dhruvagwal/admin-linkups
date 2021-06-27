@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
         justifyContent:'space-around',
         margin:10,
         width:WIDTH-20,
-        marginVertical:0
+        marginVertical:5
     },
     middleContainer:{
         marginBottom:20

@@ -28,7 +28,8 @@ const Background = ()=>{
     </View>
 }
 
-const Point = ({last=false,text='',bold=false, theme=color.white})=><RowView style={{...styles.Points, borderBottomWidth:last ? 0:2}}>
+const Point = ({last=false,text='',bold=false, theme=color.white, children})=><RowView style={{...styles.Points, borderBottomWidth:last ? 0:2}}>
+    {children}
     <Text theme={theme} size={13} style={{marginLeft:10}} regular={!bold} bold={bold}>{text}</Text>
 </RowView>
 
@@ -51,7 +52,7 @@ const OrderDescription = ({route, navigation}) => {
     const Delete =async ()=>{
         const notifyData = {
             title:`Order Cancelled`,
-            body:`${profile.name} Cancelled the order. Your connects is refunded to your account`,
+            body:`${profile.name} Cancelled the order. Your money is refunded to your account`,
         }
         setMiniLoading(true)
         await updateOrder({status:status[4]}, data.id)
@@ -64,33 +65,31 @@ const OrderDescription = ({route, navigation}) => {
         setMiniLoading(false)
     }
     useEffect(() => {
-        if(loading){
-            getDataById('order',id).then(async (response)=>{
-                setData(response.data)
-                await getDataById('Category', response.data.info.category).then(catRes=>{
-                    setCategory(catRes.data)
-                    const result = catRes.data.subCategory.find(item=>item.id===response.data.info.subCategory)
-                    setSubCat(result)
-                    setLoading(false)
-                })
+        setLoading(true)
+        getDataById('order',id).then(async (response)=>{
+            setData(response.data)
+            await getDataById('Category', response.data.info.category).then(catRes=>{
+                setCategory(catRes.data)
+                const result = catRes.data.subCategory.find(item=>item.id===response.data.info.subCategory)
+                setSubCat(result)
+                setLoading(false)
             })
-        }else{
-            if (data.status===status[0]){
+            if (response.data.status===status[0]){
                 var Propsallist = []
-                if(data.proposal!== undefined && data.proposal.length > 0 ){
-                    data.proposal.map(async item=>{
+                if(response.data.proposal!== undefined && response.data.proposal.length > 0 ){
+                    response.data.proposal.map(async item=>{
                     await getDataById('serviceProvider',item.id)
                     .then(({data})=>{
                         Propsallist = [...Propsallist, data]
                         setProposal(Propsallist)
                     })
                 })}
-            }else if(data.status!==status[4]){
-                getDataById('serviceProvider',data.provider).then(({data})=>{
+            }else if(response.data.status!==status[4]){
+                getDataById('serviceProvider',response.data.provider).then(({data})=>{
                     setProvider(data)
                 })
             }
-        }
+        })
         const backAction = () => {
             navigation.goBack()
             return true;
@@ -104,7 +103,7 @@ const OrderDescription = ({route, navigation}) => {
         return ()=>{
             backHandler.remove();
         }
-    }, [route.params, loading, isFocused])
+    }, [route.params, isFocused])
 
     if(showImage){
         return <ImageViewer uri={data.url?data.url:( url ? url.url : SubCat.url)} showImage={showImage} setShowImage={setShowImage}/>
@@ -143,8 +142,18 @@ const OrderDescription = ({route, navigation}) => {
                             {(data.status!=='posted'&& data.status!=='cancelled') && <StatusTracker data={data}/>}
                             <View style={{...styles.container, backgroundColor: '#0000',paddingTop:10}}>
                                 <Point bold  theme={color.blue} text={`Service Charge: ₹ ${SubCat.charge}`}/>
-                                <Point text={category.name}/>
-                                <Point last text={data.info.problem}/>
+                                <Point>
+                                    <RowView style={{marginLeft:10}}>
+                                        <Text size={13} bold>Category - </Text>
+                                        <Text size={13} regular>{category.name}</Text>
+                                    </RowView>
+                                </Point>
+                                <Point>
+                                    <RowView style={{marginLeft:10}}>
+                                        <Text size={13} bold>Problem - </Text>
+                                        <Text size={13} regular>{data.info.problem}</Text>
+                                    </RowView>
+                                </Point>
                             </View>
                             {(data.status==='posted' && data.proposal===undefined) && <View style={{backgroundColor:color.lightDark, padding:10, borderRadius:10, elevation:3}}>
                                 <Text theme={color.blue} size={13} bold>

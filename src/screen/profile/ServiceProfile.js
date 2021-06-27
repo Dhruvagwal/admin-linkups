@@ -115,8 +115,8 @@ const ServiceProfile = ({route, navigation}) => {
             status:'inprogress'
         }
         const notifyData = {
-            title:`Got New Order`,
-            body:`${state.profile.name} accepted your proposal`
+            title:`New Order`,
+            body:`Congratulation! ${state.profile.name} accepted your proposal for ${pro}.`
         }
         const dataAdd = {
             id:orderId, 
@@ -140,7 +140,7 @@ const ServiceProfile = ({route, navigation}) => {
     return (
         <View style={{flex:1}}>
             <Background/>
-            {notice && <AcceptScreen data={data}  price={result.charge} accept={accept} setNotice={setNotice}/>}
+            {notice && <AcceptScreen data={data}  price={result && result.charge} accept={accept} setNotice={setNotice}/>}
             <View style={{height:HEIGHT*.05}}/>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{padding:20}}>

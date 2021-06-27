@@ -4,14 +4,14 @@ import { StyleSheet, TextInput, View } from 'react-native'
 import {Text} from 'styles'
 import color from 'colors'
 
-const App = ({label='', keyboardType='default', setValue=()=>{}, value}) => {
+const App = ({label='', keyboardType='default', setValue=()=>{}, value, line=1, style={}}) => {
     const [focused, setFocused] = useState(false)
     return (
         <View>
             <View style={styles.label}>
                 <Text size={13} style={{color:!focused ? color.inActive : color.blue}} regular>{label}</Text>
             </View>
-            <TextInput  autoFocus value={value} onChangeText={setValue} keyboardType={keyboardType} onFocus = {()=>setFocused(true)} style={[styles.TextInput, focused && {borderColor:color.blue}]}/>
+            <TextInput numberOfLines={line}  autoFocus value={value} onChangeText={setValue} keyboardType={keyboardType} onFocus = {()=>setFocused(true)} style={[styles.TextInput, style, focused && {borderColor:color.blue}]}/>
         </View>
     )
 }

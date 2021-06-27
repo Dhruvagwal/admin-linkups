@@ -18,6 +18,7 @@ import SettingScreen from 'screen/setting'
 import LibraryScreen from 'screen/Library'
 import AddressScreen from 'screen/setting/Address'
 import HelpScreen from 'screen/setting/Help'
+import SuggestionScreen from 'screen/setting/Suggestion'
 import {getDataById} from 'hooks/useData'
 
 import {navigationRef} from './RootNavigation';
@@ -110,6 +111,7 @@ const Index = () => {
                       <Stack.Screen name={CONSTANT.ServiceProfile} component={ServiceProfileScreen}/>
                       <Stack.Screen name={CONSTANT.Setting} component={SettingScreen}/>
                       <Stack.Screen name={CONSTANT.Library} component={LibraryScreen}/>
+                      <Stack.Screen name={CONSTANT.Suggestion} component={SuggestionScreen}/>
                       <Stack.Screen name={CONSTANT.Address} component={AddressScreen}/>
                       <Stack.Screen name={CONSTANT.Help} component={HelpScreen}/>
                     </>:

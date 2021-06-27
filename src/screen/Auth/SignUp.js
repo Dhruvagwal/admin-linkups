@@ -22,7 +22,7 @@ const TextInputField = ({label='', heading='', onPress = ()=>{}, setValue=()=>{}
             <TextInput  setValue={setValue} label={label}/>
         </View>
         <Pressable style={styles.next} onPress={onPress} android_ripple={{color:color.lightDark}}>
-            <Text>{pressLabel}</Text>
+            <Text bold>{pressLabel}</Text>
             {pressLabel==='Next' && <MaterialIcons name="navigate-next" size={30} color={color.white} />}
         </Pressable>
     </View> 
@@ -85,8 +85,13 @@ const styles = StyleSheet.create({
     },
     next:{
         position:'absolute',
-        bottom:-10,
-        right:-10,
+        bottom:0,
+        padding:10,
+        backgroundColor:color.active,
+        borderRadius:10,
+        alignSelf:'center',
+        width:100,
+        elevation:5,
         flexDirection:'row',
         alignItems:'center',
         padding:10,

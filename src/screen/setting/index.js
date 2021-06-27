@@ -65,7 +65,6 @@ const Index = ({navigation}) => {
           );
       
         return ()=>{
-            source.cancel()
             backHandler.remove();
         }
     },[])
@@ -127,6 +126,12 @@ const Index = ({navigation}) => {
                         <Pressable style={{padding:15}} onPress={()=>navigation.navigate(CONSTANT.Help)} android_ripple={{color:color.lightDark}}>
                             <Options>
                                 <Text size={13} regular>Help & Support</Text>
+                            </Options>
+                        </Pressable>
+
+                        <Pressable style={{padding:15}} onPress={()=>navigation.navigate(CONSTANT.Suggestion)} android_ripple={{color:color.lightDark}}>
+                            <Options>
+                                <Text size={13} regular>My Suggestion</Text>
                             </Options>
                         </Pressable>
 
